@@ -1,0 +1,13 @@
+node_modules/
+dist/
+
+# Biến môi trường thật; chỉ .env.example được commit
+.env
+.env.local
+.env.*.local
+
+# Ảnh nguồn lúc dựng asset, không cần cho việc build
+tmp/
+
+*.log
+.DS_Store

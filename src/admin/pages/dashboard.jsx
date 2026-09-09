@@ -1,0 +1,57 @@
+import React from 'react';
+import {api, money, percent} from '../api.js';
+import {Card, StatTile, Pill, Empty, Loading, useAsync} from '../ui.jsx';
+
+export default function DashboardPage({go}) {
+  const {data, loading, error} = useAsync(() => Promise.all([api.get('/admin/stats'), api.get('/admin/games')]), []);
+
+  if (loading) return <Loading label="Đang tải số liệu..." />;
+  if (error) return <Card><Empty>{error}</Empty></Card>;
+
+  const [stats, catalog] = data;
+  const hidden = catalog.games.filter(g => !g.enabled);
+
+  return (
+    <div className="stack">
+      <div className="statRow">
+        <StatTile label="Người chơi" value={money(stats.users)} sub={stats.suspended + ' bị khóa'} />
+        <StatTile label="Yêu cầu ví chờ duyệt" value={money(stats.pendingWalletRequests)} tone={stats.pendingWalletRequests ? 'warn' : 'ok'} />
+        <StatTile label="Số ván đã chơi" value={money(stats.rounds)} />
+        <StatTile label="Tổng cược" value={money(stats.bet)} />
+        <StatTile label="Nhà cái thu về" value={money(stats.houseNet)} tone={stats.houseNet >= 0 ? 'ok' : 'warn'} sub={'RTP thực tế ' + percent(stats.bet ? stats.payout / stats.bet : null)} />
+      </div>
+
+      {stats.pendingWalletRequests > 0 && (
+        <Card>
+          <div className="callout">
+            <p>Có <strong>{stats.pendingWalletRequests}</strong> yêu cầu nạp/rút đang chờ bạn duyệt.</p>
+            <button className="primary" onClick={() => go('wallet')}>Xử lý ngay</button>
+          </div>
+        </Card>
+      )}
+
+      <Card title="Trạng thái game" action={<button className="ghost" onClick={() => go('games')}>Quản lý chi tiết</button>}>
+        <div className="tableWrap">
+          <table>
+            <thead><tr><th>Game</th><th>Trạng thái</th><th className="num">Hạn mức cược</th><th className="num">RTP lý thuyết</th><th className="num">RTP thực tế</th><th className="num">Nhà cái thu về</th></tr></thead>
+            <tbody>
+              {catalog.games.map(game => (
+                <tr key={game.key}>
+                  <td><button className="linkCell" onClick={() => go('games/' + game.key)}>{game.name}</button> <small>{game.key}</small></td>
+                  <td>{game.enabled ? <Pill tone="ok">Đang hiển thị</Pill> : <Pill tone="warn">Đang ẩn</Pill>}</td>
+                  <td className="num">{money(game.minBet)} – {money(game.maxBet)}</td>
+                  <td className="num">{percent(game.theoreticalRtp)}</td>
+                  <td className="num">{percent(game.stats.actualRtp)}</td>
+                  <td className={'num ' + (game.stats.houseNet >= 0 ? 'up' : 'down')}>{money(game.stats.houseNet)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {hidden.length > 0 && (
+          <p className="note">Đang ẩn khỏi web người chơi: {hidden.map(g => g.name).join(', ')}.</p>
+        )}
+      </Card>
+    </div>
+  );
+}

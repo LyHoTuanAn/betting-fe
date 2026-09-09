@@ -1,0 +1,3479 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;600;700;800;900&family=Oswald:wght@600;700&display=swap');
+:root{font-family:'Be Vietnam Pro',sans-serif;color:#fff;background:#080b0e;font-synthesis:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+*{box-sizing:border-box;-webkit-touch-callout:none!important;-webkit-user-select:none!important;user-select:none!important;-webkit-tap-highlight-color:transparent!important}
+body{margin:0;min-width:320px;background:radial-gradient(circle at 50% 15%,#33260f 0,#090a0d 36%,#050608 100%);overflow-x:hidden;-webkit-touch-callout:none;user-select:none}
+img{-webkit-user-drag:none!important;user-drag:none!important;pointer-events:none!important;-webkit-touch-callout:none!important}
+input,textarea,select{-webkit-user-select:auto!important;user-select:auto!important;pointer-events:auto!important}
+button{font:inherit;color:inherit;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+
+/* App & Screen Layout */
+.screen{width:100%;min-height:100dvh;margin:0 auto;position:relative;background:#0d0e12;overflow-x:hidden}
+.topbar{display:flex;align-items:center;justify-content:space-between;height:64px;padding:0 clamp(12px,3vw,20px);background:linear-gradient(180deg,#1e170d 0%,#110c06 100%);border-bottom:1.5px solid #df9e2844;position:sticky;top:0;z-index:50;box-shadow:0 4px 18px #00000088}
+.avatarButton{padding:0;border:0;background:none;border-radius:50%;cursor:pointer;display:flex;align-items:center}
+.avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #efc042;box-shadow:0 0 10px #f5a62366}
+.brandcoin{display:flex;align-items:center;gap:8px;background:linear-gradient(180deg,#2b1f11 0%,#140d06 100%);border:1px solid #d49a2a;padding:6px 16px;border-radius:20px;font:800 16px Oswald;color:#ffe685;box-shadow:inset 0 1px 0 #ffffff22,0 2px 8px #000;letter-spacing:0.5px;transition:transform .2s}
+.brandcoin svg{width:18px;height:18px;color:#ffd700;filter:drop-shadow(0 0 4px #ffc107)}
+.topActions{display:flex;align-items:center;gap:10px}
+.roundPlus{width:36px;height:36px;border-radius:50%;background:linear-gradient(180deg,#ffd868 0%,#c7830b 100%);border:1px solid #fff2a8;color:#3b1e00;display:grid;place-items:center;cursor:pointer;box-shadow:0 2px 8px #f5a62388;transition:transform .15s}
+.roundPlus:active{transform:scale(0.92)}
+.roundPlus svg{width:20px;height:20px;stroke-width:2.5}
+.iconBtn{width:36px;height:36px;border-radius:10px;background:linear-gradient(180deg,#302516 0%,#18120a 100%);border:1px solid #6b4e23;color:#ffd868;display:grid;place-items:center;cursor:pointer;transition:transform .15s}
+.iconBtn:active{transform:scale(0.92)}
+.iconBtn svg{width:18px;height:18px}
+
+/* Lobby Page */
+.lobby{min-height:100dvh;background:radial-gradient(circle at 50% 10%,#3d2812 0%,#160f08 40%,#090807 100%);padding-bottom:90px}
+.lobbyBody{width:min(100%,980px);margin:0 auto;padding:16px clamp(12px,3vw,24px) 90px;display:flex;flex-direction:column;gap:14px}
+.hero{position:relative;height:190px;border-radius:20px;overflow:hidden;border:2px solid #df9e28;box-shadow:0 8px 24px #0008,0 0 20px #e59c1533;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:16px}
+.hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.heroShade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.15) 0%,rgba(15,10,5,0.72) 65%,rgba(10,5,2,0.94) 100%)}
+.heroGlow{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,#ffd70018 0%,transparent 70%);pointer-events:none}
+.hero span{position:relative;z-index:2;font:900 clamp(24px,6vw,36px) Oswald;color:#fff2a8;text-shadow:0 0 16px #ffbe26,0 3px 6px #000;letter-spacing:2px;line-height:1.1}
+.hero small{position:relative;z-index:2;font:700 13px 'Be Vietnam Pro',sans-serif;color:#fce289;letter-spacing:1px;margin-top:6px;text-shadow:0 2px 4px #000}
+.dots{position:absolute;bottom:10px;z-index:2;display:flex;gap:6px}
+.dots i{width:7px;height:7px;border-radius:50%;background:#ffffff44;border:1px solid #ffffff66}
+.dots i:first-child{background:#f5a623;border-color:#ffe285;box-shadow:0 0 6px #f5a623}
+
+.sectionTitle{display:flex;align-items:center;justify-content:space-between;margin-top:6px;margin-bottom:2px;padding:0 4px}
+.sectionTitle span{font:800 14px Oswald;color:#e8d196;letter-spacing:2px;text-shadow:0 0 8px #f5a62366}
+.sectionTitle svg{width:18px;height:18px;color:#ffd700;animation:pulse 2s infinite}
+
+/* Game Cards & Grid */
+.gameGrid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:14px;
+  width:100%;
+}
+.gameCard{
+  position:relative;
+  border-radius:18px;
+  border:1.5px solid #6b4f26;
+  background:linear-gradient(180deg,#241a10 0%,#130e09 100%);
+  overflow:hidden;
+  box-shadow:0 8px 20px #000a,inset 0 1px 0 #ffffff1a;
+  transition:transform .2s,border-color .2s,box-shadow .2s;
+  pointer-events:auto!important;
+  display:flex;
+  flex-direction:column;
+}
+.gameCard:hover{
+  transform:translateY(-4px);
+  border-color:#df9e28;
+  box-shadow:0 14px 32px #000c,0 0 22px #f5a62344;
+}
+.gameCard.slot{border-color:#b57c24}
+.gameCard.dice{border-color:#8a4827}
+.gameCard.fish{border-color:#1e6584}
+.cardHit{
+  width:100%;
+  height:100%;
+  border:0;
+  background:transparent;
+  padding:0;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  text-align:left;
+  color:inherit;
+  font:inherit;
+  pointer-events:auto!important;
+}
+.cardArt{
+  position:relative;
+  height:148px;
+  overflow:hidden;
+  background:#0d0a07;
+  pointer-events:none;
+}
+.cardArt img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:transform .4s ease;
+  pointer-events:none;
+}
+.cardHit:hover .cardArt img{
+  transform:scale(1.06);
+}
+.cardInfo{
+  padding:14px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  background:linear-gradient(180deg,#1c140c 0%,#100b07 100%);
+  border-top:1px solid #3d2c17;
+  pointer-events:none;
+  flex:1;
+}
+.cardInfo h3{
+  margin:0;
+  font:900 16px Oswald;
+  color:#fff2a8;
+  letter-spacing:1px;
+  text-shadow:0 2px 4px #000;
+}
+.cardInfo p{
+  margin:3px 0 0;
+  font-size:12px;
+  color:#a89982;
+  font-weight:500;
+}
+.playBtn{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  height:36px;
+  padding:0 14px;
+  border-radius:10px;
+  background:linear-gradient(180deg,#ffe17d 0%,#f5a623 50%,#c77a02 100%);
+  border:1px solid #fff2a8;
+  color:#3f2100;
+  font:900 12px Oswald;
+  letter-spacing:1px;
+  box-shadow:0 3px 10px #e59c1566,inset 0 1px 0 #fff;
+  white-space:nowrap;
+  pointer-events:none;
+  flex-shrink:0;
+}
+.playBtn svg{width:15px;height:15px;stroke-width:2.5}
+
+@media(min-width:640px){
+  .gameGrid{
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:16px;
+  }
+}
+@media(min-width:860px){
+  .gameGrid{
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+  }
+  .cardArt{
+    height:155px;
+  }
+}
+
+/* Bottom Navigation */
+.nav{position:fixed;bottom:0;left:0;right:0;height:68px;background:linear-gradient(180deg,#1a130c 0%,#0e0a06 100%);border-top:1.5px solid #df9e2855;display:flex;align-items:center;justify-content:space-around;padding:0 8px;z-index:90;box-shadow:0 -4px 20px #000b;pointer-events:auto}
+.nav button{flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:transparent;border:0;color:#9b8c78;font-size:11px;font-weight:700;cursor:pointer;transition:color .2s;pointer-events:auto!important}
+.nav button svg{width:20px;height:20px}
+.nav button.active{color:#ffd464}
+.nav button.active svg{filter:drop-shadow(0 0 6px #f5a623)}
+.nav .navMain{flex:0 0 54px;height:54px;border-radius:50%;background:linear-gradient(180deg,#fff099 0%,#f5a623 50%,#c77a02 100%);border:2.5px solid #fff3b0;color:#3e1f00;display:grid;place-items:center;transform:translateY(-14px);box-shadow:0 6px 18px #f5a62388,inset 0 1px 0 #fff;pointer-events:auto!important}
+.nav .navMain svg{width:26px;height:26px;stroke-width:3}
+
+.jackpot{height:104px;border-radius:18px;border:2px solid #ffd464;background:linear-gradient(180deg,#1c1308 0%,#0e0904 100%);display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;overflow:hidden;box-shadow:inset 0 0 30px #d4922155,0 0 24px #e59c1544,0 12px 28px #000a}.jackpotCrown{position:absolute;top:5px;font-size:15px;filter:drop-shadow(0 0 8px #ffd700);animation:pulse 2s infinite}.jackpot small{font:800 13px Oswald;color:#fce289;letter-spacing:4px;margin-top:10px;text-shadow:0 0 8px #f5a623aa}.jackpot strong{font:900 clamp(30px,9.5vw,42px) Oswald;color:#fff2a8;text-shadow:0 0 16px #ffbe26,0 2px 4px #000;letter-spacing:1px;line-height:1}.jackpotGleam{position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,0.18) 50%,transparent 70%);transform:translateX(-100%);animation:jackpotShimmer 4s infinite}
+.reelsContainer{position:relative;margin-top:14px;padding:2px 0}
+.paylineIndicator{position:absolute;top:50%;transform:translateY(-50%);z-index:20;width:24px;height:44px;display:grid;place-items:center;background:linear-gradient(180deg,#ffd868,#ca8006);color:#3f2100;font-weight:900;font-size:12px;border-radius:6px;box-shadow:0 0 14px #ffc107,inset 0 1px 0 #fff;animation:paylinePulse 1.4s ease-in-out infinite alternate}
+.paylineIndicator.left{left:-8px;border-radius:6px 12px 12px 6px}
+.paylineIndicator.right{right:-8px;border-radius:12px 6px 6px 12px}
+.reelsContainer.isSpinning .reels{box-shadow:0 0 28px #f5a62366,inset 0 0 30px #000,inset 0 0 15px #ffd70033}
+.reelsContainer.hasWon .reels{animation:winningFrameGlow 1s ease-in-out infinite alternate}
+.reels{position:relative;padding:8px 6px;display:grid;grid-template-columns:repeat(5,1fr);background:linear-gradient(180deg,#14100b 0%,#0a0806 50%,#14100b 100%);border:3px solid #df9e28;border-radius:16px;gap:5px;overflow:hidden;box-shadow:inset 0 0 25px #000,0 12px 30px #000c,0 0 18px #a86c1244}
+.reels::before,.reels::after{content:'';position:absolute;left:0;right:0;height:36px;z-index:15;pointer-events:none}
+.reels::before{top:0;background:linear-gradient(180deg,rgba(5,3,1,0.92) 0%,rgba(10,8,5,0.6) 45%,transparent 100%);border-bottom:1px solid rgba(255,215,0,0.12)}
+.reels::after{bottom:0;background:linear-gradient(0deg,rgba(5,3,1,0.92) 0%,rgba(10,8,5,0.6) 45%,transparent 100%);border-top:1px solid rgba(255,215,0,0.12)}
+.reelsGlassGlare{position:absolute;inset:0;background:linear-gradient(125deg,rgba(255,255,255,0.09) 0%,transparent 35%,rgba(255,255,255,0.03) 60%,transparent 100%);pointer-events:none;z-index:16}
+.reelCol{display:block;height:290px;min-width:0;overflow:hidden;position:relative;contain:layout paint;border-radius:8px}
+.reelCol.suspense{box-shadow:0 0 16px #ff7b00,inset 0 0 12px #ffc107;border:1px solid #ffa000;animation:suspenseThrob 0.45s infinite alternate}
+.reelCol.stopped .reelColumnFlash{position:absolute;inset:0;background:linear-gradient(180deg,#fff0,#fff8 50%,#fff0);pointer-events:none;z-index:12;animation:reelFlash 0.38s ease-out forwards}
+.reelTrack{display:grid;grid-auto-rows:54px;gap:5px;width:100%;will-change:transform}
+.symbol{height:54px;border-radius:10px;background:linear-gradient(165deg,#2f2416 0%,#18140e 55%,#0d0b08 100%);display:grid;place-items:center;border:1px solid #7a5823;box-shadow:inset 0 1px 0 #ffffff22,inset 0 -2px 4px #000000a0,0 2px 5px #00000088;position:relative;overflow:hidden;transition:border-color 0.25s,box-shadow 0.25s}
+.symbol.middleRow{border-color:#d49a2a;background:linear-gradient(165deg,#3c2e1c 0%,#201912 55%,#140f0a 100%)}
+.symbol.isWinning{animation:winningSymbolPop 0.8s ease-in-out infinite alternate!important;border:2px solid #fff2a8!important;box-shadow:inset 0 0 18px #ffe57f,0 0 20px #ffc107,0 0 35px #ff980088!important;z-index:10}
+.symContent{display:flex;align-items:center;justify-content:center;width:100%;height:100%;position:relative}
+.symGleam{position:absolute;top:-40%;left:-40%;width:30%;height:180%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);transform:rotate(25deg);pointer-events:none;animation:symShine 3.6s infinite}
+.symbolSvg{width:38px;height:38px;display:block;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.6));transition:transform 0.2s ease}
+.symbolSvg.diamondSvg{filter:drop-shadow(0 0 8px rgba(0,210,255,0.7)) drop-shadow(0 2px 4px #000)}
+.symbolSvg.crownSvg{filter:drop-shadow(0 0 10px rgba(255,215,0,0.7)) drop-shadow(0 2px 4px #000)}
+.symbolSvg.sevenSvg{filter:drop-shadow(0 0 10px rgba(255,59,48,0.7)) drop-shadow(0 2px 4px #000)}
+.symbolSvg.barSvg{filter:drop-shadow(0 0 8px rgba(255,213,79,0.7)) drop-shadow(0 2px 4px #000)}
+.symbolSvg.tiaraSvg{filter:drop-shadow(0 0 9px rgba(224,86,253,0.7)) drop-shadow(0 2px 4px #000)}
+.symbolSvg.starSvg{filter:drop-shadow(0 0 10px rgba(255,193,7,0.7)) drop-shadow(0 2px 4px #000)}
+.symbolSvg.pouchSvg{filter:drop-shadow(0 0 9px rgba(243,156,18,0.75)) drop-shadow(0 2px 4px #000)}
+.symbolSvg.coinSvg{filter:drop-shadow(0 0 10px rgba(255,215,0,0.75)) drop-shadow(0 2px 4px #000)}
+.symbolSvg.cloverSvg{filter:drop-shadow(0 0 10px rgba(46,204,113,0.75)) drop-shadow(0 2px 4px #000)}
+.symbolSvg.bellSvg{filter:drop-shadow(0 0 9px rgba(255,215,0,0.75)) drop-shadow(0 2px 4px #000)}
+.symbolSvg.cherrySvg{filter:drop-shadow(0 0 9px rgba(231,29,54,0.8)) drop-shadow(0 2px 4px #000)}
+.symbolSvg.thunderSvg{filter:drop-shadow(0 0 10px rgba(255,230,0,0.85)) drop-shadow(0 0 4px #00e5ff)}
+.symbolSvg.grapeSvg{filter:drop-shadow(0 0 9px rgba(157,78,221,0.8)) drop-shadow(0 2px 4px #000)}
+.symbolSvg.dragonSvg{filter:drop-shadow(0 0 10px rgba(255,215,0,0.85)) drop-shadow(0 0 4px #ff1744)}
+.symbolSvg.jokerSvg{filter:drop-shadow(0 0 10px rgba(0,242,254,0.85)) drop-shadow(0 0 4px #ff007f)}
+.symbolSvg.orbSvg{filter:drop-shadow(0 0 10px rgba(217,70,239,0.85)) drop-shadow(0 2px 4px #000)}
+.sevenWrapper,.crownWrapper,.gemWrapper,.barWrapper,.starWrapper,.tiaraWrapper,.pouchWrapper,.coinWrapper,.cloverWrapper,.bellWrapper,.cherryWrapper,.thunderWrapper,.grapeWrapper,.dragonWrapper,.jokerWrapper,.orbWrapper{display:flex;align-items:center;justify-content:center;width:100%;height:100%}
+.winSparkles{position:absolute;inset:0;pointer-events:none;display:flex;justify-content:space-between;padding:4px;font-size:12px;animation:winSparklePop 0.6s infinite alternate}
+.winLine{height:42px;display:grid;place-items:center;font:800 12px Oswald;color:#e8d196;letter-spacing:1px;margin:6px 0 2px}
+.winLine.winning .winLineBadge{background:linear-gradient(90deg,#ffeb85,#f5a623);color:#4a2700;padding:6px 18px;border-radius:20px;font-size:14px;box-shadow:0 0 20px #ffc107,0 4px 10px #000;animation:pop 0.5s ease-out}
+.controlPanel{border:2px solid #6b4d1f;background:linear-gradient(180deg,#2b2114 0%,#19130c 100%);border-radius:18px;padding:12px 14px;margin-top:2px;box-shadow:inset 0 1px 0 #fff2,0 8px 24px #0008}
+.controlTop{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.betPickerLabel{display:flex;flex-direction:column;gap:1px}
+.betLabelTitle{margin:0;font:800 11px Oswald;color:#caa969;letter-spacing:1px}
+.betLabelSub{font:700 9px Oswald;color:#e89f2a;letter-spacing:0.5px}
+.betPicker{display:flex;align-items:center;gap:8px}
+.betPicker button{width:36px;height:34px;border-radius:9px;background:linear-gradient(180deg,#423521 0%,#261d11 100%);border:1px solid #7c5d2c;display:grid;place-items:center;color:#ffe699;box-shadow:0 2px 4px #000;transition:transform .1s,filter .1s}
+.betPicker button:active{transform:scale(0.92)}
+.betDisplay{background:linear-gradient(180deg,#9e1e12 0%,#610d05 100%);border:1px solid #e75d34;border-radius:10px;min-width:105px;padding:6px 10px;text-align:center;font:800 15px Oswald;color:#fff;box-shadow:inset 0 1px 0 #ff8a65,0 2px 6px #0006}
+.betPresetsRow{display:flex;gap:5px;overflow-x:auto;padding-bottom:5px;margin-bottom:7px;scrollbar-width:none}
+.betPresetsRow::-webkit-scrollbar{display:none}
+.betPresetChip{flex:1;min-width:36px;height:28px;border-radius:8px;background:linear-gradient(180deg,#302619 0%,#18120b 100%);border:1px solid #6b4e20;color:#e6c987;font:800 11px Oswald;display:grid;place-items:center;cursor:pointer;transition:all 0.15s ease;box-shadow:0 2px 4px #000}
+.betPresetChip:active:not(:disabled){transform:scale(0.92)}
+.betPresetChip.active{background:linear-gradient(180deg,#ffd700 0%,#d97706 100%);color:#3a1d00;border-color:#fff2a8;font-weight:900;box-shadow:0 0 10px #ffd70088,inset 0 1px 0 #fff;transform:translateY(-1px)}
+.betPresetChip:disabled{opacity:0.5;cursor:not-allowed}
+.betQuickActions{display:flex;gap:5px;margin-bottom:10px}
+.quickBetBtn{flex:1;height:26px;border-radius:7px;background:linear-gradient(180deg,#241c13 0%,#130e09 100%);border:1px solid #553e1a;color:#d5b572;font:800 10px Oswald;letter-spacing:0.5px;display:grid;place-items:center;cursor:pointer;transition:all 0.15s ease}
+.quickBetBtn:hover:not(:disabled){border-color:#ffd700;color:#fff}
+.quickBetBtn:active:not(:disabled){transform:scale(0.94);background:#382711}
+.quickBetBtn:disabled{opacity:0.4;cursor:not-allowed}
+.controlActions{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.toggles{display:flex;gap:10px}
+.toggles button{background:linear-gradient(180deg,#302619 0%,#1d160e 100%);border:1px solid #57401c;border-radius:12px;color:#a89f91;display:flex;flex-direction:column;align-items:center;font:700 10px Oswald;letter-spacing:1px;padding:6px 12px;gap:3px;box-shadow:0 2px 4px #000;transition:all .2s}
+.toggles button.on{background:linear-gradient(180deg,#614717 0%,#3b2a0c 100%);border-color:#ffca36;color:#ffda73;box-shadow:0 0 12px #ffc10744}
+.toggles button svg{width:18px;height:18px}
+.toggles .rotating{animation:spin 1.5s linear infinite}
+.toggles .flashing{animation:pulse 0.6s infinite}
+.spinBtn{flex:1;height:56px;border-radius:14px;background:linear-gradient(180deg,#fff29e 0%,#f7b733 45%,#ca7a02 100%);border:2px solid #ffea79;color:#4c2900;font:900 20px Oswald;letter-spacing:2px;box-shadow:0 6px 20px #e59c1588,inset 0 2px 4px #fff,inset 0 -3px 4px #783e00;position:relative;overflow:hidden;display:grid;place-items:center;transition:transform .12s,filter .2s}
+.spinBtn:active:not(:disabled){transform:translateY(3px) scale(0.97);box-shadow:0 2px 8px #e59c1588}
+.spinBtn:disabled{filter:grayscale(0.4) brightness(0.85);cursor:not-allowed}
+.spinBtn.spinningBtn{animation:spinBtnThrob 1s ease-in-out infinite alternate}
+.spinBtnGlow{position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);transform:translateX(-100%);animation:btnShine 2.8s infinite}
+.diceScreen{background:radial-gradient(circle at 50% 34%,#41310f,#0c0c08 72%)}.diceBody{padding:13px;text-align:center}.roundNo{font-size:10px;background:#483a1d;display:inline-block;padding:5px 12px;border-radius:10px;color:#d6bd80}.timer{font:700 44px Oswald;color:#ffe49b;text-shadow:0 0 12px #db9c1c;margin:2px}.timer.danger{color:#ff493f;animation:pulse .5s infinite}.bowl{width:min(100%,340px);height:210px;margin:0 auto 10px;padding-inline:18px;background:radial-gradient(ellipse at 50% 80%,#d3973e 0,#4e2908 48%,#15100b 50%);display:grid;place-items:center;filter:drop-shadow(0 7px 8px #000);border-radius:45%}.diceTray{position:relative;z-index:2;display:flex;align-items:flex-end;justify-content:center;gap:12px;margin-top:76px;padding-inline:10px;perspective:800px}.diceCube{width:52px;height:52px;transform-style:preserve-3d;filter:drop-shadow(0 8px 9px #2c1504)}.diceCube.rolling{animation:diceRoll .72s cubic-bezier(.2,.72,.23,1.05) infinite}.diceInner{width:100%;height:100%;border-radius:12px;background:linear-gradient(145deg,#fffef9,#eadfc8 58%,#b89152);border:1px solid #f6deb0;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:7px;box-shadow:inset 0 -3px 5px #a97631,inset 0 3px 5px #fff8,0 2px 5px #0006}.pip{width:10px;height:10px;border-radius:50%;place-self:center;background:radial-gradient(circle at 35% 35%,#4b3110,#0b0600 80%);opacity:0;transform:scale(.3)}.pip.show{opacity:1;transform:scale(1)}.sides{display:flex;gap:9px}.sides button{flex:1;height:116px;border-radius:10px;background:linear-gradient(#302a1c,#17150e);border:1px solid #897142;display:flex;flex-direction:column;justify-content:center;gap:5px}.sides button.selected{border:2px solid #ffcb50;box-shadow:inset 0 0 22px #ffc12a55,0 0 10px #ffc12a}.sides strong{font:700 24px Oswald}.sides small{color:#d2aa61}.sides span{font-size:11px;color:#a99974}.betNote{font-size:11px;color:#ffd36a;min-height:15px}.history{display:flex;align-items:center;gap:5px;padding:9px 0;overflow:hidden}.history b{font-size:11px;margin-right:3px}.history i{font-style:normal;width:25px;height:25px;flex:none;border-radius:50%;display:grid;place-items:center;font:700 11px Oswald}.history .tai{background:#df9b15;color:#4b2c00}.history .xiu{background:#302d27;border:1px solid #6d6658}.chips{display:flex;justify-content:space-between;margin:6px 0 13px}.chips button{width:53px;height:53px;border-radius:50%;background:#332c20;border:3px dashed #725a30;font:700 11px Oswald}.chips button.active{background:#e9a71f;border-color:#ffe177;color:#3f2b05;transform:translateY(-5px)}.placeBtn{width:100%;height:57px;border-radius:10px;background:linear-gradient(90deg,#ffe8a0,#ea960b);color:#593400;font-weight:900;display:flex;justify-content:center;align-items:center;gap:8px}.placeBtn svg{width:18px}
+.fishScreen{background:#004f6c}.fishScreen .topbar{position:absolute;top:0;left:0;right:0;background:linear-gradient(#061d22cc,transparent);border:0}.fishTitle{height:135px;position:absolute;z-index:4;top:56px;left:0;right:0;text-align:center;pointer-events:none;text-shadow:0 4px 2px #063d57,0 0 12px #fff}.fishTitle b,.fishTitle span{font:700 36px Oswald;display:block;color:#ffe180;line-height:1.1;letter-spacing:2px}.fishTitle span{font-size:24px}.ocean{height:100dvh;min-height:680px;position:relative;background-image:linear-gradient(#002f4b22,#00101788),url('/assets/underwater-kingdom.webp');background-size:cover;background-position:center;overflow:hidden;touch-action:none}.movingFish{position:absolute;z-index:5;left:-90px;filter:drop-shadow(0 5px 5px #003345);animation:swim 9s linear infinite;user-select:none}.movingFish:nth-child(even){animation-direction:reverse;transform:scaleX(-1)}.movingFish small{font:bold 9px Oswald;position:absolute;top:-9px;left:25%;background:#001d2aaa;padding:2px 5px;border-radius:6px;color:#ffe36f}.crosshair{position:absolute;z-index:8;transform:translate(-50%,-50%);color:#ffe260;filter:drop-shadow(0 0 6px #ffcc00)}.crosshair svg{width:70px;height:70px;stroke-width:1.2}.shot{position:absolute;left:50%;bottom:66px;width:8px;height:8px;border-radius:50%;background:#fff6ad;box-shadow:0 0 12px 5px #00d9ff;z-index:9;animation:shot .45s linear forwards}.hit{position:absolute;z-index:20;transform:translate(-50%,-50%);font:700 20px Oswald;color:#ffe14f;text-shadow:0 2px #6d3400;animation:hit .9s forwards}.cannon{position:absolute;z-index:12;left:50%;bottom:-8px;transform:translateX(-50%);width:170px;height:126px;border-radius:60px 60px 0 0;background:linear-gradient(100deg,#302513,#d9a72c,#33230b);border:2px solid #ffe373;text-align:center;padding-top:35px;box-shadow:0 -5px 18px #0008}.power{height:36px;display:flex;align-items:center;justify-content:center;gap:7px;background:#17140fcc;margin:0 12px;border-radius:12px}.power button{width:28px;height:28px;border-radius:50%;background:#3a3326;display:grid;place-items:center}.power svg{width:14px}.power strong{font:700 13px Oswald;min-width:65px}.cannon small{font-size:9px;color:#ffdc69}
+@keyframes pulse{50%{transform:scale(1.05);filter:brightness(1.15)}}@keyframes reel{to{transform:translateY(35px)}}@keyframes diceRoll{0%{transform:translateY(0) rotate(0)}25%{transform:translateY(-8px) rotate(85deg)}50%{transform:translateY(4px) rotate(170deg)}75%{transform:translateY(-3px) rotate(260deg)}100%{transform:translateY(0) rotate(360deg)}}@keyframes pop{50%{transform:scale(1.18)}}@keyframes swim{from{left:-100px}to{left:calc(100% + 100px)}}@keyframes shot{to{left:var(--x);bottom:calc(100% - var(--y))}}@keyframes hit{to{transform:translate(-50%,-120%) scale(1.4);opacity:0}}
+@media(min-width:700px){body:before{content:'GOLDZONE';position:fixed;left:5vw;top:43%;font:900 10vw Oswald;color:#ffffff08;letter-spacing:2vw}.screen{border-left:1px solid #5f451d;border-right:1px solid #5f451d}}
+
+/* Additional Game Screen Overrides */
+.slotScreen{background:linear-gradient(#180e05bb,#100c07dd),url('/assets/slot-bg.webp') center/cover fixed;min-height:100dvh}
+.symbol img{width:48px;height:48px;object-fit:contain}
+.bowl{background:none;position:relative}
+.bowl>img{position:absolute;width:100%;height:100%;object-fit:contain;transition:transform .35s ease,filter .35s ease}
+.bowl.rolling>img{transform:translateY(-3px) scale(1.03);filter:brightness(1.12) drop-shadow(0 0 10px #ffdc78)}
+.movingFish{width:85px;height:65px;left:-140px;font-size:initial}
+.movingFish>img{width:100%;height:100%;object-fit:contain}
+.slotBody,.diceBody{width:min(100%,980px);margin:0 auto;padding-left:clamp(12px,3vw,24px);padding-right:clamp(12px,3vw,24px)}
+.resultFx{position:absolute;inset:0;z-index:45;pointer-events:none;overflow:hidden}
+.fx-lose{animation:loseShake .42s linear 2}
+.fx-win .jackpot,.fx-win .bowl,.fx-win .ocean,.fx-win .reels{animation:winPulse 1.2s ease-out}
+.fx-lose .jackpot,.fx-lose .bowl,.fx-lose .ocean,.fx-lose .reels{animation:loseTint 1.1s ease-out}
+
+@media(min-width:768px){
+ .hero{height:240px}
+ .cardArt{height:155px}
+ .reels{max-width:760px;margin-inline:auto}
+ .controlPanel{max-width:760px;margin:2px auto 0}
+ .sides,.chips,.history,.placeBtn,.betNote,.roundNo,.timer,.bowl{max-width:760px;margin-left:auto;margin-right:auto}
+}
+
+@keyframes loseShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}50%{transform:translateX(4px)}75%{transform:translateX(-3px)}}
+@keyframes winPulse{0%{filter:brightness(1)}35%{filter:brightness(1.18) saturate(1.18)}100%{filter:brightness(1)}}
+@keyframes loseTint{0%{filter:brightness(1)}30%{filter:brightness(.82) saturate(1.25) hue-rotate(-10deg)}100%{filter:brightness(1)}}
+
+/* Win/lose effect pass */
+.goldAmbient,.oceanAmbient{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1}.slotBody,.diceBody,.fishTitle,.ocean>*:not(.oceanAmbient){position:relative;z-index:2}.goldDust{position:absolute;border-radius:50%;background:#ffe68d;box-shadow:0 0 10px #ffd257;opacity:0;animation:sparkleDrift 4.8s ease-in-out infinite}.ambientCoin{position:absolute;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff8c8,#ffd250 48%,#b66b09);box-shadow:inset 0 0 0 2px #fff0a6,0 0 12px #ffcd38aa;animation:coinIdle 6s ease-in-out infinite}.lightSweep{position:absolute;top:-20%;bottom:-20%;width:90px;background:linear-gradient(90deg,#fff0,#fff7,#fff0);filter:blur(8px);transform:rotate(18deg);animation:lightSweep 5s linear infinite}.lightSweep.alt{animation-delay:-2.6s;opacity:.45}.slotScreen .jackpot,.spinBtn,.playBtn{position:relative;overflow:hidden}.slotScreen .jackpot:after,.spinBtn:after,.playBtn:after{content:'';position:absolute;top:-40%;bottom:-40%;width:40px;background:linear-gradient(90deg,#fff0,#fff8,#fff0);transform:rotate(20deg);animation:buttonSweep 4.2s linear infinite}.reels{position:relative}.reelCol.stopped .symbol:nth-child(2){box-shadow:inset 0 0 18px #ffd85c44}.fx-smallWin .symbol:nth-child(2),.fx-bigWin .symbol:nth-child(2),.fx-jackpot .symbol:nth-child(2){animation:symbolWin .78s ease-out;box-shadow:inset 0 0 20px #ffe481,0 0 14px #ffca35;border-color:#ffdf74}.fx-jackpot,.fx-bigWin,.fx-bossWin{animation:softScreenShake .34s linear 2}.fx-diceLose,.fx-lose{animation:loseShake .34s linear 1}.fx-jackpot .jackpot,.fx-bigWin .jackpot,.fx-bossWin .ocean,.fx-diceWin .bowl,.fx-smallWin .reels{animation:winPulse 1.2s ease-out}.fxBubble,.bubble{position:absolute;bottom:-30px;border:1px solid #bffcff;border-radius:50%;box-shadow:inset 0 0 7px #fff8,0 0 10px #30dbff55;animation:bubbleRise linear infinite}.diceScreen{background:radial-gradient(circle at 50% 34%,#5b4116,#0c0c08 72%)}.diceScreen:before{content:'';position:absolute;inset:64px 0 0;background:radial-gradient(ellipse at 50% 22%,#ffd45e20,#0000 48%);pointer-events:none}.timer{position:relative}.timer:after{content:'';position:absolute;left:50%;top:50%;width:88px;height:88px;border-radius:50%;border:2px solid #ffd35c55;border-top-color:#fff4b0;transform:translate(-50%,-50%);animation:timerCircle 18s linear infinite}.bowl.rolling{animation:bowlPhysics .85s cubic-bezier(.2,.8,.28,1) infinite}.bowl.reveal>img{animation:bowlReveal .62s ease-out forwards}.bowl.reveal .diceCube{animation:dicePop .66s cubic-bezier(.22,1.36,.35,1) forwards}.diceSmoke{position:absolute;left:50%;top:58%;width:120px;height:34px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(ellipse,#fff8,#fff0 70%);filter:blur(9px);opacity:0}.bowl.reveal .diceSmoke{animation:smokeFade .7s ease-out}.bowl.reveal .diceInner{box-shadow:inset 0 -3px 5px #a97631,inset 0 3px 5px #fff8,0 0 16px #ffe07c,0 7px 12px #0008}.oceanAmbient{z-index:1}.waterRay{position:absolute;top:-10%;height:120%;width:18%;background:linear-gradient(100deg,#fff0,#c9ffff1f,#fff0);filter:blur(5px);animation:waterRay 8s ease-in-out infinite}.waterRay.r1{left:18%;transform:rotate(10deg)}.waterRay.r2{right:8%;animation-delay:-3s;transform:rotate(-12deg)}.coralLayer,.rockLayer{position:absolute;left:0;right:0;bottom:0;height:22%;background:radial-gradient(circle at 12% 88%,#ff6b7e 0 20px,#0000 22px),radial-gradient(circle at 32% 92%,#31d6a2 0 28px,#0000 30px),radial-gradient(circle at 78% 90%,#e7b05c 0 24px,#0000 26px);opacity:.42;animation:parallaxSway 8s ease-in-out infinite}.rockLayer{height:16%;background:radial-gradient(ellipse at 20% 100%,#293f54 0 70px,#0000 72px),radial-gradient(ellipse at 70% 100%,#1b3346 0 90px,#0000 92px);opacity:.75;animation-duration:11s}.movingFish img{animation:tailWiggle .8s ease-in-out infinite}.shot{box-shadow:0 0 12px 5px #00d9ff,0 0 0 999px #0000}.shot:after{content:'';position:absolute;right:2px;top:2px;width:110px;height:3px;background:linear-gradient(90deg,#00e6ff00,#bdfdff);filter:blur(1px);transform-origin:right}.hit{pointer-events:none}.hit:before{content:'';position:absolute;left:50%;top:50%;width:68px;height:68px;border-radius:50%;border:2px solid #bffcff;transform:translate(-50%,-50%);animation:ripple .55s ease-out forwards}.hit:after{content:'';position:absolute;left:50%;top:50%;width:50px;height:50px;border-radius:50%;background:radial-gradient(circle,#fff,#75eeff 32%,#0000 68%);transform:translate(-50%,-50%);animation:bubblePop .62s ease-out forwards;z-index:-1}.hit b{display:block;font-size:15px;color:#7dfffd;text-shadow:0 0 9px #00c8ff}
+@keyframes sparkleDrift{0%,100%{opacity:0;transform:translateY(12px) scale(.4)}35%{opacity:.8;transform:translateY(-8px) scale(1)}}@keyframes coinIdle{50%{transform:translateY(-9px) rotateY(180deg);filter:brightness(1.18)}}@keyframes lightSweep{from{left:-25%}to{left:125%}}@keyframes buttonSweep{from{left:-30%}to{left:130%}}@keyframes symbolWin{0%,100%{transform:scale(1)}45%{transform:scale(1.2)}}@keyframes softScreenShake{0%,100%{transform:translate(0)}25%{transform:translate(-3px,2px)}50%{transform:translate(3px,-1px)}75%{transform:translate(-2px,-2px)}}@keyframes bubbleRise{from{transform:translateY(0) translateX(0);opacity:0}15%{opacity:.9}to{transform:translateY(-110vh) translateX(18px);opacity:0}}@keyframes timerCircle{to{transform:translate(-50%,-50%) rotate(360deg)}}@keyframes bowlPhysics{0%,100%{transform:translateX(0) rotate(0)}25%{transform:translateX(-7px) rotate(-3deg)}50%{transform:translateX(6px) rotate(3deg)}75%{transform:translateX(-4px) rotate(-2deg)}}@keyframes bowlReveal{to{transform:translateY(-58px) scale(.88);opacity:.45;filter:brightness(1.25) drop-shadow(0 12px 18px #000)}}@keyframes dicePop{0%{transform:translateY(-24px) scale(.75) rotate(-12deg)}55%{transform:translateY(8px) scale(1.12) rotate(8deg)}100%{transform:translateY(0) scale(1) rotate(0)}}@keyframes smokeFade{0%{opacity:0;transform:translate(-50%,10px) scale(.4)}45%{opacity:.9}100%{opacity:0;transform:translate(-50%,-8px) scale(1.45)}}@keyframes waterRay{50%{transform:translateX(26px) rotate(6deg);opacity:.7}}@keyframes parallaxSway{50%{transform:translateX(-18px)}}@keyframes tailWiggle{50%{transform:skewX(-4deg) translateY(-2px)}}@keyframes ripple{to{width:112px;height:112px;opacity:0}}@keyframes bubblePop{to{transform:translate(-50%,-50%) scale(1.45);opacity:0}}
+
+/* Premium result and fish-combat polish */
+.resultFx{z-index:55}
+.fxCoin,.ambientCoin{background:radial-gradient(circle at 30% 24%,#fffef0 0 12%,#ffe881 13% 35%,#f4a80d 36% 58%,#9b5605 59% 78%,#ffd05a 79%);border:1px solid #fff2a1;box-shadow:inset -4px -5px 0 #8b4b07aa,inset 3px 3px 0 #fff7,0 0 16px #ffd75f,0 0 32px #ffab1755}
+.brandcoin{box-shadow:inset -4px -5px 0 #0003,0 0 14px #ffbf2430}
+.shot{left:50%;bottom:66px;width:18px;height:18px;margin:-9px 0 0 -9px;background:radial-gradient(circle at 35% 30%,#fff,#eaff7e 28%,#22f4ff 56%,#006eff 78%);border:1px solid #dfffff;box-shadow:0 0 14px 6px #24e7ff,0 0 32px #fff35a;animation:shotPremium .56s cubic-bezier(.08,.75,.16,1) forwards}
+.shot:before{content:'';position:absolute;right:9px;top:50%;width:min(var(--dist),520px);height:9px;border-radius:999px;background:linear-gradient(90deg,#00c8ff00,#7df8ff55 24%,#fff9 68%,#fffde0);filter:blur(1px);transform:translateY(-50%) rotate(calc(var(--angle) + 180deg));transform-origin:right center}
+.shot:after{right:7px;top:50%;width:min(var(--dist),520px);height:3px;background:linear-gradient(90deg,#fff0,#fcff83,#8bffff);transform:translateY(-50%) rotate(calc(var(--angle) + 180deg));transform-origin:right center;filter:blur(.2px)}
+.shot i,.shot b{position:absolute;inset:-9px;border-radius:50%;border:1px solid #baffff;animation:shotHalo .48s ease-out forwards}
+.shot b{inset:-18px;border-color:#fff58a;animation-delay:.06s}
+.crosshair{color:#dfffff;filter:drop-shadow(0 0 6px #2df6ff) drop-shadow(0 0 12px #fff15c)}
+.crosshair svg{animation:crosshairLock .8s ease-out}
+.hit{color:#fff690;text-shadow:0 0 8px #ffcf28,0 3px 3px #003047;animation:hitPremium .95s forwards}
+.hit:before{border-color:#fff37e;box-shadow:0 0 20px #48f7ff}
+.hit:after{background:radial-gradient(circle,#fff 0 14%,#ffef65 15% 34%,#46f2ff 35% 65%,#0000 70%)}
+
+@keyframes shotPremium{0%{opacity:0;left:50%;bottom:66px;transform:scale(.55) rotate(0)}12%{opacity:1}80%{opacity:1}100%{opacity:0;left:var(--x);bottom:calc(100% - var(--y));transform:scale(1.08) rotate(360deg)}}
+@keyframes shotHalo{to{opacity:0;transform:scale(1.9)}}
+@keyframes crosshairLock{0%{transform:scale(1.35) rotate(16deg);opacity:.5}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes hitPremium{0%{opacity:0;transform:translate(-50%,-50%) scale(.7)}20%{opacity:1;transform:translate(-50%,-72%) scale(1.12)}100%{opacity:0;transform:translate(-50%,-150%) scale(1.35)}}
+
+/* =========================================================================
+   COMPREHENSIVE 3D VICTORY & DEFEAT FX (All Games)
+   ========================================================================= */
+
+.resultFx{
+ position:fixed;
+ inset:0;
+ z-index:9999;
+ display:grid;
+ place-items:center;
+ pointer-events:auto;
+ cursor:pointer;
+ overflow:hidden;
+ -webkit-user-select:none;
+ user-select:none;
+}
+
+/* ----------------- VICTORY FX SUITE ----------------- */
+.victoryVeil{
+ position:absolute;
+ inset:0;
+ background:radial-gradient(circle at 50% 50%,rgba(255,215,0,0.3) 0%,rgba(255,102,0,0.15) 45%,rgba(0,0,0,0.65) 100%);
+ pointer-events:none;
+ animation:victoryVeilFlash 1.2s ease-out forwards;
+}
+
+.winSunburst{
+ position:absolute;
+ left:50%;
+ top:50%;
+ width:min(220vw,1600px);
+ height:min(220vw,1600px);
+ transform:translate(-50%,-50%);
+ background:repeating-conic-gradient(from 0deg,rgba(255,215,0,0.22) 0deg 12deg,transparent 12deg 24deg);
+ border-radius:50%;
+ pointer-events:none;
+ animation:sunburstSpin 24s linear infinite;
+}
+.fishTheme .winSunburst{background:repeating-conic-gradient(from 0deg,rgba(0,242,254,0.22) 0deg 12deg,transparent 12deg 24deg)}
+.diceTheme .winSunburst{background:repeating-conic-gradient(from 0deg,rgba(255,159,28,0.24) 0deg 12deg,transparent 12deg 24deg)}
+
+.winHaloGlow{
+ position:absolute;
+ left:50%;
+ top:50%;
+ width:min(130vw,780px);
+ height:min(130vw,780px);
+ transform:translate(-50%,-50%);
+ border-radius:50%;
+ background:radial-gradient(circle,rgba(255,215,0,0.55) 0%,rgba(255,110,0,0.3) 45%,transparent 70%);
+ filter:blur(32px);
+ pointer-events:none;
+ animation:victoryHaloThrob 1.8s ease-in-out infinite alternate;
+}
+.fishTheme .winHaloGlow{background:radial-gradient(circle,rgba(0,242,254,0.55) 0%,rgba(56,239,125,0.3) 45%,transparent 70%)}
+.diceTheme .winHaloGlow{background:radial-gradient(circle,rgba(255,170,0,0.55) 0%,rgba(218,41,28,0.35) 45%,transparent 70%)}
+
+/* Shockwave Rings */
+.shockwaveContainer{position:absolute;left:50%;top:50%;width:1px;height:1px;pointer-events:none}
+.shockwaveRing{
+ position:absolute;
+ left:50%;
+ top:50%;
+ border-radius:50%;
+ border:3px solid #fff5a5;
+ box-shadow:0 0 30px #ffd700,inset 0 0 20px #ff9100;
+ transform:translate(-50%,-50%) scale(0.1);
+ opacity:0;
+ animation:shockwaveExpand 1.6s cubic-bezier(0.1,0.85,0.25,1) forwards;
+}
+.shockwaveRing.r1{width:240px;height:240px;animation-delay:0.05s}
+.shockwaveRing.r2{width:360px;height:360px;border-color:#ffca28;animation-delay:0.25s;animation-duration:1.9s}
+.shockwaveRing.r3{width:480px;height:480px;border-color:#ff9100;border-width:2px;animation-delay:0.48s;animation-duration:2.2s}
+
+/* Fireworks */
+.fireworksContainer{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:40}
+.fireworkBurst{
+ position:absolute;
+ width:1px;
+ height:1px;
+ pointer-events:none;
+}
+.fireworkSpur{
+ position:absolute;
+ left:0;
+ top:0;
+ width:5px;
+ height:5px;
+ border-radius:50%;
+ background:var(--fw-color,#ffd700);
+ box-shadow:0 0 12px var(--fw-color,#ffd700),0 0 24px #fff;
+ opacity:0;
+ transform:rotate(var(--angle,0deg)) translateX(0);
+ animation:fireworkSpurShoot 1.3s cubic-bezier(0.15,0.9,0.3,1) forwards;
+}
+
+/* 3D Coin Fountain (Shooting up from bottom) */
+.coinFountainContainer{
+ position:absolute;
+ left:50%;
+ bottom:-40px;
+ width:1px;
+ height:1px;
+ pointer-events:none;
+ z-index:60;
+}
+.fountainCoin{
+ position:absolute;
+ left:0;
+ top:0;
+ border-radius:50%;
+ background:radial-gradient(circle at 35% 30%,#ffffff 0 15%,#fff176 16% 40%,#f5a623 41% 72%,#b26a00 73% 90%,#ffd700 91%);
+ border:2px solid #fff9c4;
+ box-shadow:inset 0 3px 4px #ffffffdd,inset -3px -4px 0 #784200cc,0 0 22px rgba(255,215,0,0.95),0 12px 24px rgba(0,0,0,0.7);
+ opacity:0;
+ transform:translate3d(0,0,0);
+ animation:fountainCoinLaunch cubic-bezier(0.2,0.85,0.35,1) forwards;
+ will-change:transform,opacity;
+}
+.fountainCoin:before{
+ content:'₫';
+ position:absolute;
+ inset:0;
+ display:grid;
+ place-items:center;
+ font:900 13px Oswald;
+ color:#5c3500;
+ text-shadow:0 1px 0 rgba(255,255,255,0.7);
+}
+
+/* 3D Depth-of-Field Cascading Coin Rain */
+.coinRainContainer{
+ position:fixed;
+ inset:0;
+ pointer-events:none;
+ overflow:hidden;
+ z-index:65;
+}
+.coinRain{
+ position:absolute;
+ top:-70px;
+ border-radius:50%;
+ background:radial-gradient(circle at 32% 28%,#ffffff 0 14%,#fff28a 15% 38%,#f5a623 39% 68%,#b26a00 69% 88%,#ffd868 89%);
+ border:1.5px solid #fff8b3;
+ box-shadow:inset 0 2px 3px #ffffffdd,inset -3px -4px 0 #784200bb,0 8px 16px rgba(0,0,0,0.6),0 0 16px rgba(255,215,0,0.85);
+ will-change:transform,opacity;
+ animation:coinRainFallDoF cubic-bezier(0.2,0.7,0.3,1) forwards;
+}
+.coinRain:before{
+ content:'';
+ position:absolute;
+ inset:18%;
+ border-radius:50%;
+ border:1.5px dashed #ffe57f;
+ box-shadow:inset 0 0 0 2px #d48806,0 0 6px #ffe082;
+}
+.coinRain:after{
+ content:'';
+ position:absolute;
+ left:18%;
+ top:-8%;
+ width:26%;
+ height:116%;
+ border-radius:50%;
+ background:linear-gradient(180deg,rgba(255,255,255,0.85),transparent 75%);
+ transform:rotate(24deg);
+ filter:blur(0.5px);
+}
+.coinRain.dofClose{
+ filter:blur(2.5px) brightness(1.25);
+ z-index:75;
+ box-shadow:inset 0 4px 6px #ffffff,0 16px 32px rgba(0,0,0,0.8),0 0 28px rgba(255,215,0,0.9);
+}
+.coinRain.dofMid{
+ filter:none;
+ z-index:68;
+}
+.coinRain.dofFar{
+ filter:blur(1px) opacity(0.7);
+ z-index:60;
+}
+
+/* Confetti Ribbons */
+.confettiContainer{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:70}
+.confettiRibbon{
+ position:absolute;
+ top:-30px;
+ border-radius:3px;
+ opacity:0;
+ box-shadow:0 2px 8px rgba(0,0,0,0.4),0 0 10px currentColor;
+ animation:confettiDrift ease-in forwards;
+ will-change:transform,opacity;
+}
+
+/* Sparkles Radial Explosion */
+.sparklesStage{position:absolute;left:50%;top:50%;width:1px;height:1px;pointer-events:none;z-index:72}
+.sparkleStar{
+ position:absolute;
+ left:0;
+ top:0;
+ text-shadow:0 0 14px currentColor,0 0 28px #fff;
+ opacity:0;
+ transform:rotate(var(--rot)) translateX(0);
+ animation:sparkleBurstOut 1.45s cubic-bezier(0.12,0.9,0.25,1) forwards;
+}
+
+/* Center 3D Golden Victory Card */
+.victoryCard{
+ position:relative;
+ z-index:85;
+ width:min(92vw,440px);
+ padding:32px 24px 26px;
+ border-radius:30px;
+ text-align:center;
+ pointer-events:auto;
+ cursor:pointer;
+ overflow:visible;
+ background:radial-gradient(ellipse at 50% 20%,#3d240d 0%,#1a0c02 55%,#080401 100%);
+ border:3px solid #ffd700;
+ box-shadow:0 0 60px rgba(255,215,0,0.85),inset 0 0 40px rgba(255,160,0,0.4),0 35px 90px rgba(0,0,0,0.95);
+ animation:victoryCardEntrance var(--fx-dur,3.5s) cubic-bezier(0.16,1,0.3,1) forwards;
+}
+
+.victoryCard.fishTheme,
+.resultFx.fishWin .victoryCard,
+.resultFx.bossWin .victoryCard,
+.resultFx.combo .victoryCard{
+ background: none!important;
+ border: none!important;
+ box-shadow: none!important;
+ backdrop-filter: none!important;
+ width: 100%!important;
+ max-width: 680px!important;
+ padding: 12px 10px!important;
+}
+
+.victoryCard.fishTheme .cardCornerGlow,
+.resultFx.fishWin .victoryCard .cardCornerGlow,
+.resultFx.bossWin .victoryCard .cardCornerGlow,
+.resultFx.combo .victoryCard .cardCornerGlow{
+ display: none!important;
+}
+
+.victoryCard.fishTheme .victoryAmountBox,
+.resultFx.fishWin .victoryCard .victoryAmountBox,
+.resultFx.bossWin .victoryCard .victoryAmountBox,
+.resultFx.combo .victoryCard .victoryAmountBox{
+ background: none!important;
+ border: none!important;
+ box-shadow: none!important;
+ padding: 4px 10px!important;
+}
+
+.victoryCard.fishTheme .victoryAmount,
+.resultFx.fishWin .victoryCard .victoryAmount,
+.resultFx.bossWin .victoryCard .victoryAmount,
+.resultFx.combo .victoryCard .victoryAmount{
+ filter: drop-shadow(0 0 20px #00f2fe) drop-shadow(0 0 35px #38ef7d) drop-shadow(0 4px 12px #000)!important;
+}
+
+.victoryCard.diceTheme{
+ background:radial-gradient(ellipse at 50% 20%,#4e1f06 0%,#240d02 55%,#0a0301 100%);
+ border-color:#ff9f1c;
+ box-shadow:0 0 60px rgba(255,159,28,0.9),inset 0 0 40px rgba(255,215,0,0.35),0 35px 90px rgba(0,0,0,0.95);
+}
+
+.victoryCard.isJackpot{
+ background:radial-gradient(ellipse at 50% 20%,#542805 0%,#2c1202 55%,#0d0400 100%);
+ border:3.5px solid #fff9c4;
+ box-shadow:0 0 85px #ffd700,0 0 120px #ff910088,inset 0 0 50px #ffb300,0 40px 100px #000;
+ animation:victoryCardEntrance var(--fx-dur,5.2s) cubic-bezier(0.16,1,0.3,1) forwards;
+}
+
+.victoryWings{
+ position:absolute;
+ top:-38px;
+ left:50%;
+ transform:translateX(-50%);
+ width:310px;
+ height:85px;
+ display:flex;
+ justify-content:space-between;
+ pointer-events:none;
+ z-index:-1;
+}
+.wingSvg{
+ width:145px;
+ height:68px;
+ opacity:0.95;
+ animation:wingFlap 1.35s ease-in-out infinite alternate;
+}
+.wingSvg.leftWing{transform-origin:right center}
+.wingSvg.rightWing{transform-origin:left center}
+
+.victoryEmblem{
+ font-size:46px;
+ margin-bottom:4px;
+ filter:drop-shadow(0 0 20px #ffd700) drop-shadow(0 4px 8px #000);
+ animation:emblemBounce 1.2s ease-in-out infinite alternate;
+}
+
+.victoryBanner{
+ position:relative;
+ display:inline-block;
+ margin:4px 0 6px;
+ padding:4px 18px;
+ overflow:hidden;
+ border-radius:14px;
+}
+
+/* 3D Bold Golden Text with Facets & Neon Glow */
+.victoryText3D{
+ margin:0;
+ font:900 clamp(32px,8.5vw,52px) Oswald,sans-serif;
+ letter-spacing:3px;
+ line-height:1.05;
+ text-transform:uppercase;
+ color:#fffde6;
+ background:linear-gradient(180deg,#ffffff 0%,#fff28a 20%,#ffd700 45%,#f39c12 70%,#b86d00 90%,#663c00 100%);
+ -webkit-background-clip:text;
+ -webkit-text-fill-color:transparent;
+ text-shadow:none;
+ filter:drop-shadow(0 2px 0 #ffe066) drop-shadow(0 4px 0 #d48806) drop-shadow(0 6px 0 #8f5600) drop-shadow(0 8px 14px rgba(0,0,0,0.95)) drop-shadow(0 0 25px #ffd700) drop-shadow(0 0 45px #ff9100);
+ transform:perspective(600px) rotateX(8deg);
+ animation:text3DPulse 1.6s ease-in-out infinite alternate;
+}
+.fishTheme .victoryText3D{
+ background:linear-gradient(180deg,#ffffff 0%,#e0fcff 20%,#00f2fe 48%,#38ef7d 75%,#006b52 100%);
+ -webkit-background-clip:text;
+ -webkit-text-fill-color:transparent;
+ filter:drop-shadow(0 2px 0 #b3ffff) drop-shadow(0 4px 0 #00a8b5) drop-shadow(0 6px 0 #00565c) drop-shadow(0 8px 14px rgba(0,0,0,0.95)) drop-shadow(0 0 25px #00f2fe) drop-shadow(0 0 45px #38ef7d);
+}
+.diceTheme .victoryText3D{
+ background:linear-gradient(180deg,#ffffff 0%,#ffe0b2 20%,#ff9800 48%,#f57c00 75%,#bf360c 100%);
+ -webkit-background-clip:text;
+ -webkit-text-fill-color:transparent;
+ filter:drop-shadow(0 2px 0 #ffe0b2) drop-shadow(0 4px 0 #d84315) drop-shadow(0 6px 0 #7f1d00) drop-shadow(0 8px 14px rgba(0,0,0,0.95)) drop-shadow(0 0 25px #ff9800) drop-shadow(0 0 45px #ff3d00);
+}
+
+.victoryGleam{
+ position:absolute;
+ top:-50%;
+ left:-60%;
+ width:45%;
+ height:200%;
+ background:linear-gradient(90deg,transparent,rgba(255,255,255,0.65),transparent);
+ transform:rotate(25deg);
+ pointer-events:none;
+ animation:victoryGleamSweep 2.4s cubic-bezier(0.4,0,0.2,1) infinite;
+}
+
+.victorySubTitle{
+ margin:4px 0 14px;
+ font:800 12px 'Be Vietnam Pro',sans-serif;
+ color:#ffea9f;
+ letter-spacing:1.5px;
+ text-transform:uppercase;
+ text-shadow:0 0 10px rgba(255,215,0,0.7),0 2px 4px #000;
+}
+.fishTheme .victorySubTitle{color:#a5f8ff;text-shadow:0 0 10px rgba(0,242,254,0.7),0 2px 4px #000}
+.diceTheme .victorySubTitle{color:#ffd0a5;text-shadow:0 0 10px rgba(255,152,0,0.7),0 2px 4px #000}
+
+.victoryAmountBox{
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
+ gap:10px;
+ padding:10px 28px;
+ border-radius:24px;
+ background:rgba(0,0,0,0.65);
+ border:2px solid #ffd700;
+ box-shadow:inset 0 2px 14px rgba(0,0,0,0.9),0 0 28px rgba(255,215,0,0.5),0 10px 24px rgba(0,0,0,0.8);
+ margin-top:2px;
+}
+.fishTheme .victoryAmountBox{border-color:#00f2fe;box-shadow:inset 0 2px 14px rgba(0,0,0,0.9),0 0 28px rgba(0,242,254,0.5),0 10px 24px rgba(0,0,0,0.8)}
+.diceTheme .victoryAmountBox{border-color:#ff9f1c;box-shadow:inset 0 2px 14px rgba(0,0,0,0.9),0 0 28px rgba(255,159,28,0.5),0 10px 24px rgba(0,0,0,0.8)}
+
+.amountBadgeCoin{font-size:28px;filter:drop-shadow(0 0 12px #ffd700)}
+.victoryAmount{
+ font:900 clamp(28px,8.5vw,46px) Oswald,sans-serif;
+ letter-spacing:1px;
+ line-height:1;
+ background:linear-gradient(180deg,#ffffff 0%,#fff5a5 25%,#ffc107 65%,#ff6d00 100%);
+ -webkit-background-clip:text;
+ -webkit-text-fill-color:transparent;
+ filter:drop-shadow(0 3px 0 #542200) drop-shadow(0 0 20px rgba(255,193,7,0.95));
+}
+.fishTheme .victoryAmount{
+ background:linear-gradient(180deg,#ffffff 0%,#a8ff78 25%,#38ef7d 65%,#006b52 100%);
+ -webkit-background-clip:text;
+ -webkit-text-fill-color:transparent;
+ filter:drop-shadow(0 3px 0 #003628) drop-shadow(0 0 20px rgba(56,239,125,0.95));
+}
+
+.victoryTapHint{
+ margin-top:16px;
+ display:inline-block;
+ padding:5px 16px;
+ border-radius:14px;
+ background:rgba(255,255,255,0.12);
+ border:1px solid rgba(255,255,255,0.25);
+ font:800 11px Oswald;
+ color:#fff5a5;
+ letter-spacing:1.5px;
+ text-transform:uppercase;
+ animation:pulse 1.3s infinite;
+}
+
+.cardCornerGlow{
+ position:absolute;
+ width:12px;
+ height:12px;
+ border-radius:50%;
+ background:#ffd700;
+ box-shadow:0 0 12px #ffd700,0 0 24px #fff;
+ pointer-events:none;
+}
+.cardCornerGlow.tl{top:12px;left:12px}
+.cardCornerGlow.tr{top:12px;right:12px}
+.cardCornerGlow.bl{bottom:12px;left:12px}
+.cardCornerGlow.br{bottom:12px;right:12px}
+.fishTheme .cardCornerGlow{background:#00f2fe;box-shadow:0 0 12px #00f2fe,0 0 24px #fff}
+.diceTheme .cardCornerGlow{background:#ff9f1c;box-shadow:0 0 12px #ff9f1c,0 0 24px #fff}
+
+/* ----------------- DEFEAT FX SUITE ----------------- */
+.defeatVignette{
+ position:absolute;
+ inset:0;
+ background:radial-gradient(circle at 50% 50%,transparent 25%,rgba(18,5,10,0.65) 60%,rgba(5,0,2,0.96) 100%);
+ pointer-events:none;
+ animation:defeatVignetteDrain 1.2s cubic-bezier(0.1,0.8,0.2,1) forwards;
+}
+
+.defeatDarkMist{
+ position:absolute;
+ inset:0;
+ background:radial-gradient(ellipse at 50% 80%,rgba(140,0,30,0.25) 0%,rgba(40,0,50,0.3) 40%,transparent 75%);
+ pointer-events:none;
+ filter:blur(24px);
+ animation:defeatMistRise 2.5s ease-out infinite alternate;
+}
+
+/* Ash Particles & Embers Floating Up */
+.ashEmbersContainer{
+ position:fixed;
+ inset:0;
+ pointer-events:none;
+ overflow:hidden;
+ z-index:60;
+}
+.ashEmber{
+ position:absolute;
+ bottom:-20px;
+ border-radius:50%;
+ filter:blur(0.8px);
+ opacity:0;
+ box-shadow:0 0 10px currentColor,0 0 20px #ff174488;
+ animation:ashFloatUp cubic-bezier(0.2,0.6,0.3,1) forwards;
+ will-change:transform,opacity;
+}
+
+/* Void Suction & Shattered Coins */
+.voidSuctionStage{
+ position:absolute;
+ left:50%;
+ top:50%;
+ width:1px;
+ height:1px;
+ pointer-events:none;
+ z-index:65;
+}
+.voidVortex{
+ position:absolute;
+ left:50%;
+ top:50%;
+ width:320px;
+ height:320px;
+ transform:translate(-50%,-50%);
+ border-radius:50%;
+ background:radial-gradient(circle at 50% 50%,#000000 0%,#2b020a 45%,#4a001a44 70%,transparent 100%);
+ box-shadow:inset 0 0 40px #ff174466,0 0 60px #ff174433;
+ animation:voidVortexSpin 8s linear infinite;
+}
+.brokenCoinShard{
+ position:absolute;
+ left:0;
+ top:0;
+ border-radius:2px;
+ background:linear-gradient(135deg,#757575 0%,#424242 50%,#212121 100%);
+ border:1px solid #9e9e9e55;
+ box-shadow:0 0 8px rgba(255,23,68,0.4),0 4px 8px #000;
+ opacity:1;
+ transform:translate3d(var(--sx),var(--sy),0) rotate(var(--rot));
+ animation:voidSuctionPull cubic-bezier(0.5,0,0.8,0.3) forwards;
+ will-change:transform,opacity;
+}
+
+/* Center 3D Cracked Stone Defeat Card */
+.defeatCard{
+ position:relative;
+ z-index:85;
+ width:min(90vw,420px);
+ padding:32px 24px 26px;
+ border-radius:28px;
+ text-align:center;
+ pointer-events:auto;
+ cursor:pointer;
+ overflow:visible;
+ background:radial-gradient(ellipse at 50% 20%,#24151a 0%,#140a0e 55%,#080205 100%);
+ border:2.5px solid #ff1744;
+ box-shadow:0 0 50px rgba(255,23,68,0.75),inset 0 0 35px rgba(255,23,68,0.3),0 30px 80px rgba(0,0,0,0.98);
+ animation:defeatCardHeavyDrop var(--fx-dur,2.5s) cubic-bezier(0.22,1,0.36,1) forwards;
+}
+
+.defeatCrackedBackdrop{
+ position:absolute;
+ inset:0;
+ border-radius:26px;
+ background:repeating-linear-gradient(45deg,rgba(255,23,68,0.03) 0 2px,transparent 2px 14px);
+ pointer-events:none;
+}
+
+.defeatSkullEmblem{
+ font-size:42px;
+ margin-bottom:4px;
+ filter:drop-shadow(0 0 16px #ff1744) drop-shadow(0 4px 8px #000);
+ animation:defeatSkullTremor 0.8s ease-in-out infinite alternate;
+}
+
+.defeatBanner{
+ position:relative;
+ display:inline-block;
+ margin:4px 0 6px;
+ padding:4px 18px;
+}
+
+/* 3D Heavy Stone Typography with Glowing Crimson Red Cracks */
+.defeatText3D{
+ margin:0;
+ font:900 clamp(32px,8.5vw,50px) Oswald,sans-serif;
+ letter-spacing:3px;
+ line-height:1.05;
+ text-transform:uppercase;
+ color:#e0e0e0;
+ background:linear-gradient(180deg,#ffffff 0%,#b0bec5 25%,#607d8b 55%,#263238 85%,#101416 100%);
+ -webkit-background-clip:text;
+ -webkit-text-fill-color:transparent;
+ filter:drop-shadow(0 2px 0 #455a64) drop-shadow(0 4px 0 #263238) drop-shadow(0 6px 0 #101518) drop-shadow(0 8px 14px rgba(0,0,0,0.98)) drop-shadow(0 0 25px rgba(255,23,68,0.9)) drop-shadow(0 0 45px rgba(124,77,255,0.6));
+ transform:perspective(600px) rotateX(8deg);
+ animation:defeatTextTremor 2.2s ease-in-out infinite alternate;
+}
+
+.crimsonCrackSvg{
+ position:absolute;
+ inset:0;
+ width:100%;
+ height:100%;
+ pointer-events:none;
+ animation:crimsonCrackPulse 1.4s ease-in-out infinite alternate;
+}
+
+.defeatSubTitle{
+ margin:4px 0 14px;
+ font:800 12px 'Be Vietnam Pro',sans-serif;
+ color:#ff8a80;
+ letter-spacing:1.5px;
+ text-transform:uppercase;
+ text-shadow:0 0 12px rgba(255,23,68,0.8),0 2px 4px #000;
+}
+
+.defeatAmountBox{
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
+ gap:10px;
+ padding:10px 28px;
+ border-radius:24px;
+ background:rgba(30,0,8,0.75);
+ border:2px solid #ff1744;
+ box-shadow:inset 0 2px 14px rgba(0,0,0,0.9),0 0 28px rgba(255,23,68,0.6),0 10px 24px rgba(0,0,0,0.8);
+ margin-top:2px;
+}
+
+.defeatBadgeIcon{font-size:26px;filter:drop-shadow(0 0 12px #ff1744)}
+.defeatAmount{
+ font:900 clamp(28px,8.5vw,44px) Oswald,sans-serif;
+ letter-spacing:1px;
+ line-height:1;
+ background:linear-gradient(180deg,#ffffff 0%,#ffcdd2 25%,#ff1744 65%,#b71c1c 100%);
+ -webkit-background-clip:text;
+ -webkit-text-fill-color:transparent;
+ filter:drop-shadow(0 2px 0 #3a0000) drop-shadow(0 0 20px rgba(255,23,68,0.95));
+}
+
+.defeatTapHint{
+ margin-top:16px;
+ display:inline-block;
+ padding:5px 16px;
+ border-radius:14px;
+ background:rgba(255,23,68,0.15);
+ border:1px solid rgba(255,23,68,0.4);
+ font:800 11px Oswald;
+ color:#ff8a80;
+ letter-spacing:1.5px;
+ text-transform:uppercase;
+ animation:pulse 1.3s infinite;
+}
+
+.defeatGlitchLine{
+ position:absolute;
+ left:0;
+ right:0;
+ height:2px;
+ background:rgba(255,23,68,0.75);
+ box-shadow:0 0 8px #ff1744,0 0 16px #7c4dff;
+ top:30%;
+ pointer-events:none;
+ opacity:0;
+ animation:glitchScanline 2.8s ease-in-out infinite;
+}
+
+/* ----------------- CORE ANIMATIONS ----------------- */
+@keyframes victoryVeilFlash{0%{opacity:0}15%{opacity:1}100%{opacity:0.8}}
+@keyframes victoryHaloThrob{from{transform:translate(-50%,-50%) scale(0.85);opacity:0.65}to{transform:translate(-50%,-50%) scale(1.18);opacity:1}}
+@keyframes sunburstSpin{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes shockwaveExpand{0%{transform:translate(-50%,-50%) scale(0.1);opacity:0}20%{opacity:1}100%{transform:translate(-50%,-50%) scale(4.8);opacity:0}}
+@keyframes fireworkSpurShoot{0%{opacity:0;transform:rotate(var(--angle,0deg)) translateX(0) scale(0.2)}15%{opacity:1}70%{opacity:0.9}100%{opacity:0;transform:rotate(var(--angle,0deg)) translateX(110px) scale(1.4)}}
+
+@keyframes fountainCoinLaunch{
+ 0%{
+  opacity:0;
+  transform:translate3d(0,0,0) rotateX(0) rotateY(0) scale(0.3);
+ }
+ 12%{
+  opacity:1;
+ }
+ 45%{
+  transform:translate3d(var(--vx),var(--vy),0) rotateX(calc(var(--spinX)*0.45)) rotateY(calc(var(--spinY)*0.45)) scale(1.15);
+ }
+ 85%{
+  opacity:1;
+ }
+ 100%{
+  opacity:0;
+  transform:translate3d(calc(var(--vx)*1.4),120vh,0) rotateX(var(--spinX)) rotateY(var(--spinY)) scale(0.8);
+ }
+}
+
+@keyframes coinRainFallDoF{
+ 0%{
+  opacity:0;
+  transform:translate3d(0,-50px,0) rotateZ(var(--rotZ,0deg)) rotateY(0deg);
+ }
+ 10%{
+  opacity:1;
+ }
+ 85%{
+  opacity:1;
+ }
+ 100%{
+  opacity:0;
+  transform:translate3d(0,115vh,0) rotateZ(calc(var(--rotZ,0deg) + 360deg)) rotateY(var(--spin,720deg));
+ }
+}
+
+@keyframes confettiDrift{
+ 0%{
+  opacity:0;
+  top:-30px;
+  transform:rotate(0deg) scale(0.6);
+ }
+ 12%{
+  opacity:1;
+ }
+ 85%{
+  opacity:1;
+ }
+ 100%{
+  opacity:0;
+  top:105vh;
+  transform:translateX(35px) rotate(var(--rot,360deg)) scale(1);
+ }
+}
+
+@keyframes sparkleBurstOut{
+ 0%{
+  opacity:0;
+  transform:rotate(var(--rot)) translateX(0) scale(0.2);
+ }
+ 20%{
+  opacity:1;
+ }
+ 100%{
+  opacity:0;
+  transform:rotate(var(--rot)) translateX(var(--dist)) scale(1.2);
+ }
+}
+
+@keyframes victoryCardEntrance{
+ 0%{
+  opacity:0;
+  transform:scale(0.3) rotate(-5deg) translateY(40px);
+ }
+ 14%{
+  opacity:1;
+  transform:scale(1.08) rotate(1deg) translateY(-8px);
+ }
+ 22%{
+  transform:scale(1) rotate(0deg) translateY(0);
+ }
+ 86%{
+  opacity:1;
+  transform:scale(1) rotate(0deg) translateY(0);
+ }
+ 100%{
+  opacity:0;
+  transform:scale(0.88) translateY(-24px);
+ }
+}
+
+@keyframes victoryGleamSweep{
+ 0%,100%{left:-80%}
+ 40%,70%{left:140%}
+}
+
+@keyframes text3DPulse{
+ 0%{filter:drop-shadow(0 2px 0 #ffe066) drop-shadow(0 4px 0 #d48806) drop-shadow(0 6px 0 #8f5600) drop-shadow(0 8px 14px rgba(0,0,0,0.95)) drop-shadow(0 0 20px #ffd700)}
+ 100%{filter:drop-shadow(0 2px 0 #fff) drop-shadow(0 4px 0 #ffd700) drop-shadow(0 6px 0 #b37400) drop-shadow(0 8px 16px rgba(0,0,0,0.95)) drop-shadow(0 0 35px #ffd700) drop-shadow(0 0 60px #ff9100)}
+}
+
+@keyframes wingFlap{from{transform:scaleY(0.92) rotate(-3deg)}to{transform:scaleY(1.08) rotate(4deg)}}
+@keyframes emblemBounce{from{transform:translateY(0) scale(1)}to{transform:translateY(-6px) scale(1.14)}}
+
+@keyframes defeatVignetteDrain{0%{opacity:0}20%{opacity:1}100%{opacity:0.95}}
+@keyframes defeatMistRise{0%{transform:scale(1) translateY(0);opacity:0.4}100%{transform:scale(1.12) translateY(-20px);opacity:0.85}}
+@keyframes ashFloatUp{
+ 0%{
+  opacity:0;
+  bottom:-20px;
+  transform:translateX(0) scale(0.4);
+ }
+ 15%{
+  opacity:0.9;
+ }
+ 85%{
+  opacity:0.8;
+ }
+ 100%{
+  opacity:0;
+  bottom:105vh;
+  transform:translateX(var(--dx,20px)) scale(1.4);
+ }
+}
+
+@keyframes voidVortexSpin{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(-360deg)}}
+@keyframes voidSuctionPull{
+ 0%{
+  opacity:1;
+  transform:translate3d(var(--sx),var(--sy),0) rotate(var(--rot)) scale(1);
+ }
+ 50%{
+  opacity:0.85;
+  transform:translate3d(calc(var(--sx)*0.4),calc(var(--sy)*0.4),0) rotate(calc(var(--rot) + 360deg)) scale(0.6);
+ }
+ 100%{
+  opacity:0;
+  transform:translate3d(0,0,0) rotate(calc(var(--rot) + 720deg)) scale(0.05);
+ }
+}
+
+@keyframes defeatCardHeavyDrop{
+ 0%{
+  opacity:0;
+  transform:scale(0.35) translateY(-50px);
+ }
+ 16%{
+  opacity:1;
+  transform:scale(1.06) translateY(6px);
+ }
+ 24%{
+  transform:scale(1) translateY(0);
+ }
+ 85%{
+  opacity:1;
+  transform:scale(1) translateY(0);
+ }
+ 100%{
+  opacity:0;
+  transform:scale(0.85) translateY(20px);
+ }
+}
+
+@keyframes defeatSkullTremor{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
+@keyframes defeatTextTremor{0%,100%{transform:perspective(600px) rotateX(8deg) scale(1)}50%{transform:perspective(600px) rotateX(8deg) scale(1.03)}}
+@keyframes crimsonCrackPulse{0%{filter:drop-shadow(0 0 4px #ff1744);opacity:0.7}100%{filter:drop-shadow(0 0 14px #ff1744) drop-shadow(0 0 22px #ff5252);opacity:1}}
+@keyframes glitchScanline{0%,100%{opacity:0;top:10%}25%{opacity:0.8;top:45%}50%{opacity:0.2;top:65%}75%{opacity:0.9;top:85%}}
+
+/* Keep responsive on lower bandwidth */
+@media (pointer:coarse), (prefers-reduced-motion:reduce){
+ .fireworksContainer .fireworkBurst:nth-child(n+5){display:none}
+ .confettiContainer .confettiRibbon:nth-child(n+25){display:none}
+ .coinRain.dofFar{display:none}
+}
+
+/* 3D Tai Xiu table and cup */
+.diceScreen{background:radial-gradient(ellipse at 50% 8%,#8d1e18 0,#3d0708 30%,#130607 68%,#050303 100%)!important}
+.diceScreen:before{inset:62px 0 0;background:radial-gradient(ellipse at 50% 20%,#ffd66a1f,#0000 42%),linear-gradient(90deg,#0000,#ffffff08,#0000);opacity:1}
+.diceBody{position:relative;overflow:hidden}
+.diceBody:before{content:'';position:absolute;left:50%;top:94px;width:min(94vw,820px);height:440px;transform:translateX(-50%) perspective(900px) rotateX(62deg);border-radius:50%;background:radial-gradient(ellipse at 50% 38%,#1e7c5a,#0e412f 52%,#092019 78%,#0000 80%);box-shadow:inset 0 0 70px #000b,0 35px 60px #0008;pointer-events:none}
+.diceBody:after{content:'';position:absolute;left:50%;top:110px;width:min(86vw,720px);height:330px;transform:translateX(-50%) perspective(900px) rotateX(62deg);border-radius:50%;background:repeating-radial-gradient(ellipse at 50% 50%,#ffffff0b 0 1px,#0000 1px 9px);opacity:.6;pointer-events:none}
+.roundNo,.timer,.bowl,.sides,.betNote,.history,.chips,.placeBtn{position:relative;z-index:2}
+.diceTable{width:min(100%,430px)!important;height:300px!important;margin:0 auto 16px!important;padding:0!important;background:none!important;border-radius:0!important;filter:none!important;display:grid!important;place-items:center!important;perspective:1000px;perspective-origin:50% 36%}
+.diceScene{position:relative;width:360px;height:260px;max-width:96vw;transform-style:preserve-3d;transform:rotateX(57deg) rotateZ(0deg);animation:sceneBreath 3s ease-in-out infinite}
+.dicePlate{position:absolute;left:50%;top:128px;width:290px;height:178px;transform:translate(-50%,-50%) translateZ(0);border-radius:50%;background:radial-gradient(ellipse at 50% 38%,#fffdf2 0,#f3dba7 37%,#ba751e 59%,#4a2206 82%);box-shadow:inset 0 0 0 9px #fff4c9,inset 0 -18px 32px #6b3309,0 26px 34px #000a}
+.dicePlate:before{content:'';position:absolute;inset:22px 32px;border-radius:50%;background:radial-gradient(ellipse at 50% 44%,#3c1b07,#160803 72%);box-shadow:inset 0 8px 18px #000d,inset 0 -4px 10px #ffd36a44}
+.dicePlate i{position:absolute;left:50%;top:49%;width:170px;height:86px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(ellipse,#0009,#0000 66%);filter:blur(8px)}
+.dicePlate span{position:absolute;left:50%;top:12px;width:210px;height:34px;transform:translateX(-50%);border-radius:50%;background:linear-gradient(#fff8,#fff0)}
+.diceTable .diceTray{position:absolute;z-index:3;left:50%;top:126px;display:flex;gap:15px;margin:0!important;padding:0!important;transform:translate(-50%,-50%) translateZ(36px) rotateX(-57deg);perspective:900px;opacity:.18;filter:blur(.6px);transition:opacity .25s ease,filter .25s ease}
+.diceTable.reveal .diceTray{opacity:1;filter:none;animation:diceTraySettle .48s ease-out}
+.diceTable.rolling .diceTray{opacity:.08}
+.diceTable .diceCube{width:58px;height:58px;transform-style:preserve-3d;filter:drop-shadow(0 13px 12px #0008)}
+.diceTable .diceCube:nth-child(1){transform:translateY(3px) rotateZ(-11deg)}
+.diceTable .diceCube:nth-child(2){transform:translateY(-5px) rotateZ(7deg)}
+.diceTable .diceCube:nth-child(3){transform:translateY(5px) rotateZ(15deg)}
+.diceTable .diceCube.rolling{animation:dice3dTumble .52s cubic-bezier(.2,.72,.23,1.05) infinite}
+.diceTable .diceInner{border-radius:12px;background:linear-gradient(145deg,#ffffff,#eadfc8 54%,#9d6b29);border:1px solid #fff4d1;box-shadow:inset -8px -9px 0 #8d5c1d55,inset 5px 5px 0 #fff9,0 10px 12px #0008;transform:rotateX(4deg) rotateY(-5deg)}
+.diceTable .pip{background:radial-gradient(circle at 35% 35%,#3b2210,#050200 78%);box-shadow:inset 0 1px 1px #fff5}
+.diceCup{position:absolute;z-index:5;left:50%;top:102px;width:220px;height:156px;transform-style:preserve-3d;transform:translate(-50%,-50%) translateZ(76px) rotateX(-57deg);filter:drop-shadow(0 28px 22px #000b);transition:transform .72s cubic-bezier(.16,.86,.22,1),filter .72s ease}
+.diceCup i{position:absolute;display:block;left:50%;transform:translateX(-50%)}
+.cupBody{top:26px;width:190px;height:118px;border-radius:30px 30px 78px 78px/24px 24px 54px 54px;background:linear-gradient(100deg,#330707 0,#7b1411 18%,#e53c28 42%,#7d100d 68%,#250403 100%);box-shadow:inset 18px 0 24px #fff2,inset -24px -10px 26px #210202,0 0 0 2px #f4b36d}
+.cupBody:before{content:'';position:absolute;left:50%;bottom:-12px;width:164px;height:42px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse at 50% 38%,#260303 0,#69100d 42%,#f3aa5c 68%,#2a0403 72%);box-shadow:inset 0 -8px 14px #170101}
+.cupTop{top:4px;width:184px;height:58px;border-radius:50%;background:radial-gradient(ellipse at 46% 34%,#ff9d71 0,#c52e21 42%,#5b0b08 70%,#230302 100%);box-shadow:inset 0 5px 8px #fff4,inset 0 -12px 18px #210202,0 0 0 3px #ffca84}
+.cupLip{top:16px;width:208px;height:62px;border-radius:50%;border:8px solid #f3b16d;border-bottom-color:#5f0a07;border-left-color:#bd4b2d;border-right-color:#4b0806;box-shadow:0 3px 9px #0008}
+.cupShine{top:38px;left:34%!important;width:26px;height:88px;border-radius:50%;background:linear-gradient(180deg,#fff8,#fff0);filter:blur(2px);transform:translateX(-50%) rotate(12deg)!important;opacity:.72}
+.diceTable.rolling .diceScene{animation:cupTableShake .56s linear infinite}
+.diceTable.rolling .diceCup{animation:cupShake3d .56s linear infinite}
+.diceTable.reveal .diceCup{transform:translate(-112%,-104%) translateZ(110px) rotateX(-12deg) rotateY(-24deg) rotateZ(-18deg);filter:drop-shadow(30px 48px 26px #0009)}
+.diceTable .diceSmoke{left:50%;top:138px;width:170px;height:58px;transform:translate(-50%,-50%) translateZ(52px);background:radial-gradient(ellipse,#fff9,#ffdf8a44 36%,#fff0 72%);filter:blur(12px);opacity:0;z-index:4}
+.diceTable.reveal .diceSmoke{animation:realCupSteam .9s ease-out}
+.diceTable.reveal .dicePlate{animation:plateGlow .86s ease-out}
+.diceTable.reveal .diceCube{animation:diceReveal3d .56s cubic-bezier(.18,1.4,.32,1) forwards}
+.diceTable.reveal .diceCube:nth-child(2){animation-delay:.07s}
+.diceTable.reveal .diceCube:nth-child(3){animation-delay:.12s}
+.sides button{background:linear-gradient(180deg,#3d1714,#160908)!important;border-color:#9b6a30!important;box-shadow:inset 0 0 22px #0008,0 8px 18px #0005}
+.sides button.selected{background:linear-gradient(180deg,#5a1c15,#1d0b08)!important;border-color:#ffcf69!important;box-shadow:inset 0 0 26px #ffc12a55,0 0 16px #ffc12a88!important}
+.chips button{background:radial-gradient(circle at 35% 28%,#fff0a8,#d89922 50%,#5d2605);border:2px solid #ffe18d;color:#3f2000;box-shadow:0 5px 12px #0007}
+@keyframes sceneBreath{50%{transform:rotateX(57deg) rotateZ(.6deg) translateY(-2px)}}
+@keyframes cupTableShake{0%,100%{transform:rotateX(57deg) rotateZ(0) translate(0,0)}20%{transform:rotateX(56deg) rotateZ(-2deg) translate(-8px,2px)}40%{transform:rotateX(58deg) rotateZ(2deg) translate(8px,-2px)}60%{transform:rotateX(57deg) rotateZ(-1deg) translate(-5px,-1px)}80%{transform:rotateX(58deg) rotateZ(1deg) translate(5px,2px)}}
+@keyframes cupShake3d{0%,100%{transform:translate(-50%,-50%) translateZ(76px) rotateX(-57deg) rotateY(0) rotateZ(0)}20%{transform:translate(-55%,-49%) translateZ(88px) rotateX(-62deg) rotateY(-9deg) rotateZ(-6deg)}40%{transform:translate(-45%,-52%) translateZ(84px) rotateX(-52deg) rotateY(10deg) rotateZ(6deg)}60%{transform:translate(-53%,-51%) translateZ(92px) rotateX(-60deg) rotateY(-6deg) rotateZ(-4deg)}80%{transform:translate(-47%,-49%) translateZ(82px) rotateX(-54deg) rotateY(6deg) rotateZ(4deg)}}
+@keyframes dice3dTumble{0%{transform:translateY(0) rotateX(0) rotateY(0) rotateZ(0)}25%{transform:translateY(-12px) rotateX(110deg) rotateY(60deg) rotateZ(24deg)}50%{transform:translateY(5px) rotateX(220deg) rotateY(150deg) rotateZ(-14deg)}75%{transform:translateY(-6px) rotateX(300deg) rotateY(230deg) rotateZ(18deg)}100%{transform:translateY(0) rotateX(360deg) rotateY(360deg) rotateZ(0)}}
+@keyframes diceTraySettle{0%{transform:translate(-50%,-50%) translateZ(12px) rotateX(-57deg) scale(.86)}60%{transform:translate(-50%,-50%) translateZ(42px) rotateX(-57deg) scale(1.08)}100%{transform:translate(-50%,-50%) translateZ(36px) rotateX(-57deg) scale(1)}}
+@keyframes realCupSteam{0%{opacity:0;transform:translate(-50%,-22%) translateZ(52px) scale(.35)}45%{opacity:.8}100%{opacity:0;transform:translate(-50%,-88%) translateZ(52px) scale(1.5)}}
+@keyframes plateGlow{45%{filter:brightness(1.22) drop-shadow(0 0 18px #ffd66a)}}
+@keyframes diceReveal3d{0%{transform:translateY(-24px) rotateX(55deg) rotateZ(-18deg) scale(.74)}58%{transform:translateY(7px) rotateX(-8deg) rotateZ(7deg) scale(1.12)}100%{transform:translateY(0) rotateX(0) rotateZ(0) scale(1)}}
+
+/* Full-height 3D fish shooter */
+.fishScreen{height:100dvh;min-height:100dvh;overflow:hidden;background:#003e5a!important}
+.fishScreen .topbar{height:56px}
+.fishTitle{top:54px;height:76px;z-index:18}.fishTitle b{font-size:28px}.fishTitle span{font-size:18px}
+.ocean{height:100dvh!important;min-height:0!important;background-image:radial-gradient(circle at 50% 24%,#2cd8ff30 0,#006d9360 34%,#001828c4 78%),linear-gradient(#047698,#02243b)!important;background-size:cover;overflow:hidden}
+.ocean:before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#fff3 0,#fff0 18%),repeating-linear-gradient(105deg,#ffffff08 0 2px,#0000 2px 38px);animation:oceanFlow 8s linear infinite;pointer-events:none}
+.ocean:after{content:'';position:absolute;left:0;right:0;bottom:0;height:112px;background:radial-gradient(ellipse at 12% 100%,#ff6d7c 0 26px,#0000 28px),radial-gradient(ellipse at 30% 105%,#32e1b0 0 34px,#0000 36px),radial-gradient(ellipse at 78% 100%,#ffd36b 0 30px,#0000 32px),linear-gradient(#0000,#01121f);opacity:.88;pointer-events:none}
+.movingFish.fish3d{z-index:6;left:-180px;width:124px;height:80px;perspective:500px;filter:drop-shadow(0 16px 12px #00172799);animation:swim3d linear infinite;will-change:left,transform}
+.movingFish.fish3d:nth-child(even){animation-name:swim3dReverse;transform:scaleX(-1)}
+.movingFish.fish3d.mid{width:148px;height:96px}.movingFish.fish3d.wide{width:190px;height:98px}.movingFish.fish3d.big{width:210px;height:120px}.movingFish.fish3d.boss{width:250px;height:138px}
+.fishModel{position:relative;width:100%;height:100%;transform-style:preserve-3d;animation:fishHover 1.6s ease-in-out infinite}
+.fishModel span{position:absolute;display:block}
+.fishShadow{left:18%;right:18%;bottom:4px;height:18px;border-radius:50%;background:#00132199;filter:blur(8px)}
+.fishModel small{position:absolute;left:50%;top:-10px;transform:translateX(-50%);padding:2px 6px;border-radius:7px;background:#001d2acc;color:#ffe36f;font:800 10px Oswald;white-space:nowrap}
+.fishHp{position:absolute;left:22%;right:18%;top:1px;height:7px;border-radius:999px;background:#001827d9;border:1px solid #bffcff;overflow:hidden}.fishHp i{display:block;height:100%;background:linear-gradient(90deg,#ff4242,#ffce45,#65ff89);transition:width .22s ease}
+.fish3d.damaged .fishModel{animation-name:fishHover,fishHitFlash;animation-duration:1.6s,.28s}
+.fish3d.dead{animation-play-state:paused;pointer-events:none}.fish3d.dead .fishModel{animation:fishDeath .75s ease-in forwards}
+.fishHit{z-index:22;color:#fff66d;text-shadow:0 0 8px #ffe344,0 3px #00364a;font-size:24px;animation:hitPremium .72s forwards}.fishHit.miss{color:#bfeaff;text-shadow:0 0 8px #1ee8ff;font-size:16px}
+.fishReward{position:absolute;z-index:24;transform:translate(-50%,-50%);font:900 26px Oswald;color:#fff5a5;text-shadow:0 0 16px #ffd700,0 4px #714000;pointer-events:none;animation:rewardRise 1.15s ease-out forwards}.fishReward span{display:block;font-size:13px;color:#7ff8ff;text-align:center}.fishReward i{position:absolute;left:50%;top:50%;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 30% 24%,#fffef0,#ffe881 35%,#f4a80d 60%,#9b5605);box-shadow:0 0 12px #ffd54f;animation:rewardCoin .82s ease-out forwards}
+.fishReward i:nth-child(3n){width:24px;height:24px}.fishReward i:nth-child(2n){animation-duration:1s}
+.cannon{bottom:0;width:158px;height:112px}.power{height:34px}
+@keyframes oceanFlow{to{background-position:120px 0,80px 0}}
+@keyframes swim3d{from{left:-260px;transform:translateZ(0) rotateY(-8deg)}50%{transform:translateZ(24px) rotateY(10deg)}to{left:calc(100% + 260px);transform:translateZ(0) rotateY(-8deg)}}
+@keyframes swim3dReverse{from{left:calc(100% + 260px);transform:scaleX(-1) translateZ(0) rotateY(-8deg)}50%{transform:scaleX(-1) translateZ(24px) rotateY(10deg)}to{left:-260px;transform:scaleX(-1) translateZ(0) rotateY(-8deg)}}
+@keyframes fishHover{50%{transform:translateY(-5px) rotateZ(1.5deg)}}
+
+@keyframes fishHitFlash{0%,100%{filter:none}45%{filter:brightness(2) drop-shadow(0 0 16px #fff)}}
+@keyframes fishDeath{0%{opacity:1;transform:scale(1) rotate(0)}45%{opacity:1;transform:scale(1.18) rotate(8deg);filter:brightness(1.8)}100%{opacity:0;transform:scale(.45) rotate(42deg)}}
+@keyframes rewardRise{0%{opacity:0;transform:translate(-50%,-20%) scale(.7)}18%{opacity:1;transform:translate(-50%,-55%) scale(1.12)}100%{opacity:0;transform:translate(-50%,-165%) scale(1)}}
+@keyframes rewardCoin{0%{opacity:0;transform:translate(0,0) scale(.3) rotate(0)}25%{opacity:1}100%{opacity:0;transform:translate(var(--rx),var(--ry)) scale(1) rotate(480deg)}}
+
+/* Realistic bitmap pass for fish game */
+.fishScreen{height:100dvh!important;min-height:100dvh!important;overflow:hidden!important;background:#001827!important}
+.fishScreen .topbar{height:54px;background:linear-gradient(#031118e8,#03111866,#0000)!important}
+.fishTitle{top:58px;height:64px;opacity:.9}.fishTitle b{font-size:26px}.fishTitle span{font-size:16px}
+.ocean{height:100dvh!important;min-height:100dvh!important;background-image:linear-gradient(180deg,#00182722,#00121bd9),url('/assets/fish-real-bg.png')!important;background-size:cover!important;background-position:center!important;overflow:hidden!important}
+.ocean:before{background:linear-gradient(180deg,#fff2 0,#fff0 20%),repeating-linear-gradient(102deg,#bdfcff12 0 3px,#0000 3px 46px);mix-blend-mode:screen;opacity:.55}
+.ocean:after{height:96px;background:linear-gradient(#0000,#001019d8)}
+.movingFish.fish3d{width:128px;height:92px;filter:drop-shadow(0 14px 12px #00121bcc) drop-shadow(0 0 12px #7befff22);animation:swimReal linear infinite}
+.movingFish.fish3d:nth-child(even){animation-name:swimRealReverse}
+.movingFish.fish3d.small{width:122px;height:78px}.movingFish.fish3d.mid{width:142px;height:104px}.movingFish.fish3d.wide{width:202px;height:108px}.movingFish.fish3d.big{width:202px;height:120px}.movingFish.fish3d.boss{width:224px;height:172px}
+.fishModel{width:100%;height:100%;animation:fishFloatReal 1.8s ease-in-out infinite;transform-style:preserve-3d}
+.fishModel span:not(.fishShadow){display:none!important}
+.realFish{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;filter:contrast(1.06) saturate(1.08);transform:rotateY(-9deg)}
+.fishShadow{left:15%;right:15%;bottom:1px;height:22px;border-radius:50%;background:#00101acc;filter:blur(9px)}
+.fishModel small{top:-13px;background:linear-gradient(#392100,#0b0905);border:1px solid #ffd45a;color:#ffe36f;box-shadow:0 0 10px #0009}
+.fishHp{top:3px;left:18%;right:18%;height:8px;background:#00111de6;border-color:#d8ffff;box-shadow:0 0 8px #001827}.fishHp i{background:linear-gradient(90deg,#ff3434,#ffba33 48%,#57ff8c)}
+.fish3d.damaged .realFish{animation:realFishHit .28s ease-out}
+.fish3d.dead .realFish{animation:realFishDeath .72s ease-in forwards}
+.fishHit{font-size:22px;color:#fffbe0;text-shadow:0 0 12px #ffd34e,0 3px #00344d}.fishHit:before{border-color:#ffd34e;box-shadow:0 0 24px #36ecff}.fishHit.miss{font-size:15px;color:#bdefff}
+.fishReward{font-size:28px;color:#fff2a4;text-shadow:0 0 18px #ffd700,0 4px #744000}.fishReward span{color:#7ffff1}
+.realCannon{width:178px!important;height:174px!important;bottom:-28px!important;padding:0!important;background:none!important;border:0!important;box-shadow:none!important;overflow:visible!important}
+.realCannon img{position:absolute;left:50%;bottom:0;width:178px;height:auto;transform:translateX(-50%);filter:drop-shadow(0 -5px 16px #27dfff66) drop-shadow(0 13px 16px #000c);pointer-events:none}
+.realCannon .power{position:absolute;left:50%;bottom:38px;width:126px;height:34px;margin:0;transform:translateX(-50%);border-radius:16px;background:#1d1710e6;border:1px solid #7e6947;box-shadow:0 5px 12px #0008;z-index:3}
+.realCannon .power strong{font-size:14px;color:#ffdc69;min-width:58px}.realCannon .power button{background:#33291d;border:1px solid #6c5b41}
+.betQuick{position:absolute;left:50%;bottom:77px;display:flex;gap:4px;transform:translateX(-50%);padding:4px;border-radius:999px;background:#0b0b09cc;border:1px solid #7e6947;z-index:4;box-shadow:0 6px 12px #0008}
+.betQuick button{width:34px;height:24px;border-radius:999px;background:#252018;color:#a69b83;font:900 10px Oswald;border:1px solid #4b4132}
+.betQuick button.active{background:linear-gradient(#fff3a0,#e79b19);color:#4a2900;border-color:#fff1a4;box-shadow:0 0 12px #ffd54f}
+.muzzleBeam{position:absolute;left:50%;bottom:126px;width:22px;height:98px;transform:translateX(-50%);background:linear-gradient(180deg,#fff,#ffe16a 18%,#23ddff 54%,#0000);filter:blur(3px);opacity:.9;animation:muzzlePulse .5s ease-in-out infinite;pointer-events:none;z-index:2}
+.crosshair{z-index:20;color:#ffe77b;filter:drop-shadow(0 0 7px #ffe45b) drop-shadow(0 0 12px #24e9ff)}.crosshair svg{width:82px;height:82px;stroke-width:1.45}
+@keyframes swimReal{from{left:-260px;transform:translateZ(0) rotateY(-8deg)}50%{transform:translateZ(22px) rotateY(8deg) translateY(-6px)}to{left:calc(100% + 260px);transform:translateZ(0) rotateY(-8deg)}}
+@keyframes swimRealReverse{from{left:calc(100% + 260px);transform:scaleX(-1) translateZ(0) rotateY(-8deg)}50%{transform:scaleX(-1) translateZ(22px) rotateY(8deg) translateY(-6px)}to{left:-260px;transform:scaleX(-1) translateZ(0) rotateY(-8deg)}}
+@keyframes fishFloatReal{50%{transform:translateY(-5px) rotateZ(1deg)}}
+@keyframes realFishHit{0%,100%{filter:contrast(1.06) saturate(1.08)}42%{filter:brightness(2.2) drop-shadow(0 0 18px #fff) saturate(1.4);transform:scale(1.05) rotateZ(2deg)}}
+@keyframes realFishDeath{0%{opacity:1;transform:scale(1) rotate(0)}35%{opacity:1;transform:scale(1.14) rotate(8deg);filter:brightness(2)}100%{opacity:0;transform:scale(.4) rotate(40deg);filter:brightness(2) blur(1px)}}
+@keyframes muzzlePulse{50%{opacity:.45;height:74px;filter:blur(5px)}}
+
+/* Make cannon and real projectile unmistakably visible */
+.realCannon{z-index:35!important;bottom:-6px!important;width:220px!important;height:210px!important;left:50%!important;transform:translateX(-50%)!important}
+.realCannon:before{content:'';position:absolute;left:50%;bottom:8px;width:162px;height:72px;transform:translateX(-50%);border-radius:50% 50% 18px 18px;background:linear-gradient(180deg,#2c2419dd,#0a0908ee);border:1px solid #d3a34d99;box-shadow:inset 0 0 22px #ffd66a33,0 12px 18px #000b;z-index:0}
+.realCannon img{width:218px!important;bottom:-4px!important;z-index:2!important;opacity:1!important;filter:drop-shadow(0 -5px 18px #25eaff) drop-shadow(0 16px 18px #000)!important}
+.realCannon .power{bottom:50px!important;z-index:5!important;background:#1a130bd9!important;border-color:#ffca66!important}
+.betQuick{bottom:92px!important;z-index:6!important}
+.muzzleBeam{bottom:154px!important;width:26px!important;height:118px!important;z-index:4!important;opacity:1!important;background:linear-gradient(180deg,#fff 0,#fff06d 16%,#20e6ff 48%,#0e63ff66 72%,#0000)!important}
+
+/* Fix cannon visibility after ocean child positioning overrides */
+.ocean>.realCannon{
+ position:absolute!important;
+ left:50%!important;
+ bottom:0!important;
+ transform:translateX(-50%)!important;
+ display:block!important;
+ pointer-events:auto!important;
+ z-index:80!important;
+ width:220px!important;
+ height:224px!important;
+ overflow:visible!important;
+ opacity:1!important;
+ visibility:visible!important;
+}
+.ocean>.realCannon img{
+ display:block!important;
+ position:absolute!important;
+ left:50%!important;
+ bottom:-18px!important;
+ width:220px!important;
+ max-width:none!important;
+ height:auto!important;
+ transform:translateX(-50%)!important;
+ z-index:2!important;
+ opacity:1!important;
+ visibility:visible!important;
+}
+.ocean>.realCannon:after{
+ content:'';
+ position:absolute;
+ left:50%;
+ bottom:118px;
+ width:44px;
+ height:96px;
+ transform:translateX(-50%);
+ border-radius:22px 22px 10px 10px;
+ background:linear-gradient(90deg,#08224c,#2ee8ff 18%,#f7d069 50%,#174ea5 82%,#06152f);
+ border:2px solid #ffda75;
+ box-shadow:inset 0 0 12px #fff8,0 0 22px #24e8ff,0 10px 18px #0008;
+ z-index:1;
+ pointer-events:none;
+}
+.ocean>.realCannon .betQuick{position:absolute!important;bottom:106px!important}
+.ocean>.realCannon .power{position:absolute!important;bottom:62px!important}
+.ocean>.realCannon .muzzleBeam{position:absolute!important;bottom:176px!important}
+
+/* Cannon scale, aiming, projectile clarity, fish density polish */
+.ocean>.realCannon{
+ width:128px!important;
+ height:150px!important;
+ bottom:-8px!important;
+ transform:translateX(-50%)!important;
+ transform-origin:50% 100%!important;
+}
+.ocean>.realCannon img{
+ width:128px!important;
+ bottom:-6px!important;
+ transform:translateX(-50%)!important;
+ transform-origin:50% 86%!important;
+ filter:drop-shadow(0 -4px 12px #25eaffcc) drop-shadow(0 10px 14px #000)!important;
+}
+.ocean>.realCannon:before{
+ width:112px!important;
+ height:48px!important;
+ bottom:4px!important;
+}
+.ocean>.realCannon:after{
+ width:30px!important;
+ height:96px!important;
+ bottom:50px!important;
+ transform:translateX(-50%) rotate(var(--aim))!important;
+ transform-origin:50% 100%!important;
+ border-radius:15px 15px 7px 7px;
+ z-index:3!important;
+}
+.ocean>.realCannon .betQuick{
+ bottom:72px!important;
+ transform:translateX(-50%) scale(.86)!important;
+ transform-origin:50% 100%!important;
+}
+.ocean>.realCannon .power{
+ bottom:38px!important;
+ width:106px!important;
+ height:30px!important;
+ transform:translateX(-50%) scale(.9)!important;
+}
+.ocean>.realCannon .muzzleBeam{
+ bottom:50px!important;
+ height:104px!important;
+ width:12px!important;
+ transform:translateX(-50%) rotate(var(--aim))!important;
+ transform-origin:50% 100%!important;
+ opacity:.72!important;
+ z-index:4!important;
+}
+.movingFish.fish3d.small{width:96px;height:62px}
+.movingFish.fish3d.mid{width:112px;height:82px}
+.movingFish.fish3d.wide{width:154px;height:84px}
+.movingFish.fish3d.big{width:158px;height:92px}
+.movingFish.fish3d.boss{width:174px;height:132px}
+.movingFish.fish3d{animation-duration:inherit;z-index:12}
+
+/* Non-conflicting real bullet system. Do not use legacy .shot classes. */
+.trueShot{
+ position:absolute!important;
+ left:var(--sx)!important;
+ top:var(--sy)!important;
+ bottom:auto!important;
+ width:var(--dist)!important;
+ height:32px!important;
+ z-index:120!important;
+ pointer-events:none!important;
+ transform-origin:0 50%!important;
+ transform:rotate(var(--angle))!important;
+ opacity:1!important;
+ overflow:visible!important;
+ mix-blend-mode:screen;
+ animation:trueShotLife 1.2s linear forwards!important;
+}
+.trueTrail{
+ position:absolute;
+ left:0;
+ top:50%;
+ width:100%;
+ height:18px;
+ transform:translateY(-50%) scaleY(var(--power));
+ transform-origin:0 50%;
+ border-radius:999px;
+ background:linear-gradient(90deg,#fffef0 0,#ffe75f 10%,#ffffff 22%,#2af2ff 45%,#0878ff99 72%,#0000 100%);
+ box-shadow:0 0 16px #27eaff,0 0 32px #ffe75f,0 0 46px #0878ff;
+ filter:blur(.3px);
+ animation:trueTrailDraw .42s ease-out forwards;
+}
+.trueCore{
+ position:absolute;
+ left:0;
+ top:50%;
+ width:100%;
+ height:5px;
+ transform:translateY(-50%);
+ border-radius:999px;
+ background:linear-gradient(90deg,#fff,#fff7a5,#63ffff,#fff0);
+ box-shadow:0 0 12px #fff;
+ animation:trueTrailDraw .36s ease-out forwards;
+}
+.trueBullet{
+ position:absolute;
+ left:0;
+ top:50%;
+ width:62px;
+ height:26px;
+ margin:-13px 0 0 -10px;
+ border-radius:999px 55% 55% 999px;
+ background:linear-gradient(90deg,#082c8c 0,#1feaff 18%,#ffffff 42%,#ffe15e 66%,#b76b10 100%);
+ border:2px solid #fff6a6;
+ box-shadow:0 0 22px #20eaff,0 0 38px #ffe45a,0 0 0 2px #ffffff55;
+ animation:trueBulletMove .68s cubic-bezier(.05,.78,.13,1) forwards;
+}
+.trueBullet:before{
+ content:'';
+ position:absolute;
+ right:-10px;
+ top:50%;
+ width:20px;
+ height:20px;
+ transform:translateY(-50%);
+ border-radius:50%;
+ background:radial-gradient(circle,#fff 0 18%,#fff36d 19% 44%,#22e8ff 56%,#075cff00 72%);
+ box-shadow:0 0 20px #fff,0 0 32px #22e8ff;
+}
+.trueBullet i{
+ position:absolute;
+ left:-28px;
+ top:50%;
+ width:42px;
+ height:22px;
+ transform:translateY(-50%);
+ border-radius:999px;
+ background:radial-gradient(ellipse at 100% 50%,#fff7a5,#20eaff 34%,#075cff66 60%,#0000 75%);
+ filter:blur(1px);
+ animation:trueFlame .14s linear infinite;
+}
+.trueBullet b{
+ position:absolute;
+ right:-24px;
+ top:50%;
+ width:44px;
+ height:44px;
+ transform:translateY(-50%);
+ border-radius:50%;
+ border:2px solid #fff7a5;
+ box-shadow:0 0 18px #ffe75f,0 0 28px #22e8ff;
+ animation:trueBulletHalo .32s ease-out forwards;
+}
+@keyframes trueShotLife{0%,80%{opacity:1}100%{opacity:0}}
+@keyframes trueTrailDraw{0%{clip-path:inset(0 100% 0 0);opacity:0}12%{opacity:1}100%{clip-path:inset(0 0 0 0);opacity:.9}}
+@keyframes trueBulletMove{0%{transform:translateX(0) scale(.82)}8%{opacity:1}100%{transform:translateX(var(--dist)) scale(1.04);opacity:.95}}
+@keyframes trueFlame{50%{transform:translateY(-50%) scaleX(1.25);opacity:.55}}
+@keyframes trueBulletHalo{100%{transform:translateY(-50%) scale(1.55);opacity:0}}
+
+/* Short, clean arcade projectile and clear HP feedback */
+.trueShot{
+ height:18px!important;
+ z-index:95!important;
+ animation:trueShotLifeFast .34s ease-out forwards!important;
+}
+.trueTrail{
+ height:7px!important;
+ background:linear-gradient(90deg,#fff8b0 0,#61f7ff 32%,#188cff55 70%,#0000)!important;
+ box-shadow:0 0 8px #22e8ff,0 0 14px #ffe45a!important;
+ opacity:.82!important;
+ animation:trueTrailQuick .18s ease-out forwards!important;
+}
+.trueCore{
+ height:2px!important;
+ opacity:.92!important;
+ animation:trueTrailQuick .14s ease-out forwards!important;
+}
+.trueBullet{
+ width:28px!important;
+ height:12px!important;
+ margin:-6px 0 0 -3px!important;
+ border-radius:999px!important;
+ border:1px solid #fff8b0!important;
+ background:linear-gradient(90deg,#33eaff,#fff,#ffd45d)!important;
+ box-shadow:0 0 10px #22e8ff,0 0 14px #ffe45a!important;
+ animation:trueBulletMoveFast .28s cubic-bezier(.1,.8,.16,1) forwards!important;
+}
+.trueBullet:before{right:-6px!important;width:11px!important;height:11px!important;box-shadow:0 0 10px #fff!important}
+.trueBullet i{left:-22px!important;width:26px!important;height:12px!important;opacity:.7!important}
+.trueBullet b{display:none!important}
+.fish3d.damaged .fishHp{animation:hpHitPulse .34s ease-out}
+.fish3d.damaged .fishHp i{box-shadow:0 0 10px #ff3434,0 0 16px #fff}
+.fish3d.damaged .realFish{animation:realFishHitTight .22s ease-out!important}
+.fishHit{animation:hitTiny .48s ease-out forwards!important}
+@keyframes trueShotLifeFast{0%,72%{opacity:1}100%{opacity:0}}
+@keyframes trueTrailQuick{0%{clip-path:inset(0 100% 0 0);opacity:0}18%{opacity:.9}100%{clip-path:inset(0 0 0 0);opacity:.35}}
+@keyframes trueBulletMoveFast{0%{transform:translateX(0) scale(.85);opacity:1}100%{transform:translateX(var(--dist)) scale(1);opacity:.92}}
+@keyframes hpHitPulse{0%,100%{transform:scale(1);filter:none}45%{transform:scale(1.14);filter:brightness(1.9) drop-shadow(0 0 8px #ff3434)}}
+@keyframes realFishHitTight{0%,100%{filter:contrast(1.06) saturate(1.08)}45%{filter:brightness(1.9) drop-shadow(0 0 12px #fff) saturate(1.35);transform:scale(1.035)}}
+@keyframes hitTiny{0%{opacity:0;transform:translate(-50%,-50%) scale(.8)}18%{opacity:1;transform:translate(-50%,-70%) scale(1.05)}100%{opacity:0;transform:translate(-50%,-116%) scale(.95)}}
+
+/* Strong hit and kill feedback */
+.fishHit{
+ z-index:150!important;
+ min-width:72px;
+ padding:5px 10px;
+ border-radius:999px;
+ background:linear-gradient(180deg,#fff8bd,#ffb323);
+ border:1px solid #fff5a9;
+ color:#4b2600!important;
+ font:900 15px Oswald!important;
+ text-align:center;
+ text-shadow:0 1px #fff8!important;
+ box-shadow:0 0 18px #ffd34e,0 8px 14px #0008;
+ animation:hitBadge .62s ease-out forwards!important;
+ pointer-events:none;
+}
+.fishHit b{display:block;font-size:12px;color:#a02100;line-height:1}
+.fishHit i{
+ position:absolute;
+ left:50%;
+ top:50%;
+ width:86px;
+ height:86px;
+ border-radius:50%;
+ border:3px solid #fff36d;
+ transform:translate(-50%,-50%);
+ box-shadow:0 0 22px #21e8ff, inset 0 0 18px #fff8;
+ animation:impactRing .42s ease-out forwards;
+ z-index:-1;
+}
+.fishHit.miss{background:#071a26cc;color:#bdefff!important;border-color:#37e8ff;box-shadow:0 0 12px #1ee8ff;font-size:12px!important}
+.fishHit.killed{
+ min-width:112px;
+ background:linear-gradient(180deg,#fff6c5,#ffd54f 45%,#e87d09);
+ color:#4c2500!important;
+ font-size:19px!important;
+ box-shadow:0 0 22px #ffd700,0 0 36px #ff9b00,0 10px 18px #0009;
+ animation:killBadge 1.15s ease-out forwards!important;
+}
+.fishHit.killed i{width:132px;height:132px;border-color:#ffd700;animation:killShock .72s ease-out forwards}
+.fishReward{
+ z-index:155!important;
+ min-width:148px;
+ padding:8px 14px;
+ border-radius:12px;
+ background:linear-gradient(180deg,#fff7b8,#f7b91f 52%,#a74d04);
+ border:1px solid #fff4a3;
+ box-shadow:0 0 24px #ffd700,0 10px 18px #000a;
+ text-align:center;
+ animation:rewardBanner 1.7s ease-out forwards!important;
+}
+.fishReward strong{display:block;font:900 26px Oswald;color:#552800;text-shadow:0 1px #fff8}
+.fishReward span{font:900 12px Oswald;color:#004756!important;letter-spacing:1px}
+.fishReward i{z-index:-1}
+.fish3d.dead .fishModel:after{
+ content:'';
+ position:absolute;
+ left:50%;
+ top:50%;
+ width:120px;
+ height:120px;
+ border-radius:50%;
+ transform:translate(-50%,-50%);
+ background:radial-gradient(circle,#fff 0 8%,#ffd700 9% 24%,#ff8a00 34%,#0000 68%);
+ box-shadow:0 0 32px #ffd700;
+ animation:fishBoom .7s ease-out forwards;
+}
+@keyframes hitBadge{0%{opacity:0;transform:translate(-50%,-45%) scale(.72)}18%{opacity:1;transform:translate(-50%,-78%) scale(1.08)}100%{opacity:0;transform:translate(-50%,-130%) scale(.96)}}
+@keyframes killBadge{0%{opacity:0;transform:translate(-50%,-45%) scale(.6)}18%{opacity:1;transform:translate(-50%,-92%) scale(1.2)}72%{opacity:1}100%{opacity:0;transform:translate(-50%,-170%) scale(1)}}
+@keyframes impactRing{to{opacity:0;transform:translate(-50%,-50%) scale(1.6)}}
+@keyframes killShock{to{opacity:0;transform:translate(-50%,-50%) scale(2.2)}}
+@keyframes rewardBanner{0%{opacity:0;transform:translate(-50%,-20%) scale(.7)}14%{opacity:1;transform:translate(-50%,-70%) scale(1.08)}70%{opacity:1;transform:translate(-50%,-86%) scale(1)}100%{opacity:0;transform:translate(-50%,-145%) scale(.96)}}
+@keyframes fishBoom{0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}35%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1.8)}}
+
+/* Unified turret axis and high-impact fish combat feedback */
+.ocean>.realCannon .cannonAim{
+ position:absolute;
+ inset:0;
+ z-index:2;
+ pointer-events:none;
+ transform:rotate(var(--aim));
+ transform-origin:50% 100px;
+ transition:transform .09s linear;
+ will-change:transform;
+}
+.ocean>.realCannon .cannonAim img{
+ display:block!important;
+ position:absolute!important;
+ left:50%!important;
+ bottom:-6px!important;
+ width:128px!important;
+ max-width:none!important;
+ height:auto!important;
+ transform:translateX(-50%)!important;
+ transform-origin:initial!important;
+ z-index:2!important;
+ filter:drop-shadow(0 -4px 12px #25eaffcc) drop-shadow(0 10px 14px #000)!important;
+}
+.ocean>.realCannon:after{display:none!important}
+.ocean>.realCannon .cannonAim:after{
+ display:none;
+}
+.ocean>.realCannon .cannonAim .muzzleBeam{
+ left:50%!important;
+ bottom:202px!important;
+ width:34px!important;
+ height:34px!important;
+ transform:translateX(-50%)!important;
+ border-radius:50%!important;
+ background:radial-gradient(circle,#fff 0 10%,#fff36d 18% 32%,#2eeaff 45%,#087cff44 64%,#0000 72%)!important;
+ box-shadow:0 0 16px #fff,0 0 28px #23eaff,0 0 38px #ffe14f!important;
+ filter:none!important;
+ opacity:.12!important;
+ animation:none!important;
+ z-index:4!important;
+}
+.realCannon.firing .muzzleBeam{animation:muzzleFire .24s ease-out forwards!important}
+.realCannon .betQuick,.realCannon .power{z-index:12!important}
+.realCannon.firing .cannonAim{animation:cannonRecoil .2s ease-out}
+
+.fishHit{overflow:visible!important}
+.fishHit .impactRing{z-index:-2!important}
+.captureNet{
+ position:absolute;
+ left:50%;
+ top:50%;
+ width:32px;
+ height:32px;
+ border-radius:50%;
+ transform:translate(-50%,-50%);
+ background:
+  repeating-radial-gradient(circle,#fff0 0 8px,#8fffffdd 9px 10px),
+  repeating-conic-gradient(from 0deg,#fff0 0 13deg,#c8ffffdd 14deg 16deg,#fff0 17deg 45deg);
+ border:2px solid #e9ffff;
+ box-shadow:0 0 14px #23eaff,0 0 28px #0b7dff,inset 0 0 18px #7affff88;
+ animation:netCapture .62s cubic-bezier(.12,.76,.2,1) forwards;
+ z-index:3;
+}
+.captureNet.netTwo{width:38px;height:38px;animation-delay:.07s;filter:hue-rotate(18deg);opacity:.88}
+.captureNet.netThree{width:46px;height:46px;animation-delay:.14s;filter:hue-rotate(-18deg);opacity:.72}
+.waterImpact{
+ position:absolute;
+ left:50%;
+ top:50%;
+ width:24px;
+ height:24px;
+ border-radius:50%;
+ transform:translate(-50%,-50%);
+ background:radial-gradient(circle,#fff 0 8%,#56f7ff 12% 28%,#087cff88 42%,#0000 70%);
+ box-shadow:0 0 24px #42efff;
+ animation:waterBurst .48s ease-out forwards;
+ z-index:2;
+}
+.fishHit>em{
+ position:absolute;
+ left:50%;
+ top:50%;
+ width:5px;
+ height:28px;
+ border-radius:999px;
+ background:linear-gradient(#fff,#5df4ff,#0000);
+ box-shadow:0 0 8px #7dffff;
+ transform-origin:50% 0;
+ transform:rotate(var(--spark-angle)) translateY(-12px);
+ animation:impactSpark .48s ease-out forwards;
+ z-index:4;
+}
+.fishHit.killed .captureNet{border-color:#fff4a0;filter:hue-rotate(145deg) brightness(1.3);animation-duration:.86s}
+.fishHit.killed .waterImpact{background:radial-gradient(circle,#fff 0 8%,#fff36c 14% 30%,#ff8a00aa 43%,#0000 72%);box-shadow:0 0 34px #ffd700}
+.fishNetImpact{
+ position:absolute;
+ inset:0;
+ z-index:12;
+ pointer-events:none;
+ display:grid;
+ place-items:center;
+}
+.fishNetImpact i{
+ position:absolute;
+ width:42%;
+ aspect-ratio:1;
+ border-radius:50%;
+ border:2px solid #eaffff;
+ background:
+  repeating-radial-gradient(circle,#fff0 0 7px,#7cffffdd 8px 9px),
+  repeating-conic-gradient(#fff0 0 14deg,#d9ffff 15deg 17deg,#fff0 18deg 45deg);
+ box-shadow:0 0 12px #fff,0 0 24px #22eaff,inset 0 0 16px #36dfff88;
+ animation:fishNetLock .55s cubic-bezier(.1,.78,.2,1) forwards;
+}
+.fishNetImpact i:nth-child(2){animation-delay:.06s;filter:hue-rotate(18deg);transform:rotate(30deg)}
+.fishNetImpact i:nth-child(3){animation-delay:.12s;filter:hue-rotate(-20deg);transform:rotate(-28deg)}
+.fishNetImpact b{
+ position:absolute;
+ width:34%;
+ aspect-ratio:1;
+ border-radius:50%;
+ background:radial-gradient(circle,#fff 0 8%,#70fbff 14% 30%,#167dffaa 42%,#0000 70%);
+ box-shadow:0 0 26px #4cefff;
+ animation:fishImpactCore .48s ease-out forwards;
+}
+.fish3d.damaged .fishModel{animation:fishBodyJolt .34s cubic-bezier(.2,.82,.2,1)}
+
+.fishReward{
+ overflow:visible!important;
+ isolation:isolate;
+ min-width:172px!important;
+ padding:10px 18px!important;
+ border:2px solid #fff7bd!important;
+ background:linear-gradient(180deg,#fffbd6 0,#ffd84e 36%,#ff9a08 68%,#8e3500 100%)!important;
+ box-shadow:0 0 18px #fff,0 0 42px #ffd700,0 0 70px #ff8a00aa,0 12px 22px #000b!important;
+ animation:rewardCelebration 1.85s cubic-bezier(.16,.8,.2,1) forwards!important;
+}
+.fishReward strong{font-size:30px!important;color:#5a2500!important;position:relative;z-index:4}
+.fishReward strong{z-index:10!important;animation:rewardNumberPulse .68s ease-out both}
+.fishReward .rewardLabel{display:block;position:relative;z-index:10;color:#fff!important;font:900 13px Oswald!important;text-shadow:0 2px 5px #6f2600!important}
+.fishReward .rewardRays{
+ position:absolute;
+ left:50%;
+ top:50%;
+ width:210px;
+ height:210px;
+ transform:translate(-50%,-50%);
+ border-radius:50%;
+ background:repeating-conic-gradient(from 0deg,#fff7aacc 0 4deg,#0000 5deg 18deg);
+ mask-image:radial-gradient(circle,#0000 0 22%,#000 23% 68%,#0000 69%);
+ animation:rewardRaySpin 1.8s linear forwards;
+ z-index:1;
+}
+.fishReward i{
+ display:block!important;
+ left:50%!important;
+ top:50%!important;
+ width:var(--coin-size,19px)!important;
+ height:var(--coin-size,19px)!important;
+ border:2px solid #fff2a0!important;
+ box-shadow:inset 0 0 0 3px #b76100,0 0 12px #ffd700!important;
+ animation:rewardCoinDeluxe .92s cubic-bezier(.08,.72,.18,1) forwards!important;
+ z-index:8!important;
+}
+.fishReward i:after{
+ content:'';
+ position:absolute;
+ inset:3px;
+ border-radius:50%;
+ border:1px solid #fff7b0;
+ box-shadow:inset 0 0 5px #7e3500;
+}
+.fishReward>em{
+ position:absolute;
+ left:50%;
+ top:50%;
+ width:7px;
+ height:7px;
+ border-radius:50%;
+ background:#fff;
+ box-shadow:0 0 8px #fff,0 0 16px #ffd700;
+ animation:rewardSparkDeluxe .78s ease-out forwards;
+ z-index:9;
+}
+.fish3d.dead .fishModel{animation:fishDeathDeluxe .92s ease-in forwards!important}
+.fish3d.dead .fishModel:before{
+ content:'';
+ position:absolute;
+ left:50%;
+ top:50%;
+ width:42px;
+ height:42px;
+ transform:translate(-50%,-50%);
+ border:4px solid #fff7a3;
+ border-radius:50%;
+ box-shadow:0 0 20px #fff,0 0 46px #ffd700,0 0 70px #ff7600;
+ animation:deathShockwave .82s ease-out forwards;
+ z-index:5;
+}
+
+@keyframes cannonRecoil{0%,100%{translate:0 0}35%{translate:0 7px}}
+@keyframes muzzleFire{0%{opacity:1;transform:translateX(-50%) scale(.45)}42%{opacity:1;transform:translateX(-50%) scale(1.35)}100%{opacity:0;transform:translateX(-50%) scale(2.1)}}
+@keyframes netCapture{0%{opacity:0;transform:translate(-50%,-50%) scale(.2) rotate(-24deg)}35%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(3.15) rotate(34deg)}}
+@keyframes waterBurst{0%{opacity:1;transform:translate(-50%,-50%) scale(.35)}100%{opacity:0;transform:translate(-50%,-50%) scale(3.7)}}
+@keyframes fishNetLock{0%{opacity:0;scale:.2;rotate:-24deg}30%{opacity:1}100%{opacity:0;scale:2.35;rotate:38deg}}
+@keyframes fishImpactCore{0%{opacity:1;scale:.3}100%{opacity:0;scale:3.2}}
+@keyframes fishBodyJolt{0%,100%{translate:0 0}22%{translate:-8px 2px}46%{translate:7px -2px}70%{translate:-3px 1px}}
+@keyframes impactSpark{0%{opacity:1;scale:.3}100%{opacity:0;scale:1.5;translate:0 -42px}}
+@keyframes rewardCelebration{0%{opacity:0;transform:translate(-50%,-25%) scale(.35) rotate(-5deg)}14%{opacity:1;transform:translate(-50%,-82%) scale(1.22) rotate(2deg)}28%{transform:translate(-50%,-78%) scale(.96)}68%{opacity:1;transform:translate(-50%,-92%) scale(1.04)}100%{opacity:0;transform:translate(-50%,-165%) scale(.88)}}
+@keyframes rewardNumberPulse{0%{opacity:0;transform:scale(.3)}35%{opacity:1;transform:scale(1.35)}62%{transform:scale(.92)}100%{transform:scale(1)}}
+
+@keyframes rewardRaySpin{0%{opacity:0;transform:translate(-50%,-50%) rotate(0) scale(.4)}18%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) rotate(110deg) scale(1.35)}}
+@keyframes rewardCoinDeluxe{0%{opacity:0;transform:translate(-50%,-50%) scale(.2) rotateY(0)}16%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--rx)),calc(-50% + var(--ry))) scale(1.15) rotateY(720deg)}}
+@keyframes rewardSparkDeluxe{0%{opacity:1;transform:translate(-50%,-50%) scale(.2)}100%{opacity:0;transform:translate(calc(-50% + var(--rx)),calc(-50% + var(--ry))) scale(1.8)}}
+@keyframes deathShockwave{0%{opacity:1;transform:translate(-50%,-50%) scale(.2)}100%{opacity:0;transform:translate(-50%,-50%) scale(4.5)}}
+@keyframes fishDeathDeluxe{0%{filter:brightness(1);transform:scale(1)}24%{filter:brightness(3) saturate(1.8);transform:scale(1.14)}55%{filter:brightness(1.8) saturate(0);transform:scale(.92) rotate(-5deg)}100%{filter:brightness(0);opacity:0;transform:scale(.25) rotate(18deg)}}
+
+/* Fish game camera stays completely fixed; only gameplay objects move. */
+body:has(.fishScreen),body:has(.fishScreen) #root{
+ width:100%;
+ height:100svh;
+ overflow:hidden!important;
+ overscroll-behavior:none;
+}
+.fishScreen{
+ position:fixed!important;
+ inset:0!important;
+ width:100vw!important;
+ height:100svh!important;
+ min-height:0!important;
+ max-width:none!important;
+ overflow:hidden!important;
+ transform:none!important;
+ animation:none!important;
+ contain:layout paint size;
+}
+.fishScreen .ocean{
+ position:absolute!important;
+ inset:0!important;
+ width:100%!important;
+ height:100%!important;
+ min-height:0!important;
+ overflow:hidden!important;
+ transform:none!important;
+ animation:none!important;
+ contain:layout paint size;
+ background-attachment:local!important;
+}
+.fishScreen .oceanAmbient,.fishScreen .coralLayer,.fishScreen .rockLayer,.fishScreen .waterRay{
+ transform:none!important;
+ animation:none!important;
+}
+.fishScreen .ocean:before{
+ animation:none!important;
+ transform:none!important;
+ background-position:0 0!important;
+}
+.fishScreen .coralLayer,.fishScreen .rockLayer{translate:none!important}
+
+/* Stable compositing: static ocean plate, GPU fish paths, lightweight ambience. */
+.fishScreen .ocean{
+ background:#001827!important;
+ isolation:isolate;
+}
+.fishScreen .ocean:before{
+ content:'';
+ position:absolute;
+ inset:0;
+ z-index:0;
+ opacity:1!important;
+ mix-blend-mode:normal!important;
+ background-image:linear-gradient(180deg,#00182722,#00121bd9),url('/assets/fish-real-bg.webp')!important;
+ background-size:cover!important;
+ background-position:center!important;
+ background-repeat:no-repeat!important;
+ transform:translateZ(0)!important;
+ backface-visibility:hidden;
+ pointer-events:none;
+}
+.movingFish.fish3d{
+ position:absolute!important;
+ left:0!important;
+ filter:none!important;
+ animation-name:swimGpu!important;
+ contain:layout style;
+ will-change:transform;
+ backface-visibility:hidden;
+ transform:translate3d(-180px,0,0);
+ pointer-events:none;
+}
+.movingFish.fish3d:nth-child(even){animation-name:swimGpuReverse!important}
+/* Cá do server điều khiển: phòng quyết định x, y và hướng bơi, nên phải tắt
+   hẳn keyframes swim của cá chạy bằng CSS và đặt sprite theo toạ độ nhận được.
+   scaleY giữ bụng cá hướng xuống khi hướng bơi vượt qua phương thẳng đứng.
+
+   Selector phải đủ đặc hiệu để thắng cả `.movingFish.fish3d{left:0!important}`
+   lẫn `.movingFish.fish3d:nth-child(even){animation-name:...!important}` —
+   dùng riêng `.serverFish` (0,1,0) sẽ thua và cá lại dồn về góc trái. */
+.ocean .movingFish.fish3d.serverFish{
+ left:var(--server-x,0)!important;
+ top:var(--server-y,50%)!important;
+ transform:translate(-50%,-50%) rotate(var(--fish-rot,0deg)) scaleY(var(--fish-flip,1))!important;
+ animation-name:none!important;
+ transition:left .1s linear,top .1s linear;
+ will-change:left,top;
+}
+.fishHpBar{position:absolute;left:50%;top:-10px;width:64%;height:5px;transform:translateX(-50%) rotate(calc(-1*var(--fish-rot,0deg))) scaleY(var(--fish-flip,1));border-radius:3px;background:#00000099;border:1px solid #0009;overflow:hidden;pointer-events:none}
+.fishHpBar i{display:block;height:100%;background:linear-gradient(90deg,#ff5a3c,#ffd257);transition:width .12s linear}
+
+/* Màn chơi cho topbar nằm tuyệt đối rồi đẩy .fishTitle xuống bằng `top`, nhưng
+   .fishTitle lại là position:relative nên nó chỉ dịch chuyển chứ không chừa chỗ,
+   khiến tên phòng đè lên dòng đếm ngược. Phòng chờ không có mặt biển để phủ lên,
+   nên trả cả hai về luồng bình thường và bỏ hẳn offset — không cần đoán chiều cao
+   topbar (64px, hay 56px trên màn cảm ứng). */
+.fishWaiting .topbar{position:relative}
+.fishWaiting .fishTitle{top:0;height:auto;margin:14px 0 2px}
+.fishWaiting .waitRoom{display:flex;flex-direction:column;align-items:center;gap:14px;padding:22px 16px}
+.waitLead{color:#ffd980;font:700 14px Oswald;letter-spacing:.6px;text-align:center;margin:0}
+.waitSeats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:420px}
+.waitSeat{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 6px;border-radius:12px;background:linear-gradient(180deg,#1d2b3a,#101a24);border:1px solid #2b4256;color:#7f96a8}
+.waitSeat svg{width:26px;height:26px}
+.waitSeat span{font:700 12px Oswald;color:#cfe3f2}
+.waitSeat small{font:700 9px Oswald;letter-spacing:1px}
+.waitSeat.joined{border-color:#3d6f96;color:#9dc4de}
+.waitSeat.ready{border-color:#37d39a;background:linear-gradient(180deg,#12362c,#0c2119);color:#4be0aa;box-shadow:0 0 14px #37d39a44}
+.waitSeat.empty{opacity:.45;border-style:dashed}
+.waitCount{color:#8fa9bd;font:600 12px Oswald;margin:0}
+.waitActions{display:flex;gap:10px;width:100%;max-width:420px}
+.waitReady{flex:2;height:46px;border:0;border-radius:12px;background:linear-gradient(180deg,#ffd257,#c8860c);color:#3a2200;font:800 15px Oswald;letter-spacing:1px;cursor:pointer;box-shadow:0 4px 10px #0007}
+.waitReady.on{background:linear-gradient(180deg,#37d39a,#12805c);color:#04241a}
+.waitLeave{flex:1;height:46px;border:1px solid #6b4e20;border-radius:12px;background:#1a1409;color:#e6c987;font:800 13px Oswald;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.waitLeave svg{width:16px;height:16px}
+.movingFish.fish3d .fishModel{
+ will-change:transform;
+ backface-visibility:hidden;
+ transform:translateZ(0);
+}
+.movingFish.fish3d .realFish{
+ filter:none;
+ backface-visibility:hidden;
+ pointer-events:none;
+}
+.fishScreen .waterRay{
+ animation:sunRayBreathe 7s ease-in-out infinite!important;
+ will-change:opacity;
+ filter:blur(7px);
+}
+.fishScreen .waterRay.r1{transform:rotate(10deg)!important}
+.fishScreen .waterRay.r2{transform:rotate(-12deg)!important;animation-delay:-3.5s!important}
+.fishScreen .bubble{
+ will-change:transform,opacity;
+ backface-visibility:hidden;
+}
+@keyframes swimGpu{
+ 0%{transform:translate3d(-180px,0,0)}
+ 50%{transform:translate3d(calc(50vw - 50%),-6px,0)}
+ 100%{transform:translate3d(calc(100vw + 180px),0,0)}
+}
+@keyframes swimGpuReverse{
+ 0%{transform:translate3d(calc(100vw + 180px),0,0) scaleX(-1)}
+ 50%{transform:translate3d(calc(50vw - 50%),-6px,0) scaleX(-1)}
+ 100%{transform:translate3d(-180px,0,0) scaleX(-1)}
+}
+@keyframes sunRayBreathe{0%,100%{opacity:.22}50%{opacity:.48}}
+
+/* Expanded premium creature roster */
+.movingFish.fish3d.manta{width:184px!important;height:112px!important}
+.movingFish.fish3d.turtle{width:174px!important;height:122px!important}
+.movingFish.fish3d.squid{width:194px!important;height:104px!important}
+.movingFish.fish3d.legend{width:232px!important;height:138px!important}
+.movingFish.fish3d.mythic{width:270px!important;height:158px!important}
+.fish3d.dragoncarp .realFish{
+ filter:drop-shadow(0 0 9px #ffd54f99) drop-shadow(0 8px 7px #00121b)!important;
+}
+.fish3d.mermaid .realFish{
+ filter:drop-shadow(0 0 10px #72f4ff99) drop-shadow(0 0 16px #b76cff66)!important;
+}
+.movingFish.fish3d.mermaid:nth-child(n){
+ z-index:28!important;
+ opacity:1!important;
+ visibility:visible!important;
+ animation-name:mermaidPass!important;
+ animation-direction:normal!important;
+}
+@keyframes mermaidPass{
+ 0%{transform:translate3d(-280px,0,0)}
+ 50%{transform:translate3d(calc(50vw - 50%),-10px,0)}
+ 100%{transform:translate3d(calc(100vw + 280px),0,0)}
+}
+.fish3d.legend .fishHp,.fish3d.mythic .fishHp{height:10px;left:12%;right:12%;border-color:#ffe77a;box-shadow:0 0 12px #ffd700}
+.fish3d.legend .fishModel small,.fish3d.mythic .fishModel small{
+ left:50%;
+ top:-17px;
+ transform:translateX(-50%);
+ white-space:nowrap;
+ font-size:8px;
+ padding:3px 7px;
+ border-color:#fff2a0;
+ box-shadow:0 0 12px #ffd700;
+}
+.movingFish.fish3d:nth-child(even) .fishModel small{transform:translateX(-50%) scaleX(-1)!important}
+.movingFish.fish3d.legend:nth-child(even) .fishModel small,
+.movingFish.fish3d.mythic:nth-child(even) .fishModel small{transform:translateX(-50%) scaleX(-1)!important}
+
+/* Timed school and mermaid boss warnings */
+.fishEventNotice{
+ position:absolute;
+ left:50%;
+ top:126px;
+ width:min(88vw,360px);
+ min-height:62px;
+ z-index:210;
+ transform:translateX(-50%);
+ padding:10px 16px;
+ border-radius:8px;
+ border:1px solid #ffe680;
+ background:linear-gradient(180deg,#201707f2,#080b0ee8);
+ box-shadow:0 0 18px #ffd54f88,0 10px 24px #000b;
+ text-align:center;
+ pointer-events:none;
+ animation:fishNoticeIn .55s cubic-bezier(.18,.86,.2,1),fishNoticePulse 1.1s ease-in-out .55s infinite;
+}
+.fishEventNotice strong{
+ display:block;
+ color:#fff2a5;
+ font:900 15px Oswald;
+ text-shadow:0 0 10px #ffd700;
+}
+.fishEventNotice span{
+ display:block;
+ margin-top:3px;
+ color:#d8faff;
+ font:700 11px 'Be Vietnam Pro',sans-serif;
+}
+.fishEventNotice.mermaid{
+ border-color:#9ef8ff;
+ background:linear-gradient(180deg,#14264af2,#210d36ed);
+ box-shadow:0 0 20px #62eeff99,0 0 32px #b96cff55,0 10px 24px #000b;
+}
+.fishEventNotice.mermaid strong{color:#e9ffff;text-shadow:0 0 10px #55eaff,0 0 16px #ba78ff}
+.fishFrenzy .fishTitle{text-shadow:0 0 12px #ffd700,0 3px #774500}
+@keyframes fishNoticeIn{0%{opacity:0;transform:translate(-50%,-18px) scale(.82)}65%{opacity:1;transform:translate(-50%,3px) scale(1.04)}100%{transform:translateX(-50%) scale(1)}}
+@keyframes fishNoticePulse{50%{filter:brightness(1.2);box-shadow:0 0 26px #ffd54faa,0 12px 26px #000c}}
+@keyframes mermaidPass{
+ 0%{transform:translate3d(-120px,0,0) rotateY(-4deg)}
+ 50%{transform:translate3d(calc(50vw - 50%),-7px,0) rotateY(5deg)}
+ 100%{transform:translate3d(calc(100vw + 80px),0,0) rotateY(-4deg)}
+}
+
+/* Mobile performance profile: preserve feedback while reducing overdraw. */
+@media (max-width:640px),(pointer:coarse){
+ .trueShot{mix-blend-mode:normal!important}
+ .fishScreen .waterRay{filter:none!important;opacity:.24!important}
+ .oceanAmbient .bubble:nth-of-type(n+13){display:none!important}
+ .fishShadow{display:none!important}
+ .fishNetImpact i:nth-child(3){display:none!important}
+ .fishReward .rewardRays{display:none!important}
+ .fishReward{
+  box-shadow:0 0 18px #ffd700,0 8px 14px #0009!important;
+ }
+ .fishReward i{box-shadow:inset 0 0 0 2px #b76100,0 0 7px #ffd700!important}
+ .captureNet,.fishNetImpact i{box-shadow:0 0 10px #22eaff!important}
+ .fish3d.dragoncarp .realFish,.fish3d.mermaid .realFish{filter:none!important}
+ .resultFx .resultGlow,.resultFx .resultCore{filter:none!important}
+ .fxRay{box-shadow:0 0 8px #ffd54f!important}
+ .slotBody{max-width:100vw;overflow-x:hidden}
+ .slotBody .reels{width:calc(100vw - 24px)!important;max-width:calc(100vw - 24px)!important}
+}
+
+/* Pointer-space overlays must not inherit the generic ocean child positioning. */
+.fishScreen .ocean>.crosshair,
+.fishScreen .ocean>.fishHit,
+.fishScreen .ocean>.fishReward,
+.fishScreen .ocean>.trueShot{
+ position:absolute!important;
+ margin:0!important;
+ pointer-events:none!important;
+}
+.fishScreen .ocean>.crosshair{
+ z-index:130!important;
+ transform:translate(-50%,-50%)!important;
+}
+
+/* Smooth slot reel tracks and interaction-safe controls */
+button,.spinBtn,.cardHit,.playBtn{
+ -webkit-user-select:none;
+ user-select:none;
+ -webkit-touch-callout:none;
+ -webkit-tap-highlight-color:transparent;
+ touch-action:manipulation;
+}
+.reelCol{
+ display:block!important;
+ height:290px!important;
+ min-width:0;
+ overflow:hidden;
+ position:relative;
+ contain:layout paint;
+ border-radius:8px;
+}
+.reels{grid-template-columns:repeat(5,calc((100% - 20px)/5))!important}
+.reels>.reelCol{width:100%!important;max-width:100%!important}
+.reelCol .symbol{min-width:0;width:100%;overflow:hidden;height:54px!important}
+.reelTrack{
+ display:grid;
+ grid-auto-rows:54px!important;
+ gap:5px!important;
+ width:100%;
+ will-change:transform;
+}
+.reelCol.spinning .reelTrack{
+ animation:slotScrollTrack var(--reel-speed,.20s) linear infinite;
+ will-change:transform;
+ transform:translate3d(0,0,0);
+}
+.reelCol.spinning .symbolSvg{
+ filter:none!important;
+}
+.reelCol.spinning .symGleam{
+ display:none!important;
+}
+.reelCol.spinning .symbol{animation:none!important}
+.reelCol.stopped .reelTrack{
+ animation:slotReelSettle .44s cubic-bezier(.175,.885,.32,1.275) both;
+}
+.spinBtn:focus,.spinBtn:active{outline:none!important;-webkit-tap-highlight-color:transparent}
+
+@keyframes slotScrollTrack{
+ 0%{transform:translate3d(0,0,0)}
+ 100%{transform:translate3d(0,-700px,0)}
+}
+@keyframes slotReelSettle{
+ 0%{transform:translate3d(0,-30px,0);filter:blur(2px)}
+ 45%{transform:translate3d(0,10px,0);filter:blur(0)}
+ 72%{transform:translate3d(0,-4px,0);filter:blur(0)}
+ 100%{transform:translate3d(0,0,0);filter:blur(0)}
+}
+@keyframes reelFlash{
+ 0%{opacity:.75;transform:scaleY(1.08)}
+ 100%{opacity:0;transform:scaleY(1)}
+}
+@keyframes paylinePulse{
+ 0%{box-shadow:0 0 6px #ffc107,inset 0 1px 0 #fff;transform:translateY(-50%) scale(.96)}
+ 100%{box-shadow:0 0 18px #ffd700,0 0 28px #ff9800,inset 0 1px 0 #fff;transform:translateY(-50%) scale(1.04)}
+}
+@keyframes winningSymbolPop{
+ 0%{transform:scale(1);filter:brightness(1)}
+ 100%{transform:scale(1.08);filter:brightness(1.25);box-shadow:inset 0 0 22px #ffe57f,0 0 24px #ffd700,0 0 40px #ff9800}
+}
+@keyframes winningFrameGlow{
+ 0%{box-shadow:0 0 20px #ffc10788,inset 0 0 25px #000}
+ 100%{box-shadow:0 0 38px #ffd700cc,0 0 60px #ff980066,inset 0 0 30px #ffd70033}
+}
+@keyframes suspenseThrob{
+ 0%{box-shadow:0 0 12px #ff5722,inset 0 0 8px #ff9800;border-color:#ff5722}
+ 100%{box-shadow:0 0 24px #ff9800,0 0 36px #ffd700,inset 0 0 16px #ffc107;border-color:#ffe082}
+}
+@keyframes jackpotShimmer{
+ 0%,100%{transform:translateX(-120%)}
+ 35%,65%{transform:translateX(120%)}
+}
+@keyframes symShine{
+ 0%,100%{left:-50%;opacity:0}
+ 20%,50%{left:140%;opacity:.7}
+}
+@keyframes btnShine{
+ 0%,100%{transform:translateX(-100%)}
+ 25%,50%{transform:translateX(100%)}
+}
+@keyframes spinBtnThrob{
+ 0%{filter:brightness(1) drop-shadow(0 0 10px #ffc107)}
+ 100%{filter:brightness(1.2) drop-shadow(0 0 22px #ffd700)}
+}
+
+@keyframes winSparklePop{
+ 0%{transform:scale(.6) rotate(-10deg);opacity:.4}
+ 100%{transform:scale(1.2) rotate(15deg);opacity:1}
+}
+
+/* Fish durability is intentionally hidden from players. */
+.fishScreen .fishHp{display:none!important}
+.fishEventNotice.active{
+ border-color:#fff5ad;
+ background:linear-gradient(180deg,#3b2309f2,#0a0b0ded);
+}
+.fishEventNotice.mermaid.active{
+ border-color:#c6fbff;
+ background:linear-gradient(180deg,#183b62f2,#260f42ed);
+}
+
+/* Account experience */
+.authScreen,.appLoading{min-height:100dvh;background:radial-gradient(circle at 50% 15%,#673d14 0,#17100c 42%,#050505 100%);display:grid;place-items:center;color:#fff;position:relative;overflow:hidden;padding:24px}
+.authCard{position:relative;z-index:2;width:min(430px,100%);padding:34px 30px 28px;border:1px solid #f5c14c80;border-radius:28px;background:linear-gradient(160deg,#211812f2,#090909f7);box-shadow:0 30px 80px #000,0 0 45px #d8931930;text-align:center}
+.authCoin{width:70px;height:70px;margin:-70px auto 14px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#ffe88d,#c77b09);color:#5b3300;border:4px solid #fff1a7;box-shadow:0 0 35px #ffc62988}.authCoin svg{width:36px;height:36px}
+.authCard>small{color:#f3bd48;font-weight:900;letter-spacing:.3em}.authCard h1{font-size:26px;margin:8px 0}.authCard>p,.panelLead{color:#bdb4aa;margin:0 0 24px}
+.authCard form{display:grid;gap:14px;text-align:left}.authCard label,.profileField{display:grid;gap:7px;font-size:12px;font-weight:800;color:#e6c777;letter-spacing:.05em}
+.authCard input,.profileField input{width:100%;box-sizing:border-box;border:1px solid #806027;border-radius:12px;background:#080706;color:#fff;padding:13px 14px;font:inherit;outline:none}.authCard input:focus,.profileField input:focus{border-color:#ffd468;box-shadow:0 0 0 3px #ffd46818}
+.authSubmit,.panelAction{border:0;border-radius:13px;padding:14px;background:linear-gradient(180deg,#ffe26e,#cc870d);color:#3a2100;font-weight:1000;cursor:pointer}.authSubmit:disabled{opacity:.6}.authSwitch{border:0;background:none;color:#efbd52;margin-top:18px;cursor:pointer}.formError,.panelMessage{padding:10px;border-radius:10px;background:#7a272755;color:#ffb7b7;text-align:center;font-size:13px}
+.appLoading{gap:12px;align-content:center;color:#f7cf64;font-weight:900}.appLoading svg{width:48px;height:48px;animation:spin 1.4s linear infinite}
+.avatarButton{padding:0;border:0;background:none;border-radius:50%;cursor:pointer}.panelBackdrop{position:fixed;z-index:1000;inset:0;background:#000b;backdrop-filter:blur(8px);display:grid;place-items:center;padding:18px}
+.accountPanel{width:min(480px,100%);max-height:min(720px,90dvh);overflow:auto;box-sizing:border-box;position:relative;padding:28px;border-radius:24px;border:1px solid #dca93977;background:linear-gradient(155deg,#241a11,#090909 60%);color:#fff;box-shadow:0 30px 90px #000}
+.panelClose{position:absolute;right:16px;top:16px;width:38px;height:38px;border:1px solid #ffffff22;border-radius:50%;display:grid;place-items:center;background:#ffffff0c;color:#fff;cursor:pointer}.accountPanel h2{margin:0 42px 6px 0}.profileHero{display:flex;align-items:center;gap:16px;margin-bottom:24px}.profileHero img{width:72px;height:72px;border-radius:50%;border:2px solid #f0bd47}.profileHero h2{margin:3px 0}.profileHero p{margin:0;color:#aaa}.profileHero small{color:#e9bb50;font-weight:900}
+.profileField{margin:14px 0}.panelAction{width:100%;margin:7px 0;display:flex;justify-content:center;align-items:center;gap:8px}.panelAction.bonus{background:linear-gradient(180deg,#3bdc8b,#168453);color:#042c19}.logoutBtn{width:100%;border:1px solid #ff665866;background:#6c181833;color:#ff9288;border-radius:13px;padding:13px;margin-top:16px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
+.transactionList{display:grid;gap:8px;margin-top:16px}.transactionList article{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:13px;border-radius:13px;background:#ffffff0a;border:1px solid #ffffff10}.transactionList article div{display:grid;gap:4px}.transactionList small{color:#888}.transactionList span{font-weight:900;white-space:nowrap}.positive{color:#58eaa0}.negative{color:#ff8278}.emptyState{text-align:center;color:#888;padding:40px}.walletBalance{font-size:25px;font-weight:1000;color:#ffd65f;display:flex;align-items:center;gap:8px}.walletActions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.walletNotice{font-size:12px;color:#8f8982;line-height:1.5}
+.requestList{display:grid;gap:7px;margin-top:14px}.requestList article{display:flex;justify-content:space-between;padding:11px;border-radius:10px;background:#ffffff0a;font-size:12px}.requestList b{color:#e7b840}.requestList .approved{color:#58eaa0}.requestList .rejected{color:#ff8278}
+@media(max-width:480px){.authCard{padding:30px 20px 22px}.accountPanel{padding:24px 18px}.walletActions{grid-template-columns:1fr}.transactionList article{align-items:flex-start}.transactionList strong{font-size:13px}}
+
+/* Fast Fish Matchmaking & Texture Pre-caching HUD */
+.fishMatchmakingOverlay{
+ position:fixed;
+ inset:0;
+ z-index:200;
+ background:radial-gradient(circle at 50% 45%,#012a3d 0%,#001420 60%,#00070d 100%);
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+ pointer-events:all;
+ animation:fadeIn 0.2s ease-out;
+}
+
+.matchmakingRadar{
+ position:relative;
+ width:120px;
+ height:120px;
+ border-radius:50%;
+ border:2px solid #00f2fe66;
+ box-shadow:0 0 30px #00f2fe44, inset 0 0 25px #00f2fe22;
+ display:grid;
+ place-items:center;
+ margin-bottom:20px;
+}
+
+.radarSweep{
+ position:absolute;
+ inset:0;
+ border-radius:50%;
+ background:conic-gradient(from 0deg, transparent 0deg 270deg, rgba(0,242,254,0.45) 360deg);
+ animation:spin 1.8s linear infinite;
+}
+
+.radarPulse{
+ position:absolute;
+ inset:0;
+ border-radius:50%;
+ border:1px solid #00f2fe;
+ animation:radarPulseAnim 2s cubic-bezier(0.1,0.85,0.25,1) infinite;
+}
+.radarPulse.r2{
+ animation-delay:1s;
+}
+
+.radarCenterIcon{
+ font-size:32px;
+ filter:drop-shadow(0 0 12px #00f2fe);
+ animation:pulse 1.4s ease-in-out infinite alternate;
+ z-index:2;
+}
+
+.matchmakingTitle{
+ font:900 20px Oswald;
+ letter-spacing:2px;
+ color:#fff;
+ margin:0 0 6px;
+ text-shadow:0 0 14px #00f2fe, 0 2px 4px #000;
+ text-align:center;
+}
+
+.matchmakingSub{
+ font:600 12px 'Be Vietnam Pro',sans-serif;
+ color:#88e2fc;
+ margin:0 0 18px;
+ text-align:center;
+}
+
+.matchmakingBarBox{
+ width:min(75vw,260px);
+ height:8px;
+ border-radius:10px;
+ background:#021c2b;
+ border:1px solid #00f2fe88;
+ overflow:hidden;
+ box-shadow:0 0 15px #00f2fe33;
+}
+
+.matchmakingFill{
+ height:100%;
+ background:linear-gradient(90deg,#00f2fe,#38ef7d);
+ border-radius:10px;
+ box-shadow:0 0 12px #38ef7d;
+ transition:width 0.15s ease-out;
+}
+
+.matchmakingPercent{
+ font:800 12px Oswald;
+ color:#00f2fe;
+ margin-top:8px;
+ letter-spacing:1px;
+}
+
+@keyframes radarPulseAnim{
+ 0%{transform:scale(0.2);opacity:0.9}
+ 100%{transform:scale(1.8);opacity:0}
+}
+
+.lobbyEmpty{margin:32px 16px;padding:26px 18px;text-align:center;color:#c9b98f;background:rgba(0,0,0,.32);border:1px solid rgba(240,180,41,.22);border-radius:14px;font-size:14px;line-height:1.6}
+
+/* Số người trong phòng khi đang chơi: state của server đã kèm players/capacity,
+   badge nằm ngoài .ocean nên không dính rule định vị chung của con .ocean. */
+.roomPlayers{
+ position:absolute;top:66px;right:12px;z-index:40;
+ display:flex;align-items:center;gap:6px;
+ padding:5px 11px;border-radius:999px;
+ background:#02202ecc;border:1px solid #2f7f9a;
+ color:#bfe9ff;font:700 12px Oswald;letter-spacing:.5px;
+ pointer-events:none;backdrop-filter:blur(3px);
+}
+.roomPlayers svg{width:14px;height:14px;stroke-width:2.4}
+
+/* Popup dùng chung cho web người chơi: mọi thông báo và câu hỏi đều hiện ở đây
+   và phải bấm mới tắt. z-index cao hơn mọi lớp của màn chơi kể cả tâm ngắm. */
+.gamePopupBackdrop{
+ position:fixed;inset:0;z-index:200;
+ display:grid;place-items:center;padding:20px;
+ background:#00060bcc;backdrop-filter:blur(4px);
+}
+.gamePopup{
+ width:min(360px,92vw);text-align:center;
+ padding:24px 22px 20px;border-radius:16px;
+ background:linear-gradient(#0d2c3c,#071a25);
+ border:1px solid #2f7f9a;box-shadow:0 18px 50px #000a;
+}
+.gamePopup.ok{border-color:#3fbf87}
+.gamePopup.fail{border-color:#b55454}
+.gamePopup.warn{border-color:#c9973a}
+.gamePopup h3{margin:0 0 8px;font:800 19px Oswald;letter-spacing:1px;color:#ffe180}
+.gamePopup.ok h3{color:#7ff0bd}
+.gamePopup.fail h3{color:#ff9a9a}
+.gamePopup p{margin:0 0 18px;font-size:13.5px;line-height:1.55;color:#a9c6d6}
+.gamePopupActions{display:flex;gap:10px}
+.gamePopupActions button{
+ flex:1;padding:11px 0;border-radius:10px;border:1px solid transparent;
+ font:700 13px Oswald;letter-spacing:.8px;cursor:pointer;
+ display:inline-flex;align-items:center;justify-content:center;gap:6px;
+}
+.popupCancel{background:transparent;color:#a9c6d6;border-color:#2f7f9a}
+.popupOk{background:#ffcf4a;color:#22180a}
+.popupOk.danger{background:transparent;color:#ff9a9a;border-color:#a5484899}
+
+/* ========================================================================= */
+/* DYNAMIC HERO BANNER SLIDER                                                */
+/* ========================================================================= */
+.dynamicHero{
+  position:relative;
+  cursor:pointer;
+  overflow:hidden;
+  transition:transform .2s ease;
+}
+.dynamicHero:hover{
+  transform:scale(1.01);
+}
+.dynamicHero img{
+  transition:opacity .4s ease-in-out, transform .4s ease;
+}
+.heroTagBadge{
+  position:absolute;
+  top:12px;
+  left:14px;
+  z-index:10;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:4px 10px;
+  border-radius:999px;
+  background:linear-gradient(135deg,#ff4b2b,#ff416c);
+  color:#fff;
+  font:900 11px Oswald;
+  letter-spacing:1px;
+  box-shadow:0 0 14px rgba(255,75,43,.7);
+  animation:pulse 1.6s infinite alternate;
+}
+.heroTitle{
+  position:relative;
+  z-index:3;
+  display:block;
+  font:900 24px Oswald;
+  letter-spacing:1.5px;
+  color:#ffe894;
+  text-shadow:0 2px 8px rgba(0,0,0,.9),0 0 20px rgba(255,215,0,.6);
+}
+.heroSub{
+  position:relative;
+  z-index:3;
+  display:block;
+  font:600 13px 'Be Vietnam Pro',sans-serif;
+  color:#e8edf5;
+  text-shadow:0 1px 4px #000;
+  margin-top:2px;
+}
+.heroActionBtn{
+  position:relative;
+  z-index:3;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  margin-top:10px;
+  padding:6px 16px;
+  border-radius:999px;
+  background:linear-gradient(180deg,#ffd84e,#d08a0d);
+  color:#3a2000;
+  font:900 12px Oswald;
+  letter-spacing:.8px;
+  box-shadow:0 4px 14px rgba(0,0,0,.6),0 0 16px rgba(255,216,78,.5);
+  transition:transform .15s, filter .15s;
+}
+.dynamicHero:hover .heroActionBtn{
+  transform:scale(1.05);
+  filter:brightness(1.15);
+}
+.bannerNavBtn{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:15;
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  background:rgba(0,0,0,.55);
+  border:1px solid rgba(255,215,0,.35);
+  color:#ffd84e;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  transition:background .15s, transform .15s;
+  backdrop-filter:blur(4px);
+}
+.bannerNavBtn:hover{
+  background:rgba(240,180,41,.85);
+  color:#241a05;
+  transform:translateY(-50%) scale(1.1);
+}
+.bannerNavBtn.prev{left:10px}
+.bannerNavBtn.next{right:10px}
+.hero .dots i{
+  cursor:pointer;
+  transition:width .2s, background .2s;
+}
+.hero .dots i.active{
+  width:18px;
+  background:#ffd84e;
+  box-shadow:0 0 8px #ffd84e;
+}
+
+/* ========================================================================= */
+/* SỰ KIỆN PAGE (EVENTS SCREEN)                                              */
+/* ========================================================================= */
+.eventScreen{
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+  background:#090d13;
+  color:#e8edf5;
+}
+.eventMain{
+  flex:1;
+  max-width:960px;
+  width:100%;
+  margin:0 auto;
+  padding:20px 16px 90px;
+  box-sizing:border-box;
+}
+.eventHeader{
+  text-align:center;
+  margin-bottom:22px;
+}
+.eventHeaderBadge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:5px 14px;
+  border-radius:999px;
+  background:rgba(240,180,41,.12);
+  border:1px solid rgba(240,180,41,.35);
+  color:#ffd84e;
+  font:900 12px Oswald;
+  letter-spacing:1.5px;
+  margin-bottom:8px;
+}
+.eventHeader h1{
+  margin:0 0 6px;
+  font:900 28px Oswald;
+  letter-spacing:1px;
+  background:linear-gradient(180deg,#fff,#ffd84e);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-shadow:0 0 20px rgba(255,215,0,.2);
+}
+.eventHeader p{
+  margin:0;
+  color:#8d99ad;
+  font-size:13px;
+}
+.eventNotice{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 16px;
+  border-radius:12px;
+  margin-bottom:18px;
+  font-size:13.5px;
+  font-weight:600;
+  animation:fadeIn .2s ease-out;
+}
+.eventNotice.ok{
+  background:rgba(52,211,153,.15);
+  border:1px solid rgba(52,211,153,.4);
+  color:#6ee7b7;
+}
+.eventNotice.warn{
+  background:rgba(251,191,36,.15);
+  border:1px solid rgba(251,191,36,.4);
+  color:#fde047;
+}
+.eventTabs{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding-bottom:8px;
+  margin-bottom:20px;
+  scrollbar-width:none;
+}
+.eventTabs::-webkit-scrollbar{display:none}
+.eventTab{
+  white-space:nowrap;
+  padding:8px 16px;
+  border-radius:999px;
+  border:1px solid #232b38;
+  background:#141923;
+  color:#8d99ad;
+  font:800 13px Oswald;
+  letter-spacing:.6px;
+  cursor:pointer;
+  transition:all .15s;
+}
+.eventTab:hover{
+  color:#fff;
+  border-color:#3b4759;
+}
+.eventTab.active{
+  background:linear-gradient(180deg,#ffd84e,#c98207);
+  border-color:#ffd84e;
+  color:#271900;
+  box-shadow:0 0 14px rgba(255,216,78,.35);
+}
+.eventList{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:18px;
+}
+.eventCard{
+  background:#131822;
+  border:1px solid #232d3d;
+  border-radius:18px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  transition:transform .2s, border-color .2s, box-shadow .2s;
+}
+.eventCard:hover{
+  transform:translateY(-3px);
+  border-color:rgba(240,180,41,.4);
+  box-shadow:0 12px 28px rgba(0,0,0,.6), 0 0 20px rgba(240,180,41,.12);
+}
+.eventCardMedia{
+  position:relative;
+  width:100%;
+  height:148px;
+  overflow:hidden;
+  background:#0d1117;
+}
+.eventCardMedia img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:transform .4s ease;
+}
+.eventCard:hover .eventCardMedia img{
+  transform:scale(1.06);
+}
+.eventCardShade{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,.15) 0%,rgba(19,24,34,.95) 100%);
+}
+.eventCardTag{
+  position:absolute;
+  top:10px;
+  left:12px;
+  z-index:5;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:3px 9px;
+  border-radius:999px;
+  background:linear-gradient(135deg,#e53e3e,#dd6b20);
+  color:#fff;
+  font:900 10px Oswald;
+  letter-spacing:.8px;
+  box-shadow:0 2px 8px rgba(0,0,0,.4);
+}
+.eventCardReward{
+  position:absolute;
+  bottom:10px;
+  left:12px;
+  z-index:5;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:5px 12px;
+  border-radius:999px;
+  background:linear-gradient(180deg,rgba(255,216,78,.95),rgba(201,130,7,.95));
+  color:#271900;
+  font:900 13px Oswald;
+  letter-spacing:.5px;
+  box-shadow:0 0 16px rgba(255,216,78,.4);
+}
+.eventCardBody{
+  padding:16px;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.eventCardHead h3{
+  margin:0;
+  font:900 17px Oswald;
+  letter-spacing:.4px;
+  color:#fff;
+}
+.eventCardDesc{
+  margin:0;
+  color:#8d99ad;
+  font-size:12.5px;
+  line-height:1.55;
+  flex:1;
+}
+.eventCardFooter{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding-top:12px;
+  border-top:1px solid #1c2432;
+  margin-top:auto;
+}
+.eventCardDate{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  font-size:11px;
+  color:#78869c;
+}
+.eventCardDate.active{
+  color:#34d399;
+}
+.eventBtnGroup{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.eventUrlLink{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:7px 11px;
+  border-radius:8px;
+  border:1px solid #2a3547;
+  background:#161d2b;
+  color:#9eb0ca;
+  font:700 11px Oswald;
+  text-decoration:none;
+  transition:all .15s;
+}
+.eventUrlLink:hover{
+  color:#fff;
+  border-color:#ffd84e;
+}
+.eventActionBtn{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:8px 14px;
+  border-radius:9px;
+  border:0;
+  background:linear-gradient(180deg,#ffd84e,#c98207);
+  color:#241802;
+  font:900 12px Oswald;
+  letter-spacing:.5px;
+  cursor:pointer;
+  box-shadow:0 2px 10px rgba(0,0,0,.4);
+  transition:filter .15s, transform .15s;
+}
+.eventActionBtn:hover:not(:disabled){
+  filter:brightness(1.15);
+  transform:scale(1.02);
+}
+.eventActionBtn.claimed{
+  background:#1e293b;
+  color:#64748b;
+  box-shadow:none;
+  cursor:default;
+}
+.emptyEventBox{
+  grid-column:1/-1;
+  padding:48px 20px;
+  text-align:center;
+  color:#707e94;
+  background:#10151f;
+  border:1px dashed #20293a;
+  border-radius:18px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+}
+
+/* ========================================================================= */
+/* LỊCH SỬ PAGE (HISTORY SCREEN)                                             */
+/* ========================================================================= */
+.historyScreen{
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+  background:#090d13;
+  color:#e8edf5;
+}
+.historyMain{
+  flex:1;
+  max-width:960px;
+  width:100%;
+  margin:0 auto;
+  padding:20px 16px 90px;
+  box-sizing:border-box;
+}
+.historyHeader{
+  margin-bottom:22px;
+}
+.historyTitleRow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:18px;
+}
+.historyBadge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:4px 12px;
+  border-radius:999px;
+  background:rgba(240,180,41,.12);
+  border:1px solid rgba(240,180,41,.3);
+  color:#ffd84e;
+  font:900 11px Oswald;
+  letter-spacing:1.2px;
+  margin-bottom:6px;
+}
+.historyTitleRow h1{
+  margin:0 0 4px;
+  font:900 28px Oswald;
+  letter-spacing:1px;
+  background:linear-gradient(180deg,#fff,#ffd84e);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.historyTitleRow p{
+  margin:0;
+  color:#8d99ad;
+  font-size:13px;
+}
+.historyReloadBtn{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  border:1px solid #263143;
+  background:#151b26;
+  color:#ffd84e;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  transition:all .15s;
+}
+.historyReloadBtn:hover{
+  background:#20293a;
+  border-color:#ffd84e;
+}
+.historyStatGrid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+.historyStatCard{
+  background:#131822;
+  border:1px solid #202a3a;
+  border-radius:14px;
+  padding:14px 12px;
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+.statLabel{
+  font-size:11.5px;
+  color:#7e8d9f;
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+}
+.statVal{
+  font:900 18px Oswald;
+  color:#fff;
+}
+.statVal.bet{color:#ffd84e}
+.statVal.win{color:#34d399}
+.statVal.profit{color:#34d399}
+.statVal.loss{color:#f87171}
+.historyTabs{
+  display:flex;
+  gap:8px;
+  margin-bottom:18px;
+  overflow-x:auto;
+  padding-bottom:4px;
+}
+.historyTab{
+  padding:7px 16px;
+  border-radius:999px;
+  border:1px solid #232d3d;
+  background:#131822;
+  color:#8d99ad;
+  font:800 13px Oswald;
+  letter-spacing:.5px;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:all .15s;
+}
+.historyTab:hover{
+  color:#fff;
+  border-color:#38465c;
+}
+.historyTab.active{
+  background:linear-gradient(180deg,#ffd84e,#c98207);
+  border-color:#ffd84e;
+  color:#221601;
+  box-shadow:0 0 12px rgba(255,216,78,.3);
+}
+.historyItemGrid{
+  display:grid;
+  gap:8px;
+}
+.historyCard{
+  background:#131822;
+  border:1px solid #1f2838;
+  border-radius:14px;
+  padding:12px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  transition:border-color .15s, transform .15s;
+}
+.historyCard:hover{
+  border-color:rgba(240,180,41,.3);
+  transform:translateX(2px);
+}
+.historyCardLeft{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+.historyIconWrap{
+  width:40px;
+  height:40px;
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  flex-shrink:0;
+}
+.historyIconWrap.pos{
+  background:rgba(52,211,153,.12);
+  border:1px solid rgba(52,211,153,.3);
+  color:#34d399;
+}
+.historyIconWrap.neg{
+  background:rgba(248,113,113,.12);
+  border:1px solid rgba(248,113,113,.3);
+  color:#f87171;
+}
+.txIcon.slot{color:#ffd84e}
+.txIcon.dice{color:#60a5fa}
+.txIcon.fish{color:#2dd4bf}
+.txIcon.bonus{color:#fbbf24}
+.historyCardInfo{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+  min-width:0;
+}
+.historyCardInfo strong{
+  font-size:13.5px;
+  color:#e8edf5;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.historyCardTime{
+  font-size:11.5px;
+  color:#6f7e91;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+}
+.historyCardRight{
+  text-align:right;
+  flex-shrink:0;
+}
+.historyAmount{
+  font:900 17px Oswald;
+  letter-spacing:.3px;
+}
+.historyAmount small{
+  font-size:10.5px;
+  opacity:.75;
+}
+.historyAmount.positive{color:#34d399}
+.historyAmount.negative{color:#f87171}
+.historyBalanceAfter{
+  font-size:11px;
+  color:#738295;
+}
+.historyLoading,.historyEmpty{
+  text-align:center;
+  padding:48px 20px;
+  color:#6f7e91;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:12px;
+}
+.historyEmpty h3{
+  margin:0;
+  color:#e8edf5;
+  font:900 18px Oswald;
+}
+.historyEmpty p{
+  margin:0;
+  font-size:13px;
+}
+.historyPlayBtn{
+  margin-top:8px;
+  padding:10px 20px;
+  border-radius:10px;
+  border:0;
+  background:linear-gradient(180deg,#ffd84e,#c98207);
+  color:#231701;
+  font:900 13px Oswald;
+  letter-spacing:.6px;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  cursor:pointer;
+}
+.walletRequestsSection{
+  margin-top:28px;
+  padding-top:20px;
+  border-top:1px solid #1f2838;
+}
+.walletRequestsSection h3{
+  font:900 16px Oswald;
+  color:#ffd84e;
+  margin:0 0 14px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.requestGrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:10px;
+}
+.requestItemCard{
+  background:#131822;
+  border:1px solid #202b3b;
+  border-radius:12px;
+  padding:12px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.reqHead{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:11.5px;
+}
+.reqType.deposit{color:#34d399;font-weight:800}
+.reqType.withdraw{color:#f87171;font-weight:800}
+.reqStatus.pending{color:#fbbf24}
+.reqStatus.approved{color:#34d399}
+.reqStatus.rejected{color:#f87171}
+.reqAmount{
+  font:900 16px Oswald;
+  color:#fff;
+}
+.reqTime{
+  font-size:11px;
+  color:#6c7a8c;
+}
+.reqNote{
+  font-size:11px;
+  color:#8a99ac;
+  margin:2px 0 0;
+}
+
+/* ========================================================================= */
+/* CÁ NHÂN PAGE (PROFILE SCREEN)                                             */
+/* ========================================================================= */
+.profileScreen{
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+  background:#090d13;
+  color:#e8edf5;
+}
+.profileMain{
+  flex:1;
+  max-width:680px;
+  width:100%;
+  margin:0 auto;
+  padding:20px 16px 90px;
+  box-sizing:border-box;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+/* VIP CARD */
+.vipCardSection{
+  perspective:1000px;
+}
+.vipCard{
+  position:relative;
+  background:linear-gradient(135deg,#1f1807 0%,#2d2209 45%,#141006 100%);
+  border:2px solid #ffd84e;
+  border-radius:24px;
+  padding:22px;
+  box-shadow:0 18px 45px rgba(0,0,0,.7),0 0 32px rgba(240,180,41,.2);
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+.vipCardGlow{
+  position:absolute;
+  top:-50%;
+  right:-30%;
+  width:320px;
+  height:320px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,216,78,.25) 0%,rgba(0,0,0,0) 70%);
+  pointer-events:none;
+}
+.vipCardShine{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(45deg,transparent 30%,rgba(255,255,255,.08) 50%,transparent 70%);
+  pointer-events:none;
+}
+.vipCardTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.vipBrand{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:#ffd84e;
+  font:900 17px Oswald;
+  letter-spacing:2px;
+  text-shadow:0 0 12px rgba(255,216,78,.6);
+}
+.vipTierBadge{
+  padding:4px 12px;
+  border-radius:999px;
+  background:linear-gradient(180deg,#ffd84e,#c98207);
+  color:#241802;
+  font:900 11px Oswald;
+  letter-spacing:1px;
+  box-shadow:0 0 12px rgba(255,216,78,.4);
+}
+.vipCardMiddle{
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+.vipAvatarWrap{
+  position:relative;
+  width:64px;
+  height:64px;
+  border-radius:50%;
+  border:2.5px solid #ffd84e;
+  overflow:hidden;
+  cursor:pointer;
+  box-shadow:0 0 16px rgba(255,216,78,.35);
+  flex-shrink:0;
+}
+.vipAvatarWrap img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.vipAvatarEdit{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.5);
+  display:grid;
+  place-items:center;
+  opacity:0;
+  transition:opacity .15s;
+  color:#ffd84e;
+}
+.vipAvatarWrap:hover .vipAvatarEdit{
+  opacity:1;
+}
+.vipUserInfo{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  min-width:0;
+}
+.vipUserInfo h2{
+  margin:0;
+  font:900 20px Oswald;
+  color:#fff;
+  letter-spacing:.5px;
+}
+.vipUserInfo p{
+  margin:0;
+  font-size:12.5px;
+  color:#c9b98f;
+}
+.vipIdBadge{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  font-size:11px;
+  color:#8d7f64;
+  cursor:pointer;
+  margin-top:3px;
+  transition:color .15s;
+}
+.vipIdBadge:hover{
+  color:#ffd84e;
+}
+.vipIdBadge .copied{
+  color:#34d399;
+}
+.vipCardBottom{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  padding-top:14px;
+  border-top:1px solid rgba(255,216,78,.2);
+}
+.vipBalanceCol{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.vipBalanceCol small{
+  font:800 10.5px Oswald;
+  letter-spacing:1px;
+  color:#9a8b6f;
+}
+.vipBalanceCol strong{
+  font:900 22px Oswald;
+  color:#ffd84e;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  text-shadow:0 0 12px rgba(255,216,78,.5);
+}
+.vipCheckinBtn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:9px 16px;
+  border-radius:12px;
+  border:0;
+  background:linear-gradient(180deg,#34d399,#059669);
+  color:#032918;
+  font:900 12.5px Oswald;
+  letter-spacing:.6px;
+  cursor:pointer;
+  box-shadow:0 4px 14px rgba(5,150,105,.4);
+  transition:all .15s;
+}
+.vipCheckinBtn:hover:not(:disabled){
+  filter:brightness(1.15);
+  transform:scale(1.03);
+}
+
+/* AVATAR MODAL */
+.avatarPickerModal{
+  position:fixed;
+  inset:0;
+  z-index:2000;
+  background:rgba(0,0,0,.75);
+  backdrop-filter:blur(6px);
+  display:grid;
+  place-items:center;
+  padding:16px;
+}
+.avatarPickerCard{
+  background:#161c26;
+  border:1px solid rgba(240,180,41,.4);
+  border-radius:20px;
+  padding:24px;
+  width:min(380px,100%);
+  text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.8);
+}
+.avatarPickerCard h3{
+  margin:0 0 16px;
+  font:900 18px Oswald;
+  color:#ffd84e;
+}
+.avatarGrid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-bottom:18px;
+}
+.avatarOpt{
+  position:relative;
+  aspect-ratio:1;
+  border-radius:50%;
+  border:2px solid #2b3749;
+  background:#0e121a;
+  overflow:hidden;
+  padding:0;
+  cursor:pointer;
+  transition:all .15s;
+}
+.avatarOpt img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.avatarOpt.selected{
+  border-color:#ffd84e;
+  box-shadow:0 0 16px rgba(255,216,78,.5);
+}
+.avatarCheck{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  display:grid;
+  place-items:center;
+  color:#ffd84e;
+}
+
+/* CARDS */
+.profileCard{
+  background:#131822;
+  border:1px solid #1f2939;
+  border-radius:18px;
+  padding:20px;
+}
+.profileCardHeader{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:16px;
+}
+.cardIcon{
+  width:38px;
+  height:38px;
+  border-radius:10px;
+  background:rgba(240,180,41,.12);
+  border:1px solid rgba(240,180,41,.3);
+  color:#ffd84e;
+  display:grid;
+  place-items:center;
+  flex-shrink:0;
+}
+.profileCardHeader h3{
+  margin:0 0 2px;
+  font:900 17px Oswald;
+  color:#fff;
+}
+.profileCardHeader p{
+  margin:0;
+  font-size:12px;
+  color:#8292a7;
+}
+
+/* WALLET SECTION */
+.walletInputBox{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.walletInputBox label{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  font-size:12.5px;
+  font-weight:700;
+  color:#c9d6e7;
+}
+.walletInputBox input{
+  width:100%;
+  box-sizing:border-box;
+  padding:12px 14px;
+  border-radius:10px;
+  border:1px solid #2b374a;
+  background:#0c1017;
+  color:#ffd84e;
+  font:900 18px Oswald;
+  outline:none;
+}
+.walletInputBox input:focus{
+  border-color:#ffd84e;
+  box-shadow:0 0 0 3px rgba(255,216,78,.15);
+}
+.quickAmountChips{
+  display:flex;
+  gap:6px;
+  overflow-x:auto;
+  padding-bottom:4px;
+}
+.quickChip{
+  padding:6px 12px;
+  border-radius:8px;
+  border:1px solid #232f41;
+  background:#161d2b;
+  color:#9eb0ca;
+  font:800 12px Oswald;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:all .15s;
+}
+.quickChip:hover{
+  border-color:#ffd84e;
+  color:#fff;
+}
+.quickChip.active{
+  background:rgba(240,180,41,.15);
+  border-color:#ffd84e;
+  color:#ffd84e;
+}
+.walletBtnRow{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:4px;
+}
+.walletBtn{
+  padding:12px;
+  border-radius:11px;
+  border:0;
+  font:900 14px Oswald;
+  letter-spacing:.6px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  cursor:pointer;
+  transition:filter .15s, transform .15s;
+}
+.walletBtn.deposit{
+  background:linear-gradient(180deg,#ffd84e,#c98207);
+  color:#241802;
+  box-shadow:0 4px 14px rgba(201,130,7,.3);
+}
+.walletBtn.withdraw{
+  background:linear-gradient(180deg,#3b82f6,#1d4ed8);
+  color:#fff;
+  box-shadow:0 4px 14px rgba(29,78,216,.3);
+}
+.walletBtn:hover{
+  filter:brightness(1.12);
+  transform:scale(1.02);
+}
+.walletNote{
+  font-size:11.5px;
+  color:#738397;
+  line-height:1.5;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin:4px 0 0;
+}
+
+/* PROFILE FORM */
+.profileForm{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.profileForm label{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  font-size:12px;
+  font-weight:700;
+  color:#a5b5c9;
+}
+.inputWithBtn{
+  display:flex;
+  gap:8px;
+}
+.inputWithBtn input{
+  flex:1;
+  padding:11px 14px;
+  border-radius:10px;
+  border:1px solid #2b374a;
+  background:#0c1017;
+  color:#fff;
+  font:inherit;
+  outline:none;
+}
+.inputWithBtn input:focus{
+  border-color:#ffd84e;
+}
+.saveNameBtn{
+  padding:0 18px;
+  border-radius:10px;
+  border:0;
+  background:linear-gradient(180deg,#ffd84e,#c98207);
+  color:#241802;
+  font:900 13px Oswald;
+  cursor:pointer;
+}
+.disabledInput{
+  padding:11px 14px;
+  border-radius:10px;
+  border:1px solid #1e2634;
+  background:#090d13;
+  color:#68778c;
+  font:inherit;
+}
+
+/* PROFILE MENU */
+.profileMenuSection{
+  display:grid;
+  gap:8px;
+}
+.profileMenuItem{
+  background:#131822;
+  border:1px solid #1f2939;
+  border-radius:14px;
+  padding:14px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  color:#e8edf5;
+  cursor:pointer;
+  transition:all .15s;
+}
+.profileMenuItem:hover{
+  border-color:rgba(240,180,41,.4);
+  background:#18202d;
+  transform:translateX(2px);
+}
+.menuLeft{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font:800 14px Oswald;
+  letter-spacing:.4px;
+}
+.menuLeft svg{
+  color:#ffd84e;
+}
+
+/* LOGOUT BUTTON */
+.logoutSection{
+  margin-top:10px;
+}
+.fullLogoutBtn{
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid rgba(248,113,113,.35);
+  background:rgba(248,113,113,.08);
+  color:#f87171;
+  font:900 14px Oswald;
+  letter-spacing:.8px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  cursor:pointer;
+  transition:all .15s;
+}
+.fullLogoutBtn:hover{
+  background:rgba(248,113,113,.18);
+  border-color:#f87171;
+}
+
+/* RESPONSIVE */
+@media (max-width:640px){
+  .historyStatGrid{
+    grid-template-columns:repeat(2,1fr);
+  }
+  .eventList{
+    grid-template-columns:1fr;
+  }
+  .vipCard{
+    padding:18px;
+  }
+  .vipCardMiddle{
+    gap:12px;
+  }
+  .vipAvatarWrap{
+    width:54px;
+    height:54px;
+  }
+  .vipUserInfo h2{
+    font-size:18px;
+  }
+  .vipBalanceCol strong{
+    font-size:19px;
+  }
+}
