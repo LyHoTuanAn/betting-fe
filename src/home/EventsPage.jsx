@@ -35,7 +35,7 @@ export function EventsPage({
   const [notice, setNotice] = useState(null);
 
   useEffect(() => {
-    fetchEvents().then(items => setEvents(items.filter(e => e.enabled !== false)));
+    fetchEvents().then(items => setEvents(items.filter(e => e.enabled !== false && e.category !== 'system_audio' && e.badge !== 'AUDIO_CONFIG')));
   }, []);
 
   const showToast = (msg, type = 'ok') => {
@@ -80,6 +80,7 @@ export function EventsPage({
         onBack={goHome || (() => setScreen('lobby'))}
         sound={sound}
         setSound={setSound}
+        user={user}
         onProfile={() => setScreen('profile')}
         onWallet={() => openPanel ? openPanel('wallet') : setScreen('profile')}
       />

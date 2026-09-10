@@ -5,12 +5,16 @@ import {FishGame} from './fish/FishGame.jsx';
 import {Poker} from './poker/Poker.jsx';
 import {Roulette} from './roulette/Roulette.jsx';
 import {Slot} from './slot/Slot.jsx';
+import {Blackjack} from './blackjack/Blackjack.jsx';
+import {TienLen} from './tienlen/TienLen.jsx';
 import {EventsPage} from './home/EventsPage.jsx';
 import {HistoryPage} from './home/HistoryPage.jsx';
 import {Lobby} from './home/Lobby.jsx';
 import {ProfilePage} from './home/ProfilePage.jsx';
 import {AccountPanel} from './shared/AccountPanel.jsx';
 import {AuthScreen} from './shared/AuthScreen.jsx';
+import {BackgroundMusic} from './shared/BackgroundMusic.jsx';
+import {LandscapeBlocker} from './shared/LandscapeBlocker.jsx';
 import {API_URL, api} from './shared/api.js';
 import {FALLBACK_GAMES, GAME_SCREEN, getMergedGames} from './shared/games.js';
 
@@ -21,6 +25,8 @@ const routes = {
   fish: 'ban-ca',
   poker: 'poker',
   roulette: 'roulette',
+  blackjack: 'blackjack',
+  tienlen: 'tien-len',
   events: 'su-kien',
   history: 'lich-su',
   profile: 'ca-nhan'
@@ -38,6 +44,10 @@ const routeAliases = {
   poker: 'poker',
   'texas-holdem': 'poker',
   roulette: 'roulette',
+  blackjack: 'blackjack',
+  'xi-dach': 'blackjack',
+  'tien-len': 'tienlen',
+  tienlen: 'tienlen',
   'su-kien': 'events',
   events: 'events',
   event: 'events',
@@ -171,18 +181,27 @@ export function App() {
     setScreen('lobby');
   };
 
-  if (loading) return <div className="appLoading"><Coins /><span>Đang mở kho báu...</span></div>;
-  if (bootError) return (
-    <div className="appLoading">
-      <Coins />
-      <span>{bootError}</span>
-      <button className="authSubmit" onClick={() => setRetry(n => n + 1)}>THỬ LẠI</button>
-      <button className="authSwitch" onClick={logout}>Đăng nhập lại</button>
-    </div>
-  );
-  if (!user) return <AuthScreen onAuthenticated={authenticated} />;
+  // Nhạc nền phải có mặt từ màn hình đầu tiên chứ không đợi đăng nhập xong:
+  // trình duyệt chỉ cho phát tiếng sau một cử chỉ thật, và cú bấm "Đăng nhập" là
+  // cử chỉ sớm nhất của phiên. Mount muộn hơn là ném mất nó, khiến người chơi vào
+  // tới sảnh vẫn im lặng cho đến khi bấm thêm một lần nữa.
+  const music = <BackgroundMusic sound={sound} />;
 
-  const common = {balance: user.balance, setBalance, sound, setSound, token, goHome: () => setScreen('lobby')};
+  if (loading) return <>{music}<div className="appLoading"><Coins /><span>Đang mở kho báu...</span></div></>;
+  if (bootError) return (
+    <>
+      {music}
+      <div className="appLoading">
+        <Coins />
+        <span>{bootError}</span>
+        <button className="authSubmit" onClick={() => setRetry(n => n + 1)}>THỬ LẠI</button>
+        <button className="authSwitch" onClick={logout}>Đăng nhập lại</button>
+      </div>
+    </>
+  );
+  if (!user) return <>{music}<AuthScreen onAuthenticated={authenticated} /></>;
+
+  const common = {user, setUser, balance: user.balance, setBalance, sound, setSound, token, goHome: () => setScreen('lobby')};
 
   // Trang chuyên biệt: Events, History, Profile
   let page;
@@ -200,11 +219,15 @@ export function App() {
       : open === 'fish' ? <FishGame {...common} />
       : open === 'poker' ? <Poker {...common} />
       : open === 'roulette' ? <Roulette {...common} />
+      : open === 'blackjack' ? <Blackjack {...common} />
+      : open === 'tienlen' ? <TienLen {...common} />
       : <Lobby setScreen={setScreen} openPanel={setPanel} games={games} {...common} />;
   }
 
   return (
     <>
+      <LandscapeBlocker />
+      {music}
       {page}
       {panel && <AccountPanel view={panel} onClose={() => setPanel(null)} user={user} token={token} setUser={setUser} onLogout={logout} />}
     </>

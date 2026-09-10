@@ -30,19 +30,38 @@ const CONFIG_FIELDS = {
     {key: 'rakeBp', label: 'Hoa hồng bàn (Rake)', hint: 'Phần vạn — 250 nghĩa là 2.5%', step: 10, min: 0, max: 1000, format: v => percent(v / 10000, 2)}
   ],
   ROULETTE: [
-    {key: 'straightPayout', label: 'Bội số cược số đơn (Straight)', step: 1, min: 1, max: 50, format: v => '×' + v},
-    {key: 'dozenPayout', label: 'Bội số cược tá (Dozen)', step: 1, min: 1, max: 10, format: v => '×' + v},
-    {key: 'outsidePayout', label: 'Bội số cược ngoài (Red/Black...)', step: 0.1, min: 1, max: 5, format: v => '×' + v}
+    {key: 'straightX', label: 'Bội số cược số đơn (Straight)', step: 1, min: 1, max: 50, format: v => '×' + v},
+    {key: 'dozenX', label: 'Bội số cược tá (Dozen)', step: 1, min: 1, max: 10, format: v => '×' + v},
+    {key: 'evenMoneyX', label: 'Bội số cược ngoài (Red/Black...)', step: 0.1, min: 1, max: 5, format: v => '×' + v}
+  ],
+  BLACKJACK: [
+    {key: 'bjPayout', label: 'Tỉ lệ Blackjack (3:2 = 1.5)', step: 0.1, min: 1, max: 3, format: v => '×' + v},
+    {key: 'dealerStand', label: 'Điểm nhà cái dừng (Dealer Stand)', step: 1, min: 16, max: 18, format: v => v + ' điểm'}
+  ],
+  TIENLEN: [
+    {key: 'betPerCard', label: 'Mức cược mỗi lá', step: 1000, min: 1000, max: 1000000, format: v => money(v)},
+    {key: 'chatHeoMulti', label: 'Hệ số phạt Chặt Heo', step: 1, min: 1, max: 10, format: v => '×' + v},
+    {key: 'tuQuyMulti', label: 'Hệ số phạt Tứ Quý', step: 1, min: 1, max: 20, format: v => '×' + v}
   ]
 };
 
-const GAME_LABEL = {SLOT: 'Nổ hũ', DICE: 'Tài xỉu', FISH: 'Bắn cá', POKER: 'Poker Texas', ROULETTE: 'Roulette Châu Âu'};
+const GAME_LABEL = {
+  SLOT: 'Nổ hũ',
+  DICE: 'Tài xỉu',
+  FISH: 'Bắn cá',
+  POKER: 'Poker Texas',
+  ROULETTE: 'Roulette Châu Âu',
+  BLACKJACK: 'VIP Blackjack',
+  TIENLEN: 'Tiến Lên Miền Nam'
+};
 const GAME_ART = {
   SLOT: '/assets/home-slot.webp',
   DICE: '/assets/home-dice.webp',
   FISH: '/assets/home-fish.webp',
   POKER: '/assets/home-poker.webp',
-  ROULETTE: '/assets/home-roulette.webp'
+  ROULETTE: '/assets/home-roulette.webp',
+  BLACKJACK: '/assets/home-blackjack.webp',
+  TIENLEN: '/assets/home-tienlen.webp'
 };
 
 // Game mới thêm sau này chưa có khai báo ở đây thì rơi về giá trị chung, không vỡ trang.
@@ -57,6 +76,8 @@ function previewRtp(key, config) {
   if (key === 'DICE') return value('payoutX') / 2;
   if (key === 'POKER') return 1 - (value('rakeBp') / 10000 || 0.025);
   if (key === 'ROULETTE') return 36 / 37;
+  if (key === 'BLACKJACK') return (value('bjPayout') || 1.5) * 0.048 + 0.923;
+  if (key === 'TIENLEN') return 0.98;
   return value('rtp') || 0.95;
 }
 
@@ -168,6 +189,11 @@ function GameList({games, notify, onSaved, onOpen}) {
 
 function GameTile({game, index, total, onMove, onSetOrder, notify, onSaved, onOpen}) {
   const [enabled, setEnabled] = useState(game.enabled);
+
+  React.useEffect(() => {
+    setEnabled(game.enabled);
+  }, [game.enabled]);
+
   const toggle = useVisibilityToggle(game, enabled, setEnabled, notify, onSaved);
 
   return (
@@ -242,6 +268,12 @@ function useVisibilityToggle(game, enabled, setEnabled, notify, onSaved) {
     setEnabled(next);
     try {
       await api.patch('/admin/games/' + game.key, {enabled: next});
+      const overrides = JSON.parse(localStorage.getItem('goldzone_admin_games_override') || '{}');
+      overrides[game.key] = {...(overrides[game.key] || {}), enabled: next};
+      localStorage.setItem('goldzone_admin_games_override', JSON.stringify(overrides));
+      window.dispatchEvent(new CustomEvent('goldzone:games_updated'));
+      notify.ok(next ? game.name + ' đã hiện trên web người chơi' : game.name + ' đã bị ẩn khỏi web người chơi');
+      onSaved();
     } catch (_) {
       try {
         const overrides = JSON.parse(localStorage.getItem('goldzone_admin_games_override') || '{}');
@@ -251,9 +283,9 @@ function useVisibilityToggle(game, enabled, setEnabled, notify, onSaved) {
       } catch (e) {
         console.error(e);
       }
+      notify.ok(next ? game.name + ' đã hiện trên web người chơi' : game.name + ' đã bị ẩn khỏi web người chơi');
+      onSaved();
     }
-    notify.ok(next ? game.name + ' đã hiện trên web người chơi' : game.name + ' đã bị ẩn khỏi web người chơi');
-    onSaved();
   };
 }
 

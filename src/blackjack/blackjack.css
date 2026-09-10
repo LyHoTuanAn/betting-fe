@@ -1,0 +1,607 @@
+/* VIP BLACKJACK LUXURY CASINO STYLING */
+
+.bjScreen {
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden !important;
+  background-color: #0b0f19;
+  color: #dfe2f1;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.bjMain {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 6px 10px 10px;
+  box-sizing: border-box;
+  position: relative;
+  gap: 8px;
+}
+
+/* Luxury Felt Canvas Area - Fit directly into 100dvh */
+.bjFeltCanvas {
+  flex: 1;
+  min-height: 0;
+  background: radial-gradient(circle at 50% 30%, #152922 0%, #0c1814 60%, #060d0b 100%);
+  border-radius: 16px;
+  border: 2px solid rgba(212, 175, 55, 0.4);
+  box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.85), 0 8px 25px rgba(0, 0, 0, 0.6);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px 12px;
+  overflow: hidden;
+}
+
+.bjFeltDecorArch {
+  position: absolute;
+  top: 15%;
+  left: 6%;
+  right: 6%;
+  height: 55%;
+  border: 1.5px dashed rgba(212, 175, 55, 0.18);
+  border-radius: 50% / 35%;
+  pointer-events: none;
+}
+
+/* Sections */
+.bjSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.bjRoleHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.bjRoleLabel {
+  font-size: 11px;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.bjRoleLabel.player {
+  color: #ffd700;
+}
+
+.bjRuleNote {
+  font-size: 10px;
+  color: #64748b;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.bjScoreBadge {
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.08);
+  color: #dfe2f1;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.bjScoreBadge.player {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.25), rgba(255, 165, 0, 0.12));
+  color: #ffd700;
+  border-color: rgba(255, 215, 0, 0.4);
+}
+
+.bjScoreBadge.blackjack {
+  background: linear-gradient(135deg, #ffd700, #ff8c00);
+  color: #111;
+  font-weight: 900;
+  border: none;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+}
+
+.bjScoreBadge.bust {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+}
+
+.bjTurnTimerPill {
+  font-size: 10px;
+  font-weight: 800;
+  color: #56e5a9;
+  background: rgba(86, 229, 169, 0.15);
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(86, 229, 169, 0.3);
+  animation: bjPulse 1.2s infinite alternate;
+}
+
+@keyframes bjPulse {
+  from { opacity: 0.7; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1.03); }
+}
+
+/* Card Hand & Cards */
+.bjCardHand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: clamp(62px, 12vh, 86px);
+  position: relative;
+}
+
+.bjCardPlaceholder {
+  display: flex;
+  gap: 8px;
+}
+
+.bjEmptyCardSlot {
+  width: clamp(44px, 11vw, 60px);
+  height: clamp(60px, 14.5vh, 82px);
+  border: 1.5px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.bjCard {
+  width: clamp(44px, 11.5vw, 62px);
+  height: clamp(62px, 15vh, 84px);
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 4px 5px;
+  position: relative;
+  margin-left: -16px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.bjCard:first-child {
+  margin-left: 0;
+}
+
+.bjCard.isRed {
+  color: #e11d48;
+}
+
+.bjCard.isBlack {
+  color: #0f172a;
+}
+
+.bjCardTop, .bjCardBottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+
+.bjCardBottom {
+  transform: rotate(180deg);
+}
+
+.bjCardRank {
+  font-size: clamp(10px, 2.5vw, 13px);
+  font-family: 'Bodoni Moda', serif;
+  font-weight: 900;
+}
+
+.bjCardSuit {
+  font-size: clamp(9px, 2.2vw, 11px);
+  line-height: 1;
+}
+
+.bjCardCenter {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(18px, 4.5vw, 24px);
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+.bjCardFacedown {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border: 1.5px solid rgba(212, 175, 55, 0.5);
+  padding: 3px;
+}
+
+.bjCardBackPattern {
+  width: 100%;
+  height: 100%;
+  border: 1px dashed rgba(212, 175, 55, 0.4);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  background: rgba(212, 175, 55, 0.08);
+}
+
+/* Center Section */
+.bjCenterSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  z-index: 3;
+}
+
+.bjGuideBanner {
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: clamp(10px, 2.3vw, 12px);
+  color: #ffd700;
+  text-align: center;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  width: 95%;
+  max-width: 440px;
+  transition: all 0.25s ease;
+}
+
+.bjGuideBanner.turnActive {
+  border-color: #56e5a9;
+  color: #56e5a9;
+  background: rgba(16, 44, 34, 0.9);
+  box-shadow: 0 0 12px rgba(86, 229, 169, 0.25);
+}
+
+.bjBetSpotsRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.bjSideSpot {
+  flex: 1;
+  max-width: 96px;
+  height: 54px;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 2px 4px;
+}
+
+.bjSideSpot:hover {
+  border-color: rgba(255, 215, 0, 0.6);
+  background: rgba(15, 23, 42, 0.85);
+}
+
+.bjSideSpot.hasBet {
+  border-color: #ffd700;
+  border-style: solid;
+  background: rgba(255, 215, 0, 0.15);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.25);
+}
+
+.bjSpotTitle {
+  font-size: 9px;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.bjSpotOdds {
+  font-size: 8px;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.bjSpotAdd {
+  font-size: 9px;
+  color: #38bdf8;
+  font-weight: 800;
+  margin-top: 2px;
+}
+
+.bjSpotChip {
+  font-size: 10px;
+  font-weight: 800;
+  color: #111;
+  background: #ffd700;
+  padding: 1px 6px;
+  border-radius: 10px;
+  margin-top: 2px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+}
+
+.bjMainSpot {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 215, 0, 0.5);
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.15) 0%, rgba(0, 0, 0, 0.55) 80%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.2s;
+}
+
+.bjMainSpot:hover {
+  transform: scale(1.05);
+  border-color: #ffd700;
+}
+
+.bjMainSpotRing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.bjMainSpotTitle {
+  font-size: 8px;
+  font-weight: 800;
+  color: #cbd5e1;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.bjMainSpotValue {
+  font-size: 11px;
+  font-weight: 900;
+  color: #ffd700;
+  margin-top: 2px;
+}
+
+/* Bottom Console */
+.bjBottomConsole {
+  background: #141a29;
+  border-radius: 14px;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* Phase A: Turn Action Buttons */
+.bjTurnActionsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+  gap: 6px;
+  width: 100%;
+}
+
+.bjTurnBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 4px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.15s;
+}
+
+.bjTurnBtn .btnMain {
+  font-size: clamp(11px, 2.7vw, 13px);
+  line-height: 1.1;
+  font-weight: 800;
+}
+
+.bjTurnBtn .btnSub {
+  font-size: clamp(8px, 2vw, 10px);
+  opacity: 0.85;
+  margin-top: 1px;
+}
+
+.bjTurnBtn.hit {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.bjTurnBtn.stand {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.bjTurnBtn.double {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #111;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+.bjTurnBtn.fold {
+  background: #334155;
+  color: #94a3b8;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.bjTurnBtn:active {
+  transform: scale(0.95);
+}
+
+/* Phase B: Betting Console */
+.bjBettingConsole {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bjChipTrayRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.bjChipItem {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.15s;
+}
+
+.bjChipItem.active {
+  transform: translateY(-4px) scale(1.1);
+}
+
+.bjChipCore {
+  width: clamp(34px, 8.5vw, 42px);
+  height: clamp(34px, 8.5vw, 42px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(9px, 2.2vw, 11px);
+  font-weight: 800;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+  border: 2px dashed rgba(255, 255, 255, 0.6);
+  position: relative;
+}
+
+.bjChipCore.c1k {
+  background: radial-gradient(circle, #475569, #1e293b);
+  color: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.bjChipCore.c5k {
+  background: radial-gradient(circle, #2563eb, #1e40af);
+  color: #ffffff;
+  border-color: #93c5fd;
+}
+
+.bjChipCore.c25k {
+  background: radial-gradient(circle, #10b981, #047857);
+  color: #ffffff;
+  border-color: #a7f3d0;
+}
+
+.bjChipCore.c100k {
+  background: radial-gradient(circle, #18181b, #000000);
+  color: #ffd700;
+  border-color: #ffd700;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+}
+
+.bjChipCore.c500k {
+  background: radial-gradient(circle, #dc2626, #991b1b);
+  color: #ffffff;
+  border-color: #fecaca;
+}
+
+.bjChipCore.c1m {
+  background: radial-gradient(circle, #d97706, #78350f);
+  color: #ffd700;
+  border-color: #fde68a;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+}
+
+.bjDealControlsBar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bjUtilActionBtn {
+  flex: 1;
+  padding: 7px 4px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  font-size: clamp(9px, 2.2vw, 11px);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.bjUtilActionBtn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.bjDealPrimaryBtn {
+  flex: 2;
+  padding: 7px 8px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ffd700, #f59e0b);
+  border: none;
+  color: #1e1e1e;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  box-shadow: 0 3px 12px rgba(245, 158, 11, 0.4);
+  font-size: clamp(11px, 2.7vw, 13px);
+  transition: transform 0.1s, box-shadow 0.15s;
+}
+
+.bjDealPrimaryBtn:active {
+  transform: scale(0.97);
+}
+
+.bjToastNotification {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.88);
+  color: #ffd700;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  z-index: 100;
+  pointer-events: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+  animation: bjFadeIn 0.2s ease;
+  white-space: nowrap;
+}
+
+@keyframes bjFadeIn {
+  from { opacity: 0; transform: translate(-50%, -8px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}

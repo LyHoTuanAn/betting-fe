@@ -3,7 +3,9 @@ export const GAME_SCREEN = {
   DICE: 'dice',
   FISH: 'fish',
   POKER: 'poker',
-  ROULETTE: 'roulette'
+  ROULETTE: 'roulette',
+  BLACKJACK: 'blackjack',
+  TIENLEN: 'tienlen'
 };
 
 export const FALLBACK_GAMES = [
@@ -64,10 +66,44 @@ export const FALLBACK_GAMES = [
     minBet: 1000,
     maxBet: 10000000,
     theoreticalRtp: 0.973,
-    config: { straightPayout: 36, dozenPayout: 3, outsidePayout: 2 },
+    config: { straightX: 36, dozenX: 3, evenMoneyX: 2 },
     stats: { rounds: 88, bet: 26400000, payout: 25687200, houseNet: 712800, actualRtp: 0.973 }
+  },
+  {
+    key: 'BLACKJACK',
+    name: 'VIP BLACKJACK',
+    subtitle: 'Xì Dách hoàng gia 3:2',
+    enabled: true,
+    sortOrder: 6,
+    minBet: 50,
+    maxBet: 2500000,
+    theoreticalRtp: 0.995,
+    config: { bjPayout: 1.5, dealerStand: 17, doubleAllowed: 1, surrenderAllowed: 1 },
+    stats: { rounds: 64, bet: 16000000, payout: 15920000, houseNet: 80000, actualRtp: 0.995 }
+  },
+  {
+    key: 'TIENLEN',
+    name: 'TIẾN LÊN MIỀN NAM',
+    subtitle: 'Phòng Đại Gia 4 người',
+    enabled: true,
+    sortOrder: 7,
+    minBet: 10000,
+    maxBet: 10000000,
+    theoreticalRtp: 0.98,
+    config: { betPerCard: 10000, chatHeoMulti: 2, tuQuyMulti: 4 },
+    stats: { rounds: 72, bet: 28800000, payout: 28224000, houseNet: 576000, actualRtp: 0.98 }
   }
 ];
+
+export const GAME_CATEGORY = {
+  SLOT: 'arcade',
+  FISH: 'arcade',
+  ROULETTE: 'casino',
+  DICE: 'casino',
+  POKER: 'card',
+  BLACKJACK: 'card',
+  TIENLEN: 'card'
+};
 
 export function getMergedGames(remoteGames = []) {
   let localOverrides = {};
@@ -82,14 +118,15 @@ export function getMergedGames(remoteGames = []) {
     const remote = remoteMap.get(fallback.key);
     const override = localOverrides[fallback.key] || {};
     const base = remote ? { ...fallback, ...remote } : { ...fallback };
-    list.push({ ...base, ...override });
+    const enabled = override.enabled !== undefined ? override.enabled : (remote?.enabled !== undefined ? remote.enabled : fallback.enabled);
+    list.push({ ...base, enabled, ...override });
     remoteMap.delete(fallback.key);
   }
 
   // Any other remote game not in fallback list
   for (const [, remote] of remoteMap) {
     const override = localOverrides[remote.key] || {};
-    list.push({ ...remote, ...override });
+    list.push({ ...remote, enabled: override.enabled !== undefined ? override.enabled : (remote.enabled ?? true), ...override });
   }
 
   return list.sort((a, b) => (a.sortOrder || 99) - (b.sortOrder || 99));

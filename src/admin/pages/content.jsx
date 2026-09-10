@@ -32,6 +32,8 @@ const PRESET_IMAGES = [
   {label: 'Avatar Thành Viên', url: '/assets/home-avatar.webp'}
 ];
 
+import AudioPage from './audio.jsx';
+
 export default function ContentPage({notify}) {
   const [tab, setTab] = useState('banners');
   const {data: bannersData, loading: bLoading, reload: reloadBanners} = useAsync(() => api.get('/admin/banners'), []);
@@ -52,24 +54,32 @@ export default function ContentPage({notify}) {
         >
           <Sparkles size={18} /> Quản lý Sự kiện ({eventsData?.events?.length || 0})
         </button>
+        <button
+          className={tab === 'audio' ? 'active' : ''}
+          onClick={() => setTab('audio')}
+        >
+          <PlayCircle size={18} /> Nhạc Nền & Âm Thanh
+        </button>
       </div>
 
       {tab === 'banners' ? (
         bLoading ? <Loading label="Đang tải danh sách banner..." /> : (
           <BannerManager
-            banners={bannersData?.banners || []}
+            banners={bannersData?.banners?.filter(b => b.tag !== 'AUDIO_SYSTEM' && b.title !== 'GOLDZONE_AUDIO_CONFIG') || []}
             notify={notify}
             reload={reloadBanners}
           />
         )
-      ) : (
+      ) : tab === 'events' ? (
         eLoading ? <Loading label="Đang tải danh sách sự kiện..." /> : (
           <EventManager
-            events={eventsData?.events || []}
+            events={eventsData?.events?.filter(e => e.category !== 'system_audio' && e.badge !== 'AUDIO_CONFIG') || []}
             notify={notify}
             reload={reloadEvents}
           />
         )
+      ) : (
+        <AudioPage notify={notify} />
       )}
     </div>
   );
