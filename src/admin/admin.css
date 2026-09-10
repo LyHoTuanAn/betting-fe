@@ -777,3 +777,10 @@ tbody tr:hover { background: var(--panel-2); }
   border-top: 1px solid var(--line);
   background: var(--panel-2);
 }
+
+/* ---- Trang nạp/rút: tab cấp trang, trạng thái worker, form tài khoản ---- */
+.pageTabs{margin-bottom:16px}
+.readerCard{margin-bottom:16px}
+.readerRow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:13px}
+.formGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-bottom:16px}
+td code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;opacity:.85}

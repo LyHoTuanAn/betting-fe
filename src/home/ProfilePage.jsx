@@ -5,7 +5,6 @@ import {
   LogOut, Minus, Plus, ShieldCheck, Sparkles, Star, User, Wallet
 } from 'lucide-react';
 import {api} from '../shared/api.js';
-import {BET_LIMITS} from '../shared/constants.js';
 import {Popup, usePopup} from '../shared/Popup.jsx';
 import {money} from '../shared/format.js';
 import {Topbar} from '../shared/Topbar.jsx';
@@ -35,9 +34,6 @@ export function ProfilePage({
   const [name, setName] = useState(user?.displayName || '');
   const [avatar, setAvatar] = useState(AVATARS[0]);
   const [showAvatarPicker, setShowAvatarPicker] = useState(false);
-  const [walletAmount, setWalletAmount] = useState(50000);
-  const [walletType, setWalletType] = useState('deposit');
-  const [walletHistory, setWalletHistory] = useState([]);
   const notice = usePopup();
   const [copied, setCopied] = useState(false);
 
@@ -60,30 +56,10 @@ export function ProfilePage({
       if (setUser) setUser(data.user);
       showMsg('Đã cập nhật tên hiển thị thành công!', 'ok');
     } catch (err) {
-      showMsg(err.message || 'Lỗi khi cập nhật tên', 'warn');
+      showMsg(err.display || err.message || 'Lỗi khi cập nhật tên', 'warn');
     }
   };
 
-  const submitWallet = async (type) => {
-    const num = Number(walletAmount);
-    if (!num || num < BET_LIMITS.wallet.min || num > BET_LIMITS.wallet.max) {
-      return showMsg(`Số tiền phải từ ${money(BET_LIMITS.wallet.min)} đến ${money(BET_LIMITS.wallet.max)} vàng`, 'warn');
-    }
-
-    try {
-      const data = await api(`/wallet/${type}`, {
-        token,
-        method: 'POST',
-        body: JSON.stringify({amount: num})
-      });
-      const profile = await api('/me', {token});
-      if (setUser) setUser(profile.user);
-      setWalletHistory(curr => [data.request, ...curr]);
-      showMsg(`Đã tạo yêu cầu ${type === 'deposit' ? 'nạp' : 'rút'} #${data.request.id.slice(-6)}. Trạng thái: Chờ duyệt.`, 'ok');
-    } catch (err) {
-      showMsg(err.message || 'Không thể tạo yêu cầu nạp rút', 'warn');
-    }
-  };
 
   return (
     <div className="screen profileScreen">
@@ -175,42 +151,25 @@ export function ProfilePage({
           </div>
 
           <div className="walletInputBox">
-            <label>
-              <span>Số tiền giao dịch (vàng):</span>
-              <input
-                type="number"
-                min={BET_LIMITS.wallet.min}
-                max={BET_LIMITS.wallet.max}
-                step="50000"
-                value={walletAmount}
-                onChange={e => setWalletAmount(e.target.value)}
-              />
-            </label>
-
-            <div className="quickAmountChips">
-              {[50000, 100000, 200000, 500000, 1000000].map(amt => (
-                <button
-                  key={amt}
-                  type="button"
-                  className={'quickChip ' + (Number(walletAmount) === amt ? 'active' : '')}
-                  onClick={() => setWalletAmount(amt)}
-                >
-                  +{money(amt)}
-                </button>
-              ))}
+            <div className="walletBalanceRow">
+              <span>Số dư khả dụng</span>
+              <b>{money(balance)}</b>
             </div>
 
+            {/* Nạp và rút đều nằm trong trang ví: nạp cần hiện số tài khoản Timo
+                kèm nội dung chuyển khoản, rút cần thông tin ngân hàng người nhận
+                — không nhét vừa một ô nhập số tiền như luồng cũ. */}
             <div className="walletBtnRow">
-              <button className="walletBtn deposit" onClick={() => submitWallet('deposit')}>
+              <button className="walletBtn deposit" onClick={() => openPanel?.('wallet')}>
                 <Plus size={16} /> Nạp Vàng
               </button>
-              <button className="walletBtn withdraw" onClick={() => submitWallet('withdraw')}>
+              <button className="walletBtn withdraw" onClick={() => openPanel?.('wallet')}>
                 <Minus size={16} /> Rút Vàng
               </button>
             </div>
 
             <p className="walletNote">
-              <ShieldCheck size={14} /> Hệ thống giao dịch nội bộ thử nghiệm, không hỗ trợ tiền mặt thực tế.
+              <ShieldCheck size={14} /> Nạp bằng cách chuyển khoản tới tài khoản Timo của hệ thống, ghi đúng username trong nội dung. Tiền được cộng tự động.
             </p>
           </div>
         </section>

@@ -67,6 +67,15 @@ export function FishGame({goHome,balance,setBalance,sound,setSound,token}){
   useEffect(()=>{
    const wsBase=API_URL.replace(/^http/,'ws').replace(/[/]api$/,'');
    const socket=new WebSocket(`${wsBase}/ws/fish?token=${encodeURIComponent(token)}`);socketRef.current=socket;
+   // Server đóng socket kèm mã lý do (hết phiên, game bảo trì...). Không đọc mã
+   // này thì màn hình chỉ đứng im và người chơi không biết vì sao không bắn được.
+   let leaving=false;
+   const CLOSE_REASON={
+    1008:'PHIÊN ĐĂNG NHẬP HẾT HẠN, VUI LÒNG ĐĂNG NHẬP LẠI',
+    1013:'GAME BẮN CÁ ĐANG TẠM ĐÓNG ĐỂ BẢO TRÌ',
+    1006:'MẤT KẾT NỐI MẠNG TỚI PHÒNG BẮN CÁ',
+    1011:'PHÒNG BẮN CÁ GẶP SỰ CỐ, VUI LÒNG VÀO LẠI'
+   };
    const shape=f=>{const t=fishTypes.find(k=>k.kind===f.kind)||{};return {id:f.id,kind:f.kind,value:f.value,hp:f.hp,maxHp:f.maxHp,tag:f.tag,size:t.size||'small',name:t.name||'',x:f.x*100,top:f.y*100,heading:f.heading,server:true,round:0,delay:0,dur:0,hitKey:0,dead:false}};
    const STAGE_NOTICE={
     'school-warn':{type:'school',title:'ĐÀN CÁ LỚN SẮP XUẤT HIỆN',sub:'Chuẩn bị săn bầy cá'},
@@ -74,8 +83,14 @@ export function FishGame({goHome,balance,setBalance,sound,setSound,token}){
     'rare-warn':{type:'mermaid',title:'🧜‍♀️ CÁ HOÀNG KIM SẮP XUẤT HIỆN',sub:'Chuẩn bị dồn hoả lực'},
     'rare':{type:'mermaid active',title:'🧜‍♀️ CÁ HOÀNG KIM ĐÃ XUẤT HIỆN',sub:'Ai dứt điểm người đó ăn trọn'}
    };
+   socket.onerror=()=>{if(!leaving)triggerFx('diceLose','KHÔNG KẾT NỐI ĐƯỢC PHÒNG BẮN CÁ',2200)};
+   socket.onclose=event=>{
+    if(leaving||event.code===1000)return;
+    triggerFx('diceLose',CLOSE_REASON[event.code]||(event.reason?event.reason.toUpperCase():'MẤT KẾT NỐI TỚI PHÒNG BẮN CÁ, VUI LÒNG VÀO LẠI'),2600);
+   };
    socket.onmessage=event=>{
-    const m=JSON.parse(event.data);
+    let m;
+    try{m=JSON.parse(event.data)}catch{return triggerFx('diceLose','MÁY CHỦ GỬI DỮ LIỆU KHÔNG ĐỌC ĐƯỢC',1600)}
     if(m.type==='joined'){playerIdRef.current=m.playerId;setLobby(m);setPhase(m.status==='playing'?'playing':'waiting');return}
     if(m.type==='lobby'){setLobby(m);if(m.status==='playing')setPhase('playing');return}
     if(m.type==='game-start'){setPhase('playing');setEventNotice(null);return}
@@ -103,7 +118,7 @@ export function FishGame({goHome,balance,setBalance,sound,setSound,token}){
      setTimeout(()=>setHits(h=>h.filter(a=>a.id!==hitId)),820);
     }
    };
-   return()=>{socket.close();socketRef.current=null;clearTimeout(comboTimer.current);clearInterval(fireTimerRef.current);cancelAnimationFrame(aimFrameRef.current)};
+   return()=>{leaving=true;socket.close(1000,'left');socketRef.current=null;clearTimeout(comboTimer.current);clearInterval(fireTimerRef.current);cancelAnimationFrame(aimFrameRef.current)};
   },[token]);
 
  const pointAt=e=>{
@@ -131,7 +146,7 @@ export function FishGame({goHome,balance,setBalance,sound,setSound,token}){
   setShots(s=>[...s,{id,x:px,y:py,angle,distance,power,sx:muzzleX,sy:muzzleY}]);
   setTimeout(()=>setShots(s=>s.filter(a=>a.id!==id)),360);
    const shotPower=power;
-   if(socketRef.current?.readyState===WebSocket.OPEN)socketRef.current.send(JSON.stringify({type:'shoot',aimX:px/100,aimY:py/100,power:shotPower}));else triggerFx('diceLose','MẤT KẾT NỐI PHÒNG',900)
+   if(socketRef.current?.readyState===WebSocket.OPEN)socketRef.current.send(JSON.stringify({type:'shoot',aimX:px/100,aimY:py/100,power:shotPower}));else triggerFx('diceLose','CHƯA KẾT NỐI ĐƯỢC PHÒNG BẮN CÁ, VUI LÒNG CHỜ HOẶC VÀO LẠI',1800)
  };
  shootRef.current=shoot;
   const trackAim=e=>{

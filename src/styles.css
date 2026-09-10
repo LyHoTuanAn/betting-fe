@@ -3792,3 +3792,65 @@ button,.spinBtn,.cardHit,.playBtn{
     font-size:19px;
   }
 }
+
+/* ===================== VÍ NGƯỜI CHƠI (nạp/rút qua Timo) ===================== */
+.walletView{display:flex;flex-direction:column;gap:14px}
+.walletView h2{margin:0;font-size:20px;letter-spacing:.5px}
+
+.wvBalances{background:linear-gradient(150deg,rgba(255,199,89,.16),rgba(255,255,255,.04));border:1px solid rgba(255,199,89,.28);border-radius:16px;padding:14px 16px}
+.wvBalanceMain{display:flex;flex-direction:column;gap:2px}
+.wvBalanceMain span{font-size:11px;letter-spacing:1.2px;text-transform:uppercase;opacity:.65}
+.wvBalanceMain strong{display:flex;align-items:center;gap:8px;font-size:26px;color:#ffd479;font-variant-numeric:tabular-nums}
+.wvBalanceSplit{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1)}
+.wvBalanceSplit div{display:flex;flex-direction:column;gap:3px}
+.wvBalanceSplit span{display:flex;align-items:center;gap:4px;font-size:11px;opacity:.6}
+.wvBalanceSplit b{font-size:15px;font-variant-numeric:tabular-nums}
+.wvBalanceSplit b.ok{color:#7ee08a}
+.wvBalanceSplit b.locked{color:#ffb45c}
+
+.wvTabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.wvTabs button{display:flex;align-items:center;justify-content:center;gap:6px;padding:11px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.wvTabs button.active{background:linear-gradient(135deg,#ffc759,#ff9f43);border-color:transparent;color:#2a1a05}
+
+.wvPane{display:flex;flex-direction:column;gap:12px}
+
+.wvBankCard{border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:12px 14px;background:rgba(255,255,255,.03)}
+.wvBankHead{display:flex;align-items:center;gap:8px;font-weight:700;margin-bottom:8px;font-size:14px}
+.wvRow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0;border-top:1px solid rgba(255,255,255,.07);font-size:14px}
+.wvRow:first-of-type{border-top:none}
+.wvRow span{opacity:.6;font-size:12px}
+.wvRow b{display:flex;align-items:center;gap:6px;font-variant-numeric:tabular-nums;text-align:right}
+
+/* Nội dung chuyển khoản: sai ký tự là giao dịch không tự khớp được, nên nó
+   phải là thứ nổi bật nhất trên màn hình nạp tiền. */
+.wvContentBox{display:flex;flex-direction:column;gap:6px;align-items:center;padding:14px;border-radius:14px;border:1px dashed #ffc759;background:rgba(255,199,89,.1)}
+.wvContentBox span{font-size:10px;letter-spacing:1.4px;opacity:.75}
+.wvContentBox strong{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:800;letter-spacing:1px;color:#ffd479;word-break:break-all}
+
+.wvCopy{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;flex:none;border-radius:8px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:inherit;cursor:pointer}
+.wvCopy.copied{color:#7ee08a;border-color:#7ee08a}
+
+.wvAlert{display:flex;align-items:flex-start;gap:8px;margin:0;padding:10px 12px;border-radius:12px;background:rgba(255,180,92,.12);border:1px solid rgba(255,180,92,.3);font-size:12.5px;line-height:1.5}
+.wvAlert svg{flex:none;margin-top:1px}
+.wvHint{margin:0;font-size:12px;opacity:.7;line-height:1.55}
+.wvLoading{display:flex;align-items:center;gap:8px;margin:0;font-size:13px;opacity:.7}
+
+.wvForm{display:flex;flex-direction:column;gap:10px}
+.wvForm label{display:flex;flex-direction:column;gap:5px;font-size:12px;opacity:.85}
+.wvForm input{padding:11px 12px;border-radius:11px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.25);color:#fff;font-size:15px}
+.wvForm input:focus{outline:none;border-color:#ffc759}
+
+.wvList{display:flex;flex-direction:column;gap:8px}
+.wvList h3{margin:6px 0 0;font-size:13px;letter-spacing:.6px;opacity:.7;text-transform:uppercase}
+.wvList article{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+.wvList article div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.wvList article strong{font-size:15px;font-variant-numeric:tabular-nums}
+.wvList article small{font-size:11px;opacity:.6}
+.wvList article small.wvNote{opacity:.85;font-style:italic}
+.wvList article b{flex:none;font-size:11px;padding:4px 9px;border-radius:999px;letter-spacing:.4px}
+.wvList article b.pending{background:rgba(255,180,92,.18);color:#ffb45c}
+.wvList article b.approved{background:rgba(126,224,138,.16);color:#7ee08a}
+.wvList article b.rejected{background:rgba(255,110,110,.16);color:#ff8080}
+.walletBalanceRow{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;margin-bottom:10px;border-radius:12px;background:rgba(255,199,89,.1);border:1px solid rgba(255,199,89,.25)}
+.walletBalanceRow span{font-size:12px;opacity:.7}
+.walletBalanceRow b{font-size:18px;color:#ffd479;font-variant-numeric:tabular-nums}

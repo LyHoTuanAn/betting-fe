@@ -36,7 +36,7 @@ export function HistoryPage({
     setLoading(true);
     Promise.all([
       api('/transactions?limit=' + limit, {token}).catch(() => ({items: []})),
-      api('/wallet/requests', {token}).catch(() => ({items: []}))
+      api('/wallet/withdrawals', {token}).catch(() => ({items: []}))
     ]).then(([txData, walletData]) => {
       setItems(txData.items || []);
       setWalletRequests(walletData.items || []);

@@ -20,16 +20,20 @@ export default function DashboardPage({go}) {
     <div className="stack">
       <div className="statRow">
         <StatTile label="Người chơi" value={money(stats.users)} sub={stats.suspended + ' bị khóa'} />
-        <StatTile label="Yêu cầu ví chờ duyệt" value={money(stats.pendingWalletRequests)} tone={stats.pendingWalletRequests ? 'warn' : 'ok'} />
+        <StatTile label="Yêu cầu rút chờ duyệt" value={money(stats.pendingWithdrawals)} tone={stats.pendingWithdrawals ? 'warn' : 'ok'} />
+        <StatTile label="Giao dịch nạp chưa khớp" value={money(stats.unmatchedDeposits)} tone={stats.unmatchedDeposits ? 'warn' : 'ok'} />
         <StatTile label="Số ván đã chơi" value={money(stats.rounds)} />
         <StatTile label="Tổng cược" value={money(stats.bet)} />
         <StatTile label="Nhà cái thu về" value={money(stats.houseNet)} tone={stats.houseNet >= 0 ? 'ok' : 'warn'} sub={'RTP thực tế ' + percent(stats.bet ? stats.payout / stats.bet : null)} />
       </div>
 
-      {stats.pendingWalletRequests > 0 && (
+      {(stats.pendingWithdrawals > 0 || stats.unmatchedDeposits > 0) && (
         <Card>
           <div className="callout">
-            <p>Có <strong>{stats.pendingWalletRequests}</strong> yêu cầu nạp/rút đang chờ bạn duyệt.</p>
+            <p>
+              Có <strong>{stats.pendingWithdrawals}</strong> yêu cầu rút chờ duyệt
+              {stats.unmatchedDeposits > 0 && <> và <strong>{stats.unmatchedDeposits}</strong> giao dịch nạp chưa khớp được người chơi</>}.
+            </p>
             <button className="primary" onClick={() => go('wallet')}>Xử lý ngay</button>
           </div>
         </Card>

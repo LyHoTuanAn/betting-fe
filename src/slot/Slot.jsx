@@ -60,7 +60,7 @@ export function Slot({goHome,balance,setBalance,sound,setSound,token}){
    setSpinning(false);
    setSpinningCols(Array(5).fill(false));
    setSlotStage('idle');
-   triggerFx('lose',error.message,2000);
+   triggerFx('lose',error.display || error.message,2000);
    return;
   }
   const result=ensure25Grid(response.grid);

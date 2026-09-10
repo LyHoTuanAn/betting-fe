@@ -141,7 +141,7 @@ export function Dice({goHome,balance,setBalance,sound,setSound,token}){
    setBalance(v => v + currentChip);
    setPlaced(0);
    setPlacedSide(null);
-   setNote(error.message);
+   setNote(error.display || error.message);
   }
  };
 
