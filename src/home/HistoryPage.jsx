@@ -24,7 +24,8 @@ export function HistoryPage({
   setSound,
   token,
   openPanel,
-  goHome
+  goHome,
+  user
 }) {
   const [items, setItems] = useState([]);
   const [walletRequests, setWalletRequests] = useState([]);

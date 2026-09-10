@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {LayoutDashboard, Gamepad2, Wallet, Users, LogOut, ShieldCheck, Sparkles} from 'lucide-react';
+import {LayoutDashboard, Gamepad2, Wallet, Users, LogOut, ShieldCheck, Sparkles, Music} from 'lucide-react';
 import {api, session} from './api.js';
 import {Dialog, useDialog} from './ui.jsx';
 import DashboardPage from './pages/dashboard.jsx';
@@ -8,12 +8,14 @@ import GamesPage from './pages/games.jsx';
 import WalletPage from './pages/wallet.jsx';
 import UsersPage from './pages/users.jsx';
 import ContentPage from './pages/content.jsx';
+import AudioPage from './pages/audio.jsx';
 import './admin.css';
 
 const PAGES = [
   {key: 'dashboard', label: 'Tổng quan', icon: LayoutDashboard, Component: DashboardPage},
   {key: 'games', label: 'Quản lý game', icon: Gamepad2, Component: GamesPage},
   {key: 'content', label: 'Banner & Sự kiện', icon: Sparkles, Component: ContentPage},
+  {key: 'audio', label: 'Nhạc nền & Âm thanh', icon: Music, Component: AudioPage},
   {key: 'wallet', label: 'Nạp / rút', icon: Wallet, Component: WalletPage},
   {key: 'users', label: 'Người chơi', icon: Users, Component: UsersPage}
 ];

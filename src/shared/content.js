@@ -114,7 +114,7 @@ export async function fetchBanners() {
   try {
     const data = await api('/content/banners');
     if (data && Array.isArray(data.banners) && data.banners.length > 0) {
-      return data.banners;
+      return data.banners.filter(b => b.tag !== 'AUDIO_SYSTEM' && b.title !== 'GOLDZONE_AUDIO_CONFIG');
     }
   } catch (err) {
     console.warn('Cannot fetch banners from server, using fallback', err);

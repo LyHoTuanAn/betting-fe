@@ -13,6 +13,7 @@ import {Lobby} from './home/Lobby.jsx';
 import {ProfilePage} from './home/ProfilePage.jsx';
 import {AccountPanel} from './shared/AccountPanel.jsx';
 import {AuthScreen} from './shared/AuthScreen.jsx';
+import {BackgroundMusic} from './shared/BackgroundMusic.jsx';
 import {API_URL, api} from './shared/api.js';
 import {FALLBACK_GAMES, GAME_SCREEN, getMergedGames} from './shared/games.js';
 
@@ -179,16 +180,25 @@ export function App() {
     setScreen('lobby');
   };
 
-  if (loading) return <div className="appLoading"><Coins /><span>Đang mở kho báu...</span></div>;
+  // Nhạc nền phải có mặt từ màn hình đầu tiên chứ không đợi đăng nhập xong:
+  // trình duyệt chỉ cho phát tiếng sau một cử chỉ thật, và cú bấm "Đăng nhập" là
+  // cử chỉ sớm nhất của phiên. Mount muộn hơn là ném mất nó, khiến người chơi vào
+  // tới sảnh vẫn im lặng cho đến khi bấm thêm một lần nữa.
+  const music = <BackgroundMusic sound={sound} />;
+
+  if (loading) return <>{music}<div className="appLoading"><Coins /><span>Đang mở kho báu...</span></div></>;
   if (bootError) return (
-    <div className="appLoading">
-      <Coins />
-      <span>{bootError}</span>
-      <button className="authSubmit" onClick={() => setRetry(n => n + 1)}>THỬ LẠI</button>
-      <button className="authSwitch" onClick={logout}>Đăng nhập lại</button>
-    </div>
+    <>
+      {music}
+      <div className="appLoading">
+        <Coins />
+        <span>{bootError}</span>
+        <button className="authSubmit" onClick={() => setRetry(n => n + 1)}>THỬ LẠI</button>
+        <button className="authSwitch" onClick={logout}>Đăng nhập lại</button>
+      </div>
+    </>
   );
-  if (!user) return <AuthScreen onAuthenticated={authenticated} />;
+  if (!user) return <>{music}<AuthScreen onAuthenticated={authenticated} /></>;
 
   const common = {user, setUser, balance: user.balance, setBalance, sound, setSound, token, goHome: () => setScreen('lobby')};
 
@@ -215,6 +225,7 @@ export function App() {
 
   return (
     <>
+      {music}
       {page}
       {panel && <AccountPanel view={panel} onClose={() => setPanel(null)} user={user} token={token} setUser={setUser} onLogout={logout} />}
     </>

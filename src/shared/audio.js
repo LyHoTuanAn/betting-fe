@@ -7,6 +7,31 @@ let globalVolume = (() => {
   }
 })();
 
+let sharedAudioCtx = null;
+
+function getOrCreateAudioContext() {
+  if (typeof window === 'undefined') return null;
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) return null;
+  if (!sharedAudioCtx || sharedAudioCtx.state === 'closed') {
+    sharedAudioCtx = new AudioCtx();
+  }
+  if (sharedAudioCtx.state === 'suspended') {
+    sharedAudioCtx.resume().catch(() => {});
+  }
+  return sharedAudioCtx;
+}
+
+/**
+ * Mở khóa âm thanh sau cử chỉ đầu tiên của người dùng. Dùng lại đúng một
+ * AudioContext dùng chung — trình duyệt chỉ cho mỗi trang khoảng 6 context,
+ * nên tạo mới theo từng cú click sẽ làm cạn hạn mức và giết luôn tiếng game.
+ */
+export const unlockAudioContext = () => {
+  const ctx = getOrCreateAudioContext();
+  return ctx ? ctx.state : null;
+};
+
 export const getSoundVolume = () => globalVolume;
 
 export const setSoundVolume = (vol) => {
@@ -19,10 +44,8 @@ export const setSoundVolume = (vol) => {
 
 export const playTestSound = (volume = globalVolume) => {
   try {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (!AudioCtx) return;
-    const ctx = new AudioCtx();
-    if (ctx.state === 'suspended') ctx.resume();
+    const ctx = getOrCreateAudioContext();
+    if (!ctx) return;
     const now = ctx.currentTime;
     const vol = typeof volume === 'number' ? Math.max(0, Math.min(1, volume)) : globalVolume;
     if (vol <= 0.001) return;
@@ -48,10 +71,8 @@ export const playTestSound = (volume = globalVolume) => {
 export const playCelebrationAudio = (type, soundEnabled) => {
   if (!soundEnabled || globalVolume <= 0.001) return;
   try {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (!AudioCtx) return;
-    const ctx = new AudioCtx();
-    if (ctx.state === 'suspended') ctx.resume();
+    const ctx = getOrCreateAudioContext();
+    if (!ctx) return;
     const now = ctx.currentTime;
 
     const master = ctx.createGain();

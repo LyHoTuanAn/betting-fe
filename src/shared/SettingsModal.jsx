@@ -1,17 +1,27 @@
 import {useEffect, useState} from 'react';
-import {Check, Info, Play, Sliders, Sparkles, Volume2, VolumeX, X} from 'lucide-react';
+import {Check, Info, Music, Play, Sliders, Sparkles, Volume2, VolumeX, X} from 'lucide-react';
 import {getSoundVolume, playTestSound, setSoundVolume} from './audio.js';
+import {fetchAudioConfig} from './audioSources.js';
 
 export function SettingsModal({isOpen, onClose, sound, setSound}) {
   const [activeTab, setActiveTab] = useState('audio');
   const [volume, setVolumeState] = useState(() => Math.round(getSoundVolume() * 100));
+  const [bgAudio, setBgAudio] = useState(null);
 
   useEffect(() => {
+    fetchAudioConfig().then(cfg => setBgAudio(cfg));
     const handleVolumeChange = (e) => {
       setVolumeState(Math.round(e.detail * 100));
     };
+    const handleConfigChange = (e) => {
+      if (e.detail) setBgAudio(e.detail);
+    };
     window.addEventListener('goldzone:volume', handleVolumeChange);
-    return () => window.removeEventListener('goldzone:volume', handleVolumeChange);
+    window.addEventListener('goldzone:audio_config_updated', handleConfigChange);
+    return () => {
+      window.removeEventListener('goldzone:volume', handleVolumeChange);
+      window.removeEventListener('goldzone:audio_config_updated', handleConfigChange);
+    };
   }, []);
 
   if (!isOpen) return null;
@@ -132,6 +142,24 @@ export function SettingsModal({isOpen, onClose, sound, setSound}) {
                   ))}
                 </div>
               </div>
+
+              {/* THÔNG TIN NHẠC NỀN HỆ THỐNG */}
+              {bgAudio && bgAudio.enabled && (
+                <div style={{background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,216,78,0.2)', borderRadius: '14px', padding: '12px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                  <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                    <div style={{background: 'rgba(255,216,78,0.15)', border: '1px solid #ffd84e', borderRadius: '50%', width: '32px', height: '32px', display: 'grid', placeItems: 'center', color: '#ffd84e'}}>
+                      <Music size={16} />
+                    </div>
+                    <div>
+                      <small style={{color: '#94a3b8', display: 'block', fontSize: '11px'}}>ĐANG PHÁT NHẠC NỀN</small>
+                      <strong style={{color: '#ffd84e', fontSize: '13.5px'}}>{bgAudio.title || 'Nhạc Nền GoldZone'}</strong>
+                    </div>
+                  </div>
+                  <span style={{fontSize: '11px', background: 'rgba(255,255,255,0.08)', padding: '3px 8px', borderRadius: '6px', color: '#cbd5e1', textTransform: 'uppercase'}}>
+                    {bgAudio.source || 'Online'}
+                  </span>
+                </div>
+              )}
             </div>
           )}
 
