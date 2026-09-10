@@ -4,7 +4,6 @@ import {ResultFx} from '../shared/ResultFx.jsx';
 import {useGameFx} from '../shared/hooks.js';
 import {playCelebrationAudio} from '../shared/audio.js';
 import {money} from '../shared/format.js';
-import {api} from '../shared/api.js';
 import {
   calculateHandScore,
   check21Plus3,
@@ -13,31 +12,31 @@ import {
 } from './blackjack-engine.js';
 import './blackjack.css';
 
-const CHIP_VALUES = [10, 25, 50, 100, 500];
+const CHIP_VALUES = [1000, 5000, 25000, 100000, 500000, 1000000];
 
 export function Blackjack({goHome, balance, setBalance, sound, setSound, token, user}) {
   const [fx, triggerFx, dismissFx] = useGameFx();
   const [shoe, setShoe] = useState(() => createShoe(6));
-  const [selectedChip, setSelectedChip] = useState(100);
-  const [mainBet, setMainBet] = useState(250);
-  const [lastMainBet, setLastMainBet] = useState(250);
-  const [sideBetPair, setSideBetPair] = useState(25);
-  const [sideBetPoker, setSideBetPoker] = useState(25);
+  const [selectedChip, setSelectedChip] = useState(25000);
+  const [mainBet, setMainBet] = useState(25000);
+  const [lastMainBet, setLastMainBet] = useState(25000);
+  const [sideBetPair, setSideBetPair] = useState(0);
+  const [sideBetPoker, setSideBetPoker] = useState(0);
 
   // Game state: 'betting', 'playerTurn', 'dealerTurn', 'settled'
   const [gameState, setGameState] = useState('betting');
   const [dealerCards, setDealerCards] = useState([]);
   const [playerCards, setPlayerCards] = useState([]);
   const [turnTimer, setTurnTimer] = useState(15);
-  const [winStreak, setWinStreak] = useState(3);
-  const [pastResults, setPastResults] = useState(['W', 'W', 'W', 'L']);
+  const [winStreak, setWinStreak] = useState(0);
+  const [pastResults, setPastResults] = useState(['W', 'W', 'L']);
   const [toastMsg, setToastMsg] = useState('');
-  const [statusText, setStatusText] = useState('Đặt cược và bấm CHIA BÀI để bắt đầu');
+  const [guideMsg, setGuideMsg] = useState('👉 Chọn mức phỉnh và bấm CHIA BÀI để bắt đầu');
 
   const soundRef = useRef(sound);
   useEffect(() => { soundRef.current = sound; }, [sound]);
 
-  const showToast = (msg, duration = 2200) => {
+  const showToast = (msg, duration = 2000) => {
     setToastMsg(msg);
     setTimeout(() => {
       setToastMsg(curr => curr === msg ? '' : curr);
@@ -55,7 +54,7 @@ export function Blackjack({goHome, balance, setBalance, sound, setSound, token, 
     return { card, newShoe: rem };
   };
 
-  // Turn timer
+  // Turn timer countdown
   useEffect(() => {
     if (gameState !== 'playerTurn') return;
     const interval = setInterval(() => {
@@ -71,10 +70,14 @@ export function Blackjack({goHome, balance, setBalance, sound, setSound, token, 
   }, [gameState, playerCards, dealerCards]);
 
   // Initial deal
-  const handleDeal = async () => {
+  const handleDeal = () => {
     const totalWager = mainBet + sideBetPair + sideBetPoker;
+    if (totalWager <= 0) {
+      showToast('Vui lòng đặt cược trước khi chia bài!');
+      return;
+    }
     if (balance < totalWager) {
-      showToast('Số dư không đủ để đặt cược!');
+      showToast('Số dư của bạn không đủ để đặt cược!');
       return;
     }
 
@@ -101,7 +104,7 @@ export function Blackjack({goHome, balance, setBalance, sound, setSound, token, 
       if (pairRes.won) {
         const winAmount = sideBetPair * (pairRes.multiplier + 1);
         sidePayout += winAmount;
-        showToast(`🎉 Thắng ${pairRes.label}: +$${winAmount}`);
+        showToast(`🎉 Thắng ${pairRes.label}: +${money(winAmount)}`);
       }
     }
     if (sideBetPoker > 0) {
@@ -109,7 +112,7 @@ export function Blackjack({goHome, balance, setBalance, sound, setSound, token, 
       if (pokerRes.won) {
         const winAmount = sideBetPoker * (pokerRes.multiplier + 1);
         sidePayout += winAmount;
-        showToast(`🎉 Thắng ${pokerRes.label}: +$${winAmount}`);
+        showToast(`🎉 Thắng ${pokerRes.label}: +${money(winAmount)}`);
       }
     }
 
@@ -120,67 +123,67 @@ export function Blackjack({goHome, balance, setBalance, sound, setSound, token, 
     const pScore = calculateHandScore(initialPlayerCards);
     const dScore = calculateHandScore(initialDealerCards);
 
-    // Check instant Blackjack
+    // Check instant Blackjack (21 with 2 cards)
     if (pScore.isBlackjack) {
       setGameState('settled');
       if (dScore.isBlackjack) {
         // Push
         setBalance(b => b + mainBet);
-        setStatusText('Cả hai đều được BLACKJACK! Hòa tiền cược.');
-        setPastResults(r => ['P', ...r.slice(0, 3)]);
+        setGuideMsg('🤝 Cả hai đều được BLACKJACK! Hòa tiền cược.');
+        setPastResults(r => ['P', ...r.slice(0, 4)]);
         triggerFx('diceWin', 'HÒA CƯỢC (PUSH)', 2500);
       } else {
         // Natural 3:2 payout
         const bjWin = mainBet + Math.floor(mainBet * 1.5);
         setBalance(b => b + bjWin);
-        setStatusText(`🔥 BLACKJACK! Bạn thắng +$${bjWin} (3:2)!`);
+        setGuideMsg(`🔥 BLACKJACK! Bạn thắng +${money(bjWin)} (Tỷ lệ 3:2)!`);
         setWinStreak(s => s + 1);
-        setPastResults(r => ['W', ...r.slice(0, 3)]);
+        setPastResults(r => ['W', ...r.slice(0, 4)]);
         playCelebrationAudio('bigWin', soundRef.current);
-        triggerFx('bigWin', `+$${bjWin}`, 4500);
+        triggerFx('bigWin', `+${money(bjWin)}`, 4500);
       }
       return;
     }
 
     setGameState('playerTurn');
-    setStatusText('Lượt của bạn: Rút thêm (HIT) hoặc Dằn bài (STAND)');
+    setGuideMsg('👉 Lượt của bạn: Bấm RÚT để thêm bài hoặc DẰNG nếu đã đủ điểm');
   };
 
-  // Player HIT
+  // Player HIT (Rút thêm bài)
   const handleHit = () => {
     if (gameState !== 'playerTurn') return;
-    const { card, newShoe } = drawCard(shoe);
+    const { card } = drawCard(shoe);
     const nextCards = [...playerCards, card];
     setPlayerCards(nextCards);
 
     const score = calculateHandScore(nextCards);
     if (score.isBust) {
       setGameState('settled');
-      setStatusText(`Quá 21 điểm (${score.total})! Bạn đã thua.`);
+      setGuideMsg(`💥 QUẮC (${score.total} điểm)! Quá 21 điểm - Bạn đã thua.`);
       setWinStreak(0);
-      setPastResults(r => ['L', ...r.slice(0, 3)]);
+      setPastResults(r => ['L', ...r.slice(0, 4)]);
       triggerFx('diceLose', `QUÁ ĐIỂM (${score.total})`, 2500);
-      showToast('Quá 21 điểm (BUST)!');
     } else if (score.total === 21) {
-      showToast('Đạt 21 điểm! Chuyển lượt nhà cái...');
-      setTimeout(() => finishDealerTurn(nextCards), 800);
+      showToast('Đạt 21 điểm hoàn hảo! Chuyển lượt nhà cái...');
+      setTimeout(() => finishDealerTurn(nextCards), 700);
     } else {
-      showToast(`Rút được ${card.rank}${card.symbol} · Tổng điểm: ${score.total}`);
+      setGuideMsg(`Điểm hiện tại: ${score.total} điểm. RÚT tiếp hay DẰNG bài?`);
     }
   };
 
-  // Player STAND
+  // Player STAND (Dằn bài / Dừng)
   const handleStand = () => {
     if (gameState !== 'playerTurn') return;
-    showToast(`Dằn bài với ${calculateHandScore(playerCards).total} điểm (STAND)`);
+    const pTotal = calculateHandScore(playerCards).total;
+    showToast(`Bạn dừng ở ${pTotal} điểm`);
     finishDealerTurn(playerCards);
   };
 
-  // Player DOUBLE
+  // Player DOUBLE (Gấp đôi cược & rút đúng 1 lá)
   const handleDouble = () => {
     if (gameState !== 'playerTurn' || playerCards.length !== 2) return;
     if (balance < mainBet) {
-      showToast('Số dư không đủ để gấp đôi!');
+      showToast('Số dư không đủ để cược gấp đôi!');
       return;
     }
 
@@ -191,37 +194,36 @@ export function Blackjack({goHome, balance, setBalance, sound, setSound, token, 
     const { card } = drawCard(shoe);
     const nextCards = [...playerCards, card];
     setPlayerCards(nextCards);
-    showToast(`Cược gấp đôi ($${newMainBet})! Rút 1 lá duy nhất: ${card.rank}${card.symbol}`);
+    showToast(`Gấp đôi (${money(newMainBet)})! Rút 1 lá: ${card.rank}${card.symbol}`);
 
     const score = calculateHandScore(nextCards);
     if (score.isBust) {
       setGameState('settled');
-      setStatusText(`Quá 21 điểm (${score.total})! Bạn đã thua $${newMainBet}.`);
+      setGuideMsg(`💥 QUẮC (${score.total} điểm)! Thua cược gấp đôi ${money(newMainBet)}.`);
       setWinStreak(0);
-      setPastResults(r => ['L', ...r.slice(0, 3)]);
+      setPastResults(r => ['L', ...r.slice(0, 4)]);
       triggerFx('diceLose', `QUÁ ĐIỂM (${score.total})`, 2500);
     } else {
-      setTimeout(() => finishDealerTurn(nextCards, newMainBet), 1000);
+      setTimeout(() => finishDealerTurn(nextCards, newMainBet), 900);
     }
   };
 
-  // Player SURRENDER
+  // Player FOLD / SURRENDER (Đầu hàng lấy lại 50%)
   const handleSurrender = () => {
     if (gameState !== 'playerTurn' || playerCards.length !== 2) return;
     const refund = Math.floor(mainBet / 2);
     setBalance(b => b + refund);
     setGameState('settled');
-    setStatusText(`Đầu hàng (FOLD): Nhận lại 50% ($${refund}).`);
+    setGuideMsg(`Bỏ bài: Nhận lại 50% cược (${money(refund)}).`);
     setWinStreak(0);
-    setPastResults(r => ['L', ...r.slice(0, 3)]);
-    showToast(`Đã bỏ bài. Nhận lại $${refund}`);
+    setPastResults(r => ['L', ...r.slice(0, 4)]);
     triggerFx('diceLose', 'BỎ BÀI (FOLD)', 2000);
   };
 
-  // Dealer Turn & Settlement
+  // Dealer Turn & Winner Settlement
   const finishDealerTurn = (finalPlayerCards, activeBet = mainBet) => {
     setGameState('dealerTurn');
-    setStatusText('Nhà cái đang rút bài...');
+    setGuideMsg('⏳ Nhà cái đang mở bài và rút...');
 
     let curDealer = [...dealerCards];
     let curShoe = shoe;
@@ -234,43 +236,42 @@ export function Blackjack({goHome, balance, setBalance, sound, setSound, token, 
         curDealer.push(drawn.card);
         setDealerCards([...curDealer]);
         dScore = calculateHandScore(curDealer);
-        setTimeout(stepDealer, 700);
+        setTimeout(stepDealer, 650);
       } else {
-        // Evaluate winner
         const pScore = calculateHandScore(finalPlayerCards);
         setGameState('settled');
 
         if (dScore.isBust) {
           const winAmount = activeBet * 2;
           setBalance(b => b + winAmount);
-          setStatusText(`🎉 Nhà cái quá 21 điểm (${dScore.total})! Bạn thắng +$${winAmount}!`);
+          setGuideMsg(`🎉 Nhà cái QUẮC (${dScore.total} điểm)! Bạn thắng +${money(winAmount)}!`);
           setWinStreak(s => s + 1);
-          setPastResults(r => ['W', ...r.slice(0, 3)]);
+          setPastResults(r => ['W', ...r.slice(0, 4)]);
           playCelebrationAudio('jackpot', soundRef.current);
-          triggerFx('jackpot', `+$${winAmount}`, 4000);
+          triggerFx('jackpot', `+${money(winAmount)}`, 4000);
         } else if (pScore.total > dScore.total) {
           const winAmount = activeBet * 2;
           setBalance(b => b + winAmount);
-          setStatusText(`🎉 Bạn (${pScore.total}) thắng Nhà cái (${dScore.total})! Nhận +$${winAmount}!`);
+          setGuideMsg(`🎉 Bạn (${pScore.total} điểm) THẮNG Nhà cái (${dScore.total} điểm)! +${money(winAmount)}`);
           setWinStreak(s => s + 1);
-          setPastResults(r => ['W', ...r.slice(0, 3)]);
+          setPastResults(r => ['W', ...r.slice(0, 4)]);
           playCelebrationAudio('bigWin', soundRef.current);
-          triggerFx('bigWin', `+$${winAmount}`, 4000);
+          triggerFx('bigWin', `+${money(winAmount)}`, 4000);
         } else if (pScore.total === dScore.total) {
           setBalance(b => b + activeBet);
-          setStatusText(`🤝 Hòa điểm (${pScore.total})! Hoàn lại cược $${activeBet}.`);
-          setPastResults(r => ['P', ...r.slice(0, 3)]);
+          setGuideMsg(`🤝 HÒA (${pScore.total} điểm)! Hoàn lại ${money(activeBet)}.`);
+          setPastResults(r => ['P', ...r.slice(0, 4)]);
           triggerFx('diceWin', 'HÒA CƯỢC (PUSH)', 2500);
         } else {
-          setStatusText(`💔 Nhà cái (${dScore.total}) thắng Bạn (${pScore.total}).`);
+          setGuideMsg(`💔 Nhà cái (${dScore.total} điểm) thắng Bạn (${pScore.total} điểm).`);
           setWinStreak(0);
-          setPastResults(r => ['L', ...r.slice(0, 3)]);
+          setPastResults(r => ['L', ...r.slice(0, 4)]);
           triggerFx('diceLose', `THUA (${pScore.total} vs ${dScore.total})`, 2500);
         }
       }
     };
 
-    setTimeout(stepDealer, 600);
+    setTimeout(stepDealer, 500);
   };
 
   const playerScoreObj = calculateHandScore(playerCards);
@@ -279,7 +280,17 @@ export function Blackjack({goHome, balance, setBalance, sound, setSound, token, 
     ? (dealerCards[0].rank === 'A' ? 11 : dealerCards[0].value)
     : dealerScoreObj.total;
 
-  const canSplit = gameState === 'playerTurn' && playerCards.length === 2 && playerCards[0].rank === playerCards[1].rank;
+  const canDouble = gameState === 'playerTurn' && playerCards.length === 2 && balance >= mainBet;
+  const canSurrender = gameState === 'playerTurn' && playerCards.length === 2;
+
+  const formatScoreBadge = (scoreObj, isDealer = false) => {
+    if (scoreObj.total === 0) return '0';
+    if (isDealer && gameState === 'playerTurn') return `${dealerVisibleScore} + ?`;
+    if (scoreObj.isBlackjack) return '🔥 XÌ DÁCH';
+    if (scoreObj.isBust) return `💥 QUẮC (${scoreObj.total})`;
+    if (scoreObj.total === 21) return '⭐ 21 ĐIỂM';
+    return `${scoreObj.total} Điểm`;
+  };
 
   return (
     <div className={'screen bjScreen ' + (fx.type ? `fx-${fx.type}` : '')}>
@@ -287,90 +298,47 @@ export function Blackjack({goHome, balance, setBalance, sound, setSound, token, 
       <Topbar balance={balance} onBack={goHome} sound={sound} setSound={setSound} user={user} />
 
       <main className="bjMain">
-        {/* Table Metadata & Live Rules Strip */}
-        <div className="bjMetaStrip">
-          <div className="bjMetaTop">
-            <div className="bjTitleWrap">
-              <span className="material-symbols-outlined text-[#ffc174] text-[20px]" style={{fontVariationSettings: "'FILL' 1"}}>stars</span>
-              <span className="bjTitleText">VIP BLACKJACK</span>
-            </div>
-            <div className="bjShoePill">
-              <span className="bjDotPulse"></span>
-              <span>SHOE 4/6 • DECK 68%</span>
-            </div>
-          </div>
-
-          <div className="bjMetaGrid">
-            <div className="bjMetaBox">
-              <small>LIMITS</small>
-              <strong>$50 - $2,500</strong>
-            </div>
-            <div className="bjMetaBox">
-              <small>PAYOUT</small>
-              <strong className="green">BJ Pays 3:2</strong>
-            </div>
-            <div className="bjMetaBox">
-              <small>RULE</small>
-              <strong>Stand All 17s</strong>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Luxury Felt Surface */}
+        {/* Table Felt Board (Single Non-scrolling Canvas) */}
         <div className="bjFeltCanvas">
-          <svg className="bjSvgOverlay" fill="none" preserveAspectRatio="none" viewBox="0 0 360 440">
-            <path d="M-20 80 C 100 20, 260 20, 380 80" stroke="#ffc174" strokeDasharray="4 6" strokeWidth="1.5"></path>
-            <path d="M-10 100 C 110 40, 250 40, 370 100" opacity="0.6" stroke="#ffc174" strokeWidth="0.75"></path>
-            <path d="M 30 240 C 100 200, 260 200, 330 240" opacity="0.3" stroke="#ffc174" strokeDasharray="2 4" strokeWidth="1"></path>
-            <circle cx="180" cy="275" opacity="0.4" r="54" stroke="#ffc174" strokeWidth="1"></circle>
-          </svg>
+          {/* Subtle Decorative Arch */}
+          <div className="bjFeltDecorArch" />
 
-          {/* Dealer Area */}
-          <div className="bjDealerArea">
-            <div className="bjDealerHeaderPill">
-              <span className="material-symbols-outlined text-[#ffc174] text-[15px]">token</span>
-              <span className="bjDealerTitle">DEALER • NHÀ CÁI</span>
-              <div className="bjScorePill">
-                SCORE: {gameState === 'playerTurn' ? `${dealerVisibleScore} / ?` : dealerScoreObj.total}
+          {/* 1. DEALER AREA (NHÀ CÁI) */}
+          <div className="bjSection bjDealerSection">
+            <div className="bjRoleHeader">
+              <span className="bjRoleLabel">NHÀ CÁI (DEALER)</span>
+              <span className="bjRuleNote">Dừng ở 17 điểm</span>
+              <div className={`bjScoreBadge ${dealerScoreObj.isBust ? 'bust' : ''}`}>
+                {formatScoreBadge(dealerScoreObj, true)}
               </div>
             </div>
 
-            {/* Dealer Cards */}
-            <div className="bjCardsRow">
+            <div className="bjCardHand">
               {dealerCards.length === 0 ? (
-                <div className="bjCardBack">
-                  <div className="bjCardBackInner">
-                    <span className="material-symbols-outlined text-[#ffc174] text-[24px]">diamond</span>
-                  </div>
+                <div className="bjCardPlaceholder">
+                  <div className="bjEmptyCardSlot" />
+                  <div className="bjEmptyCardSlot" />
                 </div>
               ) : (
                 dealerCards.map((card, idx) => {
-                  const isHiddenHoleCard = idx === 1 && gameState === 'playerTurn';
-                  if (isHiddenHoleCard) {
+                  const isHidden = idx === 1 && gameState === 'playerTurn';
+                  if (isHidden) {
                     return (
-                      <div key={idx} className="bjCardBack overlap" style={{transform: 'rotate(5deg)'}}>
-                        <div className="bjCardBackInner">
-                          <div className="bjCardBackEmblem">
-                            <span className="material-symbols-outlined text-[26px]" style={{fontVariationSettings: "'FILL' 1"}}>diamond</span>
-                          </div>
+                      <div key={idx} className="bjCard bjCardFacedown">
+                        <div className="bjCardBackPattern">
+                          <span>⚜️</span>
                         </div>
                       </div>
                     );
                   }
                   return (
-                    <div
-                      key={card.id || idx}
-                      className={'bjCard ' + (idx > 0 ? 'overlap' : '')}
-                      style={{
-                        transform: `rotate(${(idx - (dealerCards.length - 1) / 2) * 4}deg)`
-                      }}
-                    >
-                      <div className="bjCardCornerTop" style={{color: card.color}}>
+                    <div key={card.id || idx} className={`bjCard ${card.isRed ? 'isRed' : 'isBlack'}`}>
+                      <div className="bjCardTop">
                         <span className="bjCardRank">{card.rank}</span>
                         <span className="bjCardSuit">{card.symbol}</span>
                       </div>
-                      <div className="bjCardCenterBg" style={{color: card.color}}>{card.symbol}</div>
-                      <div className="bjCardCornerBottom" style={{color: card.color}}>
+                      <div className="bjCardCenter">{card.symbol}</div>
+                      <div className="bjCardBottom">
                         <span className="bjCardRank">{card.rank}</span>
                         <span className="bjCardSuit">{card.symbol}</span>
                       </div>
@@ -379,241 +347,192 @@ export function Blackjack({goHome, balance, setBalance, sound, setSound, token, 
                 })
               )}
             </div>
-            <p className="bjDealerSubtext">Dealer Stands on Soft 17</p>
           </div>
 
-          {/* Side Bets Row */}
-          <div className="bjSideBetsRow">
-            <div
-              className={`bjSideBetCard ${sideBetPair > 0 ? 'active' : ''}`}
-              onClick={() => {
-                if (gameState === 'playerTurn') return;
-                setSideBetPair(p => (p === 0 ? 25 : p === 25 ? 50 : 0));
-                showToast(`Cược Perfect Pair: $${sideBetPair === 0 ? 25 : sideBetPair === 25 ? 50 : 0}`);
-              }}
-            >
-              <span className="bjSideBetTitle orange">PERFECT PAIR</span>
-              <span className="bjSideBetOdds">25 to 1</span>
-              <div className="bjSideChipSpot">
-                {sideBetPair > 0 ? (
-                  <div className="bjSideChipBadge orange">${sideBetPair}</div>
-                ) : (
-                  <span className="text-[10px] text-[#a08e7a]">+</span>
-                )}
-              </div>
+          {/* 2. TABLE CENTER (BETTING SPOTS & LIVE GUIDE BANNER) */}
+          <div className="bjCenterSection">
+            {/* Live Guidance Banner */}
+            <div className={`bjGuideBanner ${gameState === 'playerTurn' ? 'turnActive' : ''}`}>
+              <span>{guideMsg}</span>
             </div>
 
-            <div
-              className={`bjSideBetCard ${sideBetPoker > 0 ? 'active' : ''}`}
-              onClick={() => {
-                if (gameState === 'playerTurn') return;
-                setSideBetPoker(p => (p === 0 ? 25 : p === 25 ? 50 : 0));
-                showToast(`Cược 21+3 Poker: $${sideBetPoker === 0 ? 25 : sideBetPoker === 25 ? 50 : 0}`);
-              }}
-            >
-              <span className="bjSideBetTitle green">21 + 3 POKER</span>
-              <span className="bjSideBetOdds">9 to 1</span>
-              <div className="bjSideChipSpot">
-                {sideBetPoker > 0 ? (
-                  <div className="bjSideChipBadge green">${sideBetPoker}</div>
-                ) : (
-                  <span className="text-[10px] text-[#a08e7a]">+</span>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Player Active Table Spot */}
-          <div className="bjPlayerSpot">
-            <div className="bjChipStackArea">
+            {/* Betting Spots Row */}
+            <div className="bjBetSpotsRow">
+              {/* Perfect Pairs Side Bet */}
               <div
-                className="bjMainBetDisc"
+                className={`bjSideSpot ${sideBetPair > 0 ? 'hasBet' : ''}`}
                 onClick={() => {
-                  if (gameState === 'playerTurn') return;
-                  setMainBet(m => m + selectedChip);
-                  showToast(`Tăng cược chính lên $${mainBet + selectedChip}`);
+                  if (gameState === 'playerTurn' || gameState === 'dealerTurn') return;
+                  setSideBetPair(p => p === 0 ? selectedChip : p + selectedChip > 500000 ? 0 : p + selectedChip);
                 }}
               >
-                <div className="bjMainChipDisplay">
-                  <div className="bjMainChipPill">${mainBet}</div>
-                  <div className="bjChipStackDecor" />
+                <span className="bjSpotTitle">ĐÔI HOÀN HẢO</span>
+                <span className="bjSpotOdds">25 : 1</span>
+                {sideBetPair > 0 ? (
+                  <div className="bjSpotChip">{money(sideBetPair)}</div>
+                ) : (
+                  <span className="bjSpotAdd">+ CƯỢC</span>
+                )}
+              </div>
+
+              {/* Main Bet Circle */}
+              <div
+                className={`bjMainSpot ${mainBet > 0 ? 'hasBet' : ''}`}
+                onClick={() => {
+                  if (gameState === 'playerTurn' || gameState === 'dealerTurn') return;
+                  setMainBet(m => m + selectedChip);
+                }}
+              >
+                <div className="bjMainSpotRing">
+                  <span className="bjMainSpotTitle">CƯỢC CHÍNH</span>
+                  <strong className="bjMainSpotValue">{money(mainBet)}</strong>
                 </div>
-                <span className="bjMainBetLabel">MAIN BET</span>
+              </div>
+
+              {/* 21+3 Poker Side Bet */}
+              <div
+                className={`bjSideSpot ${sideBetPoker > 0 ? 'hasBet' : ''}`}
+                onClick={() => {
+                  if (gameState === 'playerTurn' || gameState === 'dealerTurn') return;
+                  setSideBetPoker(p => p === 0 ? selectedChip : p + selectedChip > 500000 ? 0 : p + selectedChip);
+                }}
+              >
+                <span className="bjSpotTitle">21+3 POKER</span>
+                <span className="bjSpotOdds">9 : 1</span>
+                {sideBetPoker > 0 ? (
+                  <div className="bjSpotChip">{money(sideBetPoker)}</div>
+                ) : (
+                  <span className="bjSpotAdd">+ CƯỢC</span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* 3. PLAYER AREA (BÀI CỦA BẠN) */}
+          <div className="bjSection bjPlayerSection">
+            <div className="bjRoleHeader">
+              <span className="bjRoleLabel player">⭐ BẠN (PLAYER)</span>
+              {gameState === 'playerTurn' && (
+                <div className="bjTurnTimerPill">
+                  <span>⏱️ {turnTimer}s</span>
+                </div>
+              )}
+              <div className={`bjScoreBadge ${playerScoreObj.isBust ? 'bust' : playerScoreObj.isBlackjack ? 'blackjack' : 'player'}`}>
+                {formatScoreBadge(playerScoreObj, false)}
               </div>
             </div>
 
-            {/* Score & Turn Pill */}
-            <div className="bjScoreTimerRow">
-              <div className="bjPlayerScoreTag">
-                <span>TỔNG ĐIỂM:</span>
-                <strong>{playerScoreObj.total}</strong>
-              </div>
-              <div className="bjTurnTag">
-                <span className="bjDotPulse" />
-                <span>{gameState === 'playerTurn' ? 'LƯỢT CỦA BẠN' : gameState === 'settled' ? 'ĐÃ KẾT THÚC' : 'CHỜ CƯỢC'}</span>
-              </div>
+            <div className="bjCardHand">
+              {playerCards.length === 0 ? (
+                <div className="bjCardPlaceholder">
+                  <div className="bjEmptyCardSlot" />
+                  <div className="bjEmptyCardSlot" />
+                </div>
+              ) : (
+                playerCards.map((card, idx) => (
+                  <div key={card.id || idx} className={`bjCard ${card.isRed ? 'isRed' : 'isBlack'}`}>
+                    <div className="bjCardTop">
+                      <span className="bjCardRank">{card.rank}</span>
+                      <span className="bjCardSuit">{card.symbol}</span>
+                    </div>
+                    <div className="bjCardCenter">{card.symbol}</div>
+                    <div className="bjCardBottom">
+                      <span className="bjCardRank">{card.rank}</span>
+                      <span className="bjCardSuit">{card.symbol}</span>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
+          </div>
+        </div>
 
-            {/* Countdown Bar */}
-            {gameState === 'playerTurn' && (
-              <div className="bjTurnTimerBar">
-                <div className="bjTurnTimerProgress" style={{width: `${(turnTimer / 15) * 100}%`}} />
+        {/* 4. INTERACTIVE BOTTOM CONSOLE (NEATLY FITS 100DVH) */}
+        <div className="bjBottomConsole">
+          {/* Phase A: Player Turn Action Buttons */}
+          {gameState === 'playerTurn' ? (
+            <div className="bjTurnActionsGrid">
+              <button className="bjTurnBtn hit" onClick={handleHit}>
+                <span className="btnMain">RÚT THÊM</span>
+                <span className="btnSub">(HIT)</span>
+              </button>
+
+              <button className="bjTurnBtn stand" onClick={handleStand}>
+                <span className="btnMain">DẰNG BÀI</span>
+                <span className="btnSub">(STAND)</span>
+              </button>
+
+              {canDouble && (
+                <button className="bjTurnBtn double" onClick={handleDouble}>
+                  <span className="btnMain">GẤP ĐÔI</span>
+                  <span className="btnSub">(x2 CƯỢC)</span>
+                </button>
+              )}
+
+              {canSurrender && (
+                <button className="bjTurnBtn fold" onClick={handleSurrender}>
+                  <span className="btnMain">BỎ BÀI</span>
+                  <span className="btnSub">(LẤY 50%)</span>
+                </button>
+              )}
+            </div>
+          ) : (
+            /* Phase B: Betting & Chip Console */
+            <div className="bjBettingConsole">
+              {/* Chip Tray */}
+              <div className="bjChipTrayRow">
+                {CHIP_VALUES.map(val => (
+                  <button
+                    key={val}
+                    className={`bjChipItem ${selectedChip === val ? 'active' : ''}`}
+                    onClick={() => {
+                      setSelectedChip(val);
+                      setMainBet(prev => Math.max(val, prev));
+                    }}
+                  >
+                    <div className={`bjChipCore c${val >= 1000000 ? '1m' : val >= 500000 ? '500k' : val >= 100000 ? '100k' : val >= 25000 ? '25k' : val >= 5000 ? '5k' : '1k'}`}>
+                      <span>{val >= 1000000 ? val / 1000000 + 'M' : val >= 1000 ? val / 1000 + 'K' : val}</span>
+                    </div>
+                  </button>
+                ))}
               </div>
-            )}
 
-            {/* Player's Cards */}
-            <div className="bjCardsRow">
-              {playerCards.map((card, idx) => (
-                <div
-                  key={card.id || idx}
-                  className={'bjPlayerCard ' + (idx > 0 ? 'overlap' : '')}
-                  style={{
-                    transform: `rotate(${(idx - (playerCards.length - 1) / 2) * 5}deg)`
+              {/* Utility & Deal Action Bar */}
+              <div className="bjDealControlsBar">
+                <button
+                  className="bjUtilActionBtn"
+                  onClick={() => {
+                    setMainBet(lastMainBet);
+                    showToast(`Cược lại: ${money(lastMainBet)}`);
                   }}
                 >
-                  <div className="bjCardCornerTop" style={{color: card.color}}>
-                    <span className="bjCardRank">{card.rank}</span>
-                    <span className="bjCardSuit">{card.symbol}</span>
-                  </div>
-                  <div className="bjCardCenterBg" style={{color: card.color}}>{card.symbol}</div>
-                  <div className="bjCardCornerBottom" style={{color: card.color}}>
-                    <span className="bjCardRank">{card.rank}</span>
-                    <span className="bjCardSuit">{card.symbol}</span>
-                  </div>
-                </div>
-              ))}
+                  ↩ CƯỢC LẠI
+                </button>
+
+                <button
+                  className="bjUtilActionBtn"
+                  onClick={() => {
+                    setMainBet(selectedChip);
+                    setSideBetPair(0);
+                    setSideBetPoker(0);
+                    showToast('Đã đặt lại cược');
+                  }}
+                >
+                  ✕ XÓA CƯỢC
+                </button>
+
+                <button className="bjDealPrimaryBtn" onClick={handleDeal}>
+                  <span>CHIA BÀI</span>
+                  <small>({money(mainBet + sideBetPair + sideBetPoker)})</small>
+                </button>
+              </div>
             </div>
-          </div>
-        </div>
-
-        {/* Win Streak & History */}
-        <div className="bjStreakRow">
-          <div className="bjStreakPill">
-            <span className="material-symbols-outlined text-[16px] text-[#ffc174]">local_fire_department</span>
-            <span>WIN STREAK: {winStreak}X</span>
-          </div>
-          <div className="bjPastPill">
-            <span className="material-symbols-outlined text-[14px]">history</span>
-            <span>Past: {pastResults.join(' • ')}</span>
-          </div>
-        </div>
-
-        {/* Interactive Action Controls */}
-        <div className="bjActionsGrid">
-          <button
-            className="bjActionBtn hit"
-            disabled={gameState !== 'playerTurn'}
-            onClick={handleHit}
-          >
-            <span className="material-symbols-outlined text-[20px]" style={{fontVariationSettings: "'FILL' 1"}}>add_circle</span>
-            <span className="bjActionName">HIT</span>
-            <span className="bjActionSub">Rút Thêm</span>
-          </button>
-
-          <button
-            className="bjActionBtn stand"
-            disabled={gameState !== 'playerTurn'}
-            onClick={handleStand}
-          >
-            <span className="material-symbols-outlined text-[20px]" style={{fontVariationSettings: "'FILL' 1"}}>pan_tool</span>
-            <span className="bjActionName">STAND</span>
-            <span className="bjActionSub">Dằn Bài</span>
-          </button>
-
-          <button
-            className="bjActionBtn double"
-            disabled={gameState !== 'playerTurn' || playerCards.length !== 2}
-            onClick={handleDouble}
-          >
-            <span className="material-symbols-outlined text-[20px]">exposure_plus_2</span>
-            <span className="bjActionName">DOUBLE</span>
-            <span className="bjActionSub">Gấp Đôi</span>
-          </button>
-
-          <button
-            className="bjActionBtn split"
-            disabled={!canSplit}
-          >
-            <span className="material-symbols-outlined text-[20px]">call_split</span>
-            <span className="bjActionName">SPLIT</span>
-            <span className="bjActionSub">Tách Bài</span>
-          </button>
-
-          <button
-            className="bjActionBtn fold"
-            disabled={gameState !== 'playerTurn' || playerCards.length !== 2}
-            onClick={handleSurrender}
-          >
-            <span className="material-symbols-outlined text-[20px]">flag</span>
-            <span className="bjActionName">FOLD</span>
-            <span className="bjActionSub">Bỏ Bài</span>
-          </button>
-        </div>
-
-        {/* Chip Tray & Quick Actions */}
-        <div className="bjChipTrayBox">
-          <div className="bjChipTrayTop">
-            <span className="bjChipTrayLabel">Chọn Phỉnh Cược (Chips)</span>
-            <span className="bjChipTrayBalance">Số dư: ${money(balance)}</span>
-          </div>
-
-          <div className="bjChipsScroll">
-            {CHIP_VALUES.map(val => (
-              <button
-                key={val}
-                className={`bjChipBtn ${selectedChip === val ? 'selected' : ''}`}
-                onClick={() => {
-                  setSelectedChip(val);
-                  showToast(`Đã chọn phỉnh $${val}`);
-                }}
-              >
-                <div className={`bjChipOuter c${val}`}>
-                  <div className="bjChipInner">${val}</div>
-                </div>
-              </button>
-            ))}
-          </div>
-
-          <div className="bjQuickUtilsRow">
-            <button
-              className="bjUtilBtn"
-              disabled={gameState === 'playerTurn'}
-              onClick={() => {
-                setMainBet(lastMainBet);
-                showToast(`Đã cược lại: $${lastMainBet}`);
-              }}
-            >
-              <span className="material-symbols-outlined text-[14px]">replay</span>
-              CƯỢC LẠI
-            </button>
-
-            <button
-              className="bjUtilBtn"
-              disabled={gameState === 'playerTurn'}
-              onClick={() => {
-                setMainBet(50);
-                setSideBetPair(0);
-                setSideBetPoker(0);
-                showToast('Đã xóa các mức cược phụ');
-              }}
-            >
-              <span className="material-symbols-outlined text-[14px]">close</span>
-              XÓA CƯỢC
-            </button>
-          </div>
-
-          {gameState !== 'playerTurn' && (
-            <button className="bjDealStartBtn" onClick={handleDeal}>
-              <span className="material-symbols-outlined text-[20px]">play_circle</span>
-              <span>{gameState === 'settled' ? 'CHIA VÁN MỚI' : 'CHIA BÀI NGAY'} (${mainBet + sideBetPair + sideBetPoker})</span>
-            </button>
           )}
         </div>
 
         {/* Toast Feedback */}
         {toastMsg && (
-          <div className="bjToast">
-            <span className="material-symbols-outlined text-[#ffc174] text-[18px]">verified</span>
+          <div className="bjToastNotification">
             <span>{toastMsg}</span>
           </div>
         )}

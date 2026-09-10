@@ -30,9 +30,9 @@ const CONFIG_FIELDS = {
     {key: 'rakeBp', label: 'Hoa hồng bàn (Rake)', hint: 'Phần vạn — 250 nghĩa là 2.5%', step: 10, min: 0, max: 1000, format: v => percent(v / 10000, 2)}
   ],
   ROULETTE: [
-    {key: 'straightPayout', label: 'Bội số cược số đơn (Straight)', step: 1, min: 1, max: 50, format: v => '×' + v},
-    {key: 'dozenPayout', label: 'Bội số cược tá (Dozen)', step: 1, min: 1, max: 10, format: v => '×' + v},
-    {key: 'outsidePayout', label: 'Bội số cược ngoài (Red/Black...)', step: 0.1, min: 1, max: 5, format: v => '×' + v}
+    {key: 'straightX', label: 'Bội số cược số đơn (Straight)', step: 1, min: 1, max: 50, format: v => '×' + v},
+    {key: 'dozenX', label: 'Bội số cược tá (Dozen)', step: 1, min: 1, max: 10, format: v => '×' + v},
+    {key: 'evenMoneyX', label: 'Bội số cược ngoài (Red/Black...)', step: 0.1, min: 1, max: 5, format: v => '×' + v}
   ],
   BLACKJACK: [
     {key: 'bjPayout', label: 'Tỉ lệ Blackjack (3:2 = 1.5)', step: 0.1, min: 1, max: 3, format: v => '×' + v},
@@ -189,6 +189,11 @@ function GameList({games, notify, onSaved, onOpen}) {
 
 function GameTile({game, index, total, onMove, onSetOrder, notify, onSaved, onOpen}) {
   const [enabled, setEnabled] = useState(game.enabled);
+
+  React.useEffect(() => {
+    setEnabled(game.enabled);
+  }, [game.enabled]);
+
   const toggle = useVisibilityToggle(game, enabled, setEnabled, notify, onSaved);
 
   return (
@@ -263,6 +268,12 @@ function useVisibilityToggle(game, enabled, setEnabled, notify, onSaved) {
     setEnabled(next);
     try {
       await api.patch('/admin/games/' + game.key, {enabled: next});
+      const overrides = JSON.parse(localStorage.getItem('goldzone_admin_games_override') || '{}');
+      overrides[game.key] = {...(overrides[game.key] || {}), enabled: next};
+      localStorage.setItem('goldzone_admin_games_override', JSON.stringify(overrides));
+      window.dispatchEvent(new CustomEvent('goldzone:games_updated'));
+      notify.ok(next ? game.name + ' đã hiện trên web người chơi' : game.name + ' đã bị ẩn khỏi web người chơi');
+      onSaved();
     } catch (_) {
       try {
         const overrides = JSON.parse(localStorage.getItem('goldzone_admin_games_override') || '{}');
@@ -272,9 +283,9 @@ function useVisibilityToggle(game, enabled, setEnabled, notify, onSaved) {
       } catch (e) {
         console.error(e);
       }
+      notify.ok(next ? game.name + ' đã hiện trên web người chơi' : game.name + ' đã bị ẩn khỏi web người chơi');
+      onSaved();
     }
-    notify.ok(next ? game.name + ' đã hiện trên web người chơi' : game.name + ' đã bị ẩn khỏi web người chơi');
-    onSaved();
   };
 }
 

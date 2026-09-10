@@ -1,14 +1,22 @@
 import {useEffect, useState} from 'react';
 import {ChevronLeft, ChevronRight, ExternalLink, Flame, Sparkles} from 'lucide-react';
 import {fetchBanners} from '../shared/content.js';
-import {GAME_SCREEN} from '../shared/games.js';
+import {GAME_CATEGORY, GAME_SCREEN} from '../shared/games.js';
 import {Topbar} from '../shared/Topbar.jsx';
 import {GameCard} from './GameCard.jsx';
 import {Nav} from './Nav.jsx';
 
+const LOBBY_TABS = [
+  { key: 'all', label: 'Tất cả' },
+  { key: 'casino', label: 'Casino & Vòng Quay' },
+  { key: 'card', label: 'Game Bài' },
+  { key: 'arcade', label: 'Nổ Hũ & Bắn Cá' }
+];
+
 export function Lobby({setScreen, balance, sound, setSound, openPanel, games, user}) {
   const [banners, setBanners] = useState([]);
   const [activeIdx, setActiveIdx] = useState(0);
+  const [selectedCat, setSelectedCat] = useState('all');
 
   useEffect(() => {
     fetchBanners().then(items => {
@@ -52,6 +60,12 @@ export function Lobby({setScreen, balance, sound, setSound, openPanel, games, us
     e.stopPropagation();
     setActiveIdx(curr => (curr + 1) % banners.length);
   };
+
+  const activeGames = games.filter(game => game.enabled !== false);
+  const filteredGames = activeGames.filter(game => {
+    if (selectedCat === 'all') return true;
+    return GAME_CATEGORY[game.key] === selectedCat;
+  });
 
   return (
     <div className="screen lobby">
@@ -118,13 +132,26 @@ export function Lobby({setScreen, balance, sound, setSound, openPanel, games, us
           )}
         </section>
 
+        {/* CATEGORY FILTER TABS */}
+        <div className="eventTabs lobbyCatTabs">
+          {LOBBY_TABS.map(tab => (
+            <button
+              key={tab.key}
+              className={'eventTab ' + (selectedCat === tab.key ? 'active' : '')}
+              onClick={() => setSelectedCat(tab.key)}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
         <div className="sectionTitle">
-          <span>TRÒ CHƠI NỔI BẬT</span>
+          <span>TRÒ CHƠI NỔI BẬT ({filteredGames.length})</span>
           <Sparkles />
         </div>
 
         <div className="gameGrid">
-          {games.filter(game => game.enabled !== false).map(game => (
+          {filteredGames.map(game => (
             <GameCard
               key={game.key}
               type={GAME_SCREEN[game.key]}
@@ -135,8 +162,8 @@ export function Lobby({setScreen, balance, sound, setSound, openPanel, games, us
           ))}
         </div>
 
-        {!games.filter(game => game.enabled !== false).length && (
-          <p className="lobbyEmpty">Tất cả trò chơi đang tạm bảo trì. Vui lòng quay lại sau.</p>
+        {!filteredGames.length && (
+          <p className="lobbyEmpty">Không có trò chơi nào trong danh mục này.</p>
         )}
       </main>
 

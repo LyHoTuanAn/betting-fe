@@ -66,7 +66,7 @@ export const FALLBACK_GAMES = [
     minBet: 1000,
     maxBet: 10000000,
     theoreticalRtp: 0.973,
-    config: { straightPayout: 36, dozenPayout: 3, outsidePayout: 2 },
+    config: { straightX: 36, dozenX: 3, evenMoneyX: 2 },
     stats: { rounds: 88, bet: 26400000, payout: 25687200, houseNet: 712800, actualRtp: 0.973 }
   },
   {
@@ -95,6 +95,16 @@ export const FALLBACK_GAMES = [
   }
 ];
 
+export const GAME_CATEGORY = {
+  SLOT: 'arcade',
+  FISH: 'arcade',
+  ROULETTE: 'casino',
+  DICE: 'casino',
+  POKER: 'card',
+  BLACKJACK: 'card',
+  TIENLEN: 'card'
+};
+
 export function getMergedGames(remoteGames = []) {
   let localOverrides = {};
   try {
@@ -108,14 +118,15 @@ export function getMergedGames(remoteGames = []) {
     const remote = remoteMap.get(fallback.key);
     const override = localOverrides[fallback.key] || {};
     const base = remote ? { ...fallback, ...remote } : { ...fallback };
-    list.push({ ...base, ...override });
+    const enabled = override.enabled !== undefined ? override.enabled : (remote?.enabled !== undefined ? remote.enabled : fallback.enabled);
+    list.push({ ...base, enabled, ...override });
     remoteMap.delete(fallback.key);
   }
 
   // Any other remote game not in fallback list
   for (const [, remote] of remoteMap) {
     const override = localOverrides[remote.key] || {};
-    list.push({ ...remote, ...override });
+    list.push({ ...remote, enabled: override.enabled !== undefined ? override.enabled : (remote.enabled ?? true), ...override });
   }
 
   return list.sort((a, b) => (a.sortOrder || 99) - (b.sortOrder || 99));

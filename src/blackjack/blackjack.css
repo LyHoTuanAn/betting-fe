@@ -1,837 +1,607 @@
 /* VIP BLACKJACK LUXURY CASINO STYLING */
 
 .bjScreen {
-  min-height: 100dvh;
-  background-color: #0f131d;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden !important;
+  background-color: #0b0f19;
   color: #dfe2f1;
   font-family: 'Plus Jakarta Sans', sans-serif;
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .bjMain {
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  position: relative;
+  justify-content: space-between;
   width: 100%;
-  max-width: 540px;
+  max-width: 560px;
   margin: 0 auto;
-  padding: 12px 14px 90px;
-  flex-grow: 1;
-}
-
-/* Table Metadata Banner */
-.bjMetaStrip {
-  width: 100%;
-  background: #262a35;
-  border-radius: 12px;
-  padding: 10px 12px;
-  margin-bottom: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 193, 116, 0.15);
-}
-
-.bjMetaTop {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  padding: 6px 10px 10px;
+  box-sizing: border-box;
+  position: relative;
   gap: 8px;
 }
 
-.bjTitleWrap {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  min-width: 0;
-}
-
-.bjTitleText {
-  font-family: 'Bodoni Moda', serif;
-  font-size: 18px;
-  font-weight: 700;
-  color: #ffc174;
-  letter-spacing: 0.05em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.bjShoePill {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: #1c1f2a;
-  padding: 4px 10px;
-  border-radius: 9999px;
-  font-size: 10px;
-  font-weight: 700;
-  color: #d8c3ad;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.bjDotPulse {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #56e5a9;
-  box-shadow: 0 0 8px #56e5a9;
-  animation: bjPulse 1.8s infinite;
-}
-
-@keyframes bjPulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.85); }
-}
-
-.bjMetaGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
-  margin-top: 8px;
-  padding-top: 6px;
-  text-align: center;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.bjMetaBox {
-  background: rgba(10, 14, 24, 0.6);
-  border-radius: 8px;
-  padding: 4px 6px;
-}
-
-.bjMetaBox small {
-  display: block;
-  font-size: 9px;
-  font-weight: 700;
-  color: #a08e7a;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.bjMetaBox strong {
-  display: block;
-  font-size: 12px;
-  font-weight: 700;
-  color: #ffc174;
-  margin-top: 1px;
-}
-
-.bjMetaBox strong.green {
-  color: #56e5a9;
-}
-
-/* Luxury Felt Canvas Area */
+/* Luxury Felt Canvas Area - Fit directly into 100dvh */
 .bjFeltCanvas {
+  flex: 1;
+  min-height: 0;
+  background: radial-gradient(circle at 50% 30%, #152922 0%, #0c1814 60%, #060d0b 100%);
+  border-radius: 16px;
+  border: 2px solid rgba(212, 175, 55, 0.4);
+  box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.85), 0 8px 25px rgba(0, 0, 0, 0.6);
   position: relative;
-  width: 100%;
-  background: #0a0e18;
-  border-radius: 18px;
-  overflow: hidden;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7), inset 0 0 40px rgba(0, 0, 0, 0.9);
-  padding: 14px 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border: 1px solid rgba(255, 193, 116, 0.2);
+  padding: 8px 12px;
+  overflow: hidden;
 }
 
-.bjSvgOverlay {
+.bjFeltDecorArch {
   position: absolute;
-  inset: 0;
+  top: 15%;
+  left: 6%;
+  right: 6%;
+  height: 55%;
+  border: 1.5px dashed rgba(212, 175, 55, 0.18);
+  border-radius: 50% / 35%;
   pointer-events: none;
-  opacity: 0.35;
-  width: 100%;
-  height: 100%;
 }
 
-/* Dealer Area */
-.bjDealerArea {
-  position: relative;
-  z-index: 10;
+/* Sections */
+.bjSection {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 4px;
-}
-
-.bjDealerHeaderPill {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(38, 42, 53, 0.92);
-  padding: 4px 14px;
-  border-radius: 9999px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-  margin-bottom: 10px;
-  border: 1px solid rgba(255, 193, 116, 0.2);
-}
-
-.bjDealerTitle {
-  font-size: 11px;
-  font-weight: 700;
-  color: #dfe2f1;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.bjScorePill {
-  background: #f59e0b;
-  color: #472a00;
-  font-size: 11px;
-  font-weight: 800;
-  padding: 2px 8px;
-  border-radius: 9999px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-}
-
-.bjDealerSubtext {
-  font-size: 10px;
-  font-weight: 600;
-  color: #a08e7a;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-top: 6px;
-}
-
-/* Card Styles */
-.bjCardsRow {
   position: relative;
+  z-index: 2;
+}
+
+.bjRoleHeader {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 4px 0;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.bjRoleLabel {
+  font-size: 11px;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.bjRoleLabel.player {
+  color: #ffd700;
+}
+
+.bjRuleNote {
+  font-size: 10px;
+  color: #64748b;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.bjScoreBadge {
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.08);
+  color: #dfe2f1;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.bjScoreBadge.player {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.25), rgba(255, 165, 0, 0.12));
+  color: #ffd700;
+  border-color: rgba(255, 215, 0, 0.4);
+}
+
+.bjScoreBadge.blackjack {
+  background: linear-gradient(135deg, #ffd700, #ff8c00);
+  color: #111;
+  font-weight: 900;
+  border: none;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+}
+
+.bjScoreBadge.bust {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+}
+
+.bjTurnTimerPill {
+  font-size: 10px;
+  font-weight: 800;
+  color: #56e5a9;
+  background: rgba(86, 229, 169, 0.15);
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(86, 229, 169, 0.3);
+  animation: bjPulse 1.2s infinite alternate;
+}
+
+@keyframes bjPulse {
+  from { opacity: 0.7; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1.03); }
+}
+
+/* Card Hand & Cards */
+.bjCardHand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: clamp(62px, 12vh, 86px);
+  position: relative;
+}
+
+.bjCardPlaceholder {
+  display: flex;
+  gap: 8px;
+}
+
+.bjEmptyCardSlot {
+  width: clamp(44px, 11vw, 60px);
+  height: clamp(60px, 14.5vh, 82px);
+  border: 1.5px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.15);
 }
 
 .bjCard {
-  width: 76px;
-  height: 108px;
-  background: #353944;
-  border-radius: 10px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+  width: clamp(44px, 11.5vw, 62px);
+  height: clamp(62px, 15vh, 84px);
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 6px 8px;
+  padding: 4px 5px;
   position: relative;
-  overflow: hidden;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-left: -16px;
+  transition: transform 0.2s, box-shadow 0.2s;
   user-select: none;
+  flex-shrink: 0;
 }
 
-.bjCard.overlap {
-  margin-left: -32px;
-}
-
-.bjCard.overlap:first-child {
+.bjCard:first-child {
   margin-left: 0;
 }
 
-.bjCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(255, 193, 116, 0.3);
+.bjCard.isRed {
+  color: #e11d48;
 }
 
-.bjCardCornerTop {
+.bjCard.isBlack {
+  color: #0f172a;
+}
+
+.bjCardTop, .bjCardBottom {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   line-height: 1;
 }
 
-.bjCardCornerBottom {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  line-height: 1;
+.bjCardBottom {
   transform: rotate(180deg);
 }
 
 .bjCardRank {
+  font-size: clamp(10px, 2.5vw, 13px);
   font-family: 'Bodoni Moda', serif;
-  font-size: 18px;
-  font-weight: 700;
+  font-weight: 900;
 }
 
 .bjCardSuit {
-  font-size: 14px;
+  font-size: clamp(9px, 2.2vw, 11px);
   line-height: 1;
 }
 
-.bjCardCenterBg {
+.bjCardCenter {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: clamp(18px, 4.5vw, 24px);
+  opacity: 0.15;
   pointer-events: none;
-  opacity: 0.12;
-  font-size: 40px;
-  font-family: 'Bodoni Moda', serif;
 }
 
-/* Face down card */
-.bjCardBack {
-  width: 76px;
-  height: 108px;
-  background: linear-gradient(135deg, #262a35, #1c1f2a, #0a0e18);
-  border-radius: 10px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
-  padding: 4px;
-  position: relative;
-  overflow: hidden;
-  border: 1px solid rgba(255, 193, 116, 0.3);
+.bjCardFacedown {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border: 1.5px solid rgba(212, 175, 55, 0.5);
+  padding: 3px;
 }
 
-.bjCardBackInner {
+.bjCardBackPattern {
   width: 100%;
   height: 100%;
-  background: #0a0e18;
-  border-radius: 6px;
+  border: 1px dashed rgba(212, 175, 55, 0.4);
+  border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  border: 1px dashed rgba(255, 193, 116, 0.3);
+  font-size: 15px;
+  background: rgba(212, 175, 55, 0.08);
 }
 
-.bjCardBackEmblem {
-  position: absolute;
-  inset: 4px;
-  background: linear-gradient(135deg, rgba(255, 193, 116, 0.2), transparent, rgba(255, 193, 116, 0.1));
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffc174;
-}
-
-/* Side Bets Grid */
-.bjSideBetsRow {
-  position: relative;
-  z-index: 10;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin: 10px 0;
-  padding: 0 6px;
-}
-
-.bjSideBetCard {
-  background: rgba(28, 31, 42, 0.8);
-  border-radius: 12px;
-  padding: 8px;
+/* Center Section */
+.bjCenterSection {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 6px;
+  width: 100%;
+  z-index: 3;
+}
+
+.bjGuideBanner {
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: clamp(10px, 2.3vw, 12px);
+  color: #ffd700;
   text-align: center;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.bjSideBetCard:hover {
-  background: rgba(38, 42, 53, 0.95);
-  border-color: rgba(255, 193, 116, 0.4);
-  transform: translateY(-2px);
-}
-
-.bjSideBetCard.active {
-  border-color: #56e5a9;
-  box-shadow: 0 0 15px rgba(86, 229, 169, 0.25);
-}
-
-.bjSideBetTitle {
-  font-size: 10px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  width: 95%;
+  max-width: 440px;
+  transition: all 0.25s ease;
 }
 
-.bjSideBetTitle.orange {
-  color: #ffb77d;
-}
-
-.bjSideBetTitle.green {
+.bjGuideBanner.turnActive {
+  border-color: #56e5a9;
   color: #56e5a9;
+  background: rgba(16, 44, 34, 0.9);
+  box-shadow: 0 0 12px rgba(86, 229, 169, 0.25);
 }
 
-.bjSideBetOdds {
-  font-size: 10px;
-  color: #a08e7a;
-  margin-top: 1px;
-}
-
-.bjSideChipSpot {
-  margin-top: 6px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
+.bjBetSpotsRow {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.bjSideSpot {
+  flex: 1;
+  max-width: 96px;
+  height: 54px;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.65);
   border: 1px dashed rgba(255, 255, 255, 0.2);
-}
-
-.bjSideChipBadge {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  font-weight: 800;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-}
-
-.bjSideChipBadge.orange {
-  background: #ffb77d;
-  color: #4d2600;
-}
-
-.bjSideChipBadge.green {
-  background: #56e5a9;
-  color: #003824;
-}
-
-/* Player Spot */
-.bjPlayerSpot {
-  position: relative;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 4px;
-}
-
-.bjChipStackArea {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 6px;
-}
-
-.bjMainBetDisc {
-  width: 84px;
-  height: 84px;
-  border-radius: 50%;
-  background: rgba(38, 42, 53, 0.65);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6);
-  border: 1px dashed rgba(255, 193, 116, 0.4);
   cursor: pointer;
   transition: all 0.2s;
+  padding: 2px 4px;
 }
 
-.bjMainBetDisc:hover {
-  transform: scale(1.04);
-  border-color: #ffc174;
+.bjSideSpot:hover {
+  border-color: rgba(255, 215, 0, 0.6);
+  background: rgba(15, 23, 42, 0.85);
 }
 
-.bjMainChipDisplay {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.bjSideSpot.hasBet {
+  border-color: #ffd700;
+  border-style: solid;
+  background: rgba(255, 215, 0, 0.15);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.25);
 }
 
-.bjMainChipPill {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #f59e0b, #ffc174);
-  color: #613b00;
-  font-size: 11px;
+.bjSpotTitle {
+  font-size: 9px;
   font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.bjSpotOdds {
+  font-size: 8px;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.bjSpotAdd {
+  font-size: 9px;
+  color: #38bdf8;
+  font-weight: 800;
+  margin-top: 2px;
+}
+
+.bjSpotChip {
+  font-size: 10px;
+  font-weight: 800;
+  color: #111;
+  background: #ffd700;
+  padding: 1px 6px;
+  border-radius: 10px;
+  margin-top: 2px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+}
+
+.bjMainSpot {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 215, 0, 0.5);
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.15) 0%, rgba(0, 0, 0, 0.55) 80%);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.2s;
 }
 
-.bjChipStackDecor {
-  position: absolute;
-  top: -3px;
-  width: 36px;
-  height: 6px;
-  background: #ffddb8;
-  border-radius: 9999px;
-  opacity: 0.6;
+.bjMainSpot:hover {
+  transform: scale(1.05);
+  border-color: #ffd700;
 }
 
-.bjMainBetLabel {
-  font-size: 9px;
-  color: #ffc174;
-  letter-spacing: 0.1em;
-  font-weight: 700;
-  text-transform: uppercase;
-  margin-top: 3px;
-}
-
-/* Player Hand Value & Timer */
-.bjScoreTimerRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 6px;
-}
-
-.bjPlayerScoreTag {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: #313540;
-  padding: 4px 12px;
-  border-radius: 9999px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.bjPlayerScoreTag strong {
-  font-family: 'Bodoni Moda', serif;
-  font-size: 18px;
-  font-weight: 700;
-  color: #ffc174;
-}
-
-.bjTurnTag {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  background: rgba(48, 200, 143, 0.18);
-  color: #56e5a9;
-  padding: 4px 10px;
-  border-radius: 9999px;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.bjTurnTimerBar {
-  width: 200px;
-  height: 5px;
-  background: #262a35;
-  border-radius: 9999px;
-  overflow: hidden;
-  margin-bottom: 8px;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
-}
-
-.bjTurnTimerProgress {
-  height: 100%;
-  background: linear-gradient(90deg, #ffc174, #56e5a9);
-  border-radius: 9999px;
-  transition: width 1s linear;
-}
-
-/* Player Cards */
-.bjPlayerCard {
-  width: 86px;
-  height: 124px;
-  background: #353944;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+.bjMainSpotRing {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 8px 10px;
-  position: relative;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  user-select: none;
-}
-
-.bjPlayerCard:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 30px rgba(255, 193, 116, 0.4);
-}
-
-/* Streak & Past Results */
-.bjStreakRow {
-  display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 4px;
-  margin-top: 10px;
-  margin-bottom: 6px;
+  justify-content: center;
+  text-align: center;
 }
 
-.bjStreakPill {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  background: #1c1f2a;
-  padding: 4px 10px;
-  border-radius: 9999px;
-  color: #ffc174;
-  font-size: 11px;
-  font-weight: 700;
+.bjMainSpotTitle {
+  font-size: 8px;
+  font-weight: 800;
+  color: #cbd5e1;
+  text-transform: uppercase;
   letter-spacing: 0.05em;
-  border: 1px solid rgba(255, 193, 116, 0.15);
 }
 
-.bjPastPill {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  color: #a08e7a;
+.bjMainSpotValue {
   font-size: 11px;
+  font-weight: 900;
+  color: #ffd700;
+  margin-top: 2px;
 }
 
-/* Action Controls Grid */
-.bjActionsGrid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
+/* Bottom Console */
+.bjBottomConsole {
+  background: #141a29;
+  border-radius: 14px;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
   gap: 6px;
-  margin: 8px 0;
+  flex-shrink: 0;
 }
 
-.bjActionBtn {
+/* Phase A: Turn Action Buttons */
+.bjTurnActionsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+  gap: 6px;
+  width: 100%;
+}
+
+.bjTurnBtn {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 8px 4px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  border-radius: 10px;
   border: none;
   cursor: pointer;
-  transition: all 0.15s ease;
-  outline: none;
+  transition: transform 0.1s, box-shadow 0.15s;
 }
 
-.bjActionBtn:active:not(:disabled) {
+.bjTurnBtn .btnMain {
+  font-size: clamp(11px, 2.7vw, 13px);
+  line-height: 1.1;
+  font-weight: 800;
+}
+
+.bjTurnBtn .btnSub {
+  font-size: clamp(8px, 2vw, 10px);
+  opacity: 0.85;
+  margin-top: 1px;
+}
+
+.bjTurnBtn.hit {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.bjTurnBtn.stand {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.bjTurnBtn.double {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #111;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+.bjTurnBtn.fold {
+  background: #334155;
+  color: #94a3b8;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.bjTurnBtn:active {
   transform: scale(0.95);
 }
 
-.bjActionBtn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-.bjActionBtn.hit {
-  background: #56e5a9;
-  color: #003824;
-}
-
-.bjActionBtn.stand {
-  background: #ffc174;
-  color: #472a00;
-}
-
-.bjActionBtn.double {
-  background: #313540;
-  color: #dfe2f1;
-}
-
-.bjActionBtn.split {
-  background: #171b26;
-  color: rgba(216, 195, 173, 0.5);
-}
-
-.bjActionBtn.fold {
-  background: #1c1f2a;
-  color: #ffb4ab;
-}
-
-.bjActionName {
-  font-size: 11px;
-  font-weight: 800;
-  margin-top: 2px;
-  letter-spacing: 0.05em;
-}
-
-.bjActionSub {
-  font-size: 9px;
-  opacity: 0.8;
-  line-height: 1;
-}
-
-/* Chip Selector Carousel */
-.bjChipTrayBox {
-  background: #262a35;
-  border-radius: 12px;
-  padding: 8px 10px;
-  margin-top: 6px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.bjChipTrayTop {
+/* Phase B: Betting Console */
+.bjBettingConsole {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 6px;
-  padding: 0 4px;
-}
-
-.bjChipTrayLabel {
-  font-size: 10px;
-  font-weight: 700;
-  color: #a08e7a;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.bjChipTrayBalance {
-  font-size: 11px;
-  font-weight: 700;
-  color: #ffc174;
-}
-
-.bjChipsScroll {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
   gap: 6px;
-  padding: 4px 2px;
 }
 
-.bjChipBtn {
+.bjChipTrayRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.bjChipItem {
   background: none;
   border: none;
+  padding: 0;
   cursor: pointer;
   outline: none;
-  transition: transform 0.2s ease;
-  padding: 0;
+  transition: transform 0.15s;
 }
 
-.bjChipBtn:hover {
-  transform: scale(1.08);
+.bjChipItem.active {
+  transform: translateY(-4px) scale(1.1);
 }
 
-.bjChipBtn.selected {
-  transform: scale(1.15);
-}
-
-.bjChipOuter {
-  width: 44px;
-  height: 44px;
+.bjChipCore {
+  width: clamp(34px, 8.5vw, 42px);
+  height: clamp(34px, 8.5vw, 42px);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-}
-
-.bjChipOuter.c10 { background: #353944; }
-.bjChipOuter.c25 { background: #30c88f; }
-.bjChipOuter.c50 { background: #d97707; }
-.bjChipOuter.c100 { background: #f59e0b; box-shadow: 0 0 12px rgba(245, 158, 11, 0.6); }
-.bjChipOuter.c500 { background: linear-gradient(135deg, #93000a, #ffc174); }
-
-.bjChipInner {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: #0a0e18;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
+  font-size: clamp(9px, 2.2vw, 11px);
   font-weight: 800;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+  border: 2px dashed rgba(255, 255, 255, 0.6);
+  position: relative;
 }
 
-.bjChipOuter.c10 .bjChipInner { color: #dfe2f1; }
-.bjChipOuter.c25 .bjChipInner { color: #56e5a9; }
-.bjChipOuter.c50 .bjChipInner { color: #ffb77d; }
-.bjChipOuter.c100 .bjChipInner { color: #ffc174; }
-.bjChipOuter.c500 .bjChipInner { color: #ffddb8; }
+.bjChipCore.c1k {
+  background: radial-gradient(circle, #475569, #1e293b);
+  color: #f8fafc;
+  border-color: #94a3b8;
+}
 
-/* Quick Utilities */
-.bjQuickUtilsRow {
+.bjChipCore.c5k {
+  background: radial-gradient(circle, #2563eb, #1e40af);
+  color: #ffffff;
+  border-color: #93c5fd;
+}
+
+.bjChipCore.c25k {
+  background: radial-gradient(circle, #10b981, #047857);
+  color: #ffffff;
+  border-color: #a7f3d0;
+}
+
+.bjChipCore.c100k {
+  background: radial-gradient(circle, #18181b, #000000);
+  color: #ffd700;
+  border-color: #ffd700;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+}
+
+.bjChipCore.c500k {
+  background: radial-gradient(circle, #dc2626, #991b1b);
+  color: #ffffff;
+  border-color: #fecaca;
+}
+
+.bjChipCore.c1m {
+  background: radial-gradient(circle, #d97706, #78350f);
+  color: #ffd700;
+  border-color: #fde68a;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+}
+
+.bjDealControlsBar {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 8px;
-  padding-top: 6px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.bjUtilBtn {
-  flex: 1;
-  padding: 6px 10px;
-  border-radius: 8px;
-  background: #1c1f2a;
-  color: #a08e7a;
-  font-size: 10px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.bjUtilBtn:hover {
-  color: #dfe2f1;
-  background: #262a35;
-}
-
-.bjDealStartBtn {
-  width: 100%;
-  padding: 10px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #f59e0b, #ffc174);
-  color: #472a00;
-  font-size: 13px;
-  font-weight: 800;
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   gap: 6px;
-  transition: transform 0.15s ease;
-  margin-top: 8px;
 }
 
-.bjDealStartBtn:active {
-  transform: scale(0.98);
+.bjUtilActionBtn {
+  flex: 1;
+  padding: 7px 4px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  font-size: clamp(9px, 2.2vw, 11px);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
 }
 
-/* Toast Message */
-.bjToast {
-  position: fixed;
-  bottom: 86px;
+.bjUtilActionBtn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.bjDealPrimaryBtn {
+  flex: 2;
+  padding: 7px 8px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ffd700, #f59e0b);
+  border: none;
+  color: #1e1e1e;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  box-shadow: 0 3px 12px rgba(245, 158, 11, 0.4);
+  font-size: clamp(11px, 2.7vw, 13px);
+  transition: transform 0.1s, box-shadow 0.15s;
+}
+
+.bjDealPrimaryBtn:active {
+  transform: scale(0.97);
+}
+
+.bjToastNotification {
+  position: absolute;
+  top: 12px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(53, 57, 68, 0.95);
-  color: #dfe2f1;
-  padding: 8px 18px;
-  border-radius: 9999px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  z-index: 100;
+  background: rgba(0, 0, 0, 0.88);
+  color: #ffd700;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  padding: 6px 14px;
+  border-radius: 20px;
   font-size: 12px;
   font-weight: 700;
-  border: 1px solid rgba(255, 193, 116, 0.3);
-  animation: bjFadeIn 0.25s ease;
+  z-index: 100;
   pointer-events: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+  animation: bjFadeIn 0.2s ease;
+  white-space: nowrap;
 }
 
 @keyframes bjFadeIn {
-  from { opacity: 0; transform: translate(-50%, 10px); }
+  from { opacity: 0; transform: translate(-50%, -8px); }
   to { opacity: 1; transform: translate(-50%, 0); }
 }

@@ -14,6 +14,7 @@ import {ProfilePage} from './home/ProfilePage.jsx';
 import {AccountPanel} from './shared/AccountPanel.jsx';
 import {AuthScreen} from './shared/AuthScreen.jsx';
 import {BackgroundMusic} from './shared/BackgroundMusic.jsx';
+import {LandscapeBlocker} from './shared/LandscapeBlocker.jsx';
 import {API_URL, api} from './shared/api.js';
 import {FALLBACK_GAMES, GAME_SCREEN, getMergedGames} from './shared/games.js';
 
@@ -225,6 +226,7 @@ export function App() {
 
   return (
     <>
+      <LandscapeBlocker />
       {music}
       {page}
       {panel && <AccountPanel view={panel} onClose={() => setPanel(null)} user={user} token={token} setUser={setUser} onLogout={logout} />}
