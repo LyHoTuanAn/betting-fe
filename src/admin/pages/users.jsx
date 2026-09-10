@@ -32,7 +32,7 @@ export default function UsersPage({notify}) {
       await api.patch('/admin/users/' + user.id + '/status', {status: next});
       notify.ok('Đã ' + verb.toLowerCase() + ' @' + user.username);
       reload();
-    } catch (err) { notify.fail(err.message); }
+    } catch (err) { notify.fail(err.display || err.message); }
     finally { setBusy(null); }
   };
 

@@ -32,7 +32,7 @@ export default function WalletPage({notify}) {
       await api.patch('/admin/wallet/requests/' + request.id, {status: decision, note: note.trim() || undefined});
       notify.ok('Đã ' + verb.toLowerCase() + ' yêu cầu');
       reload();
-    } catch (err) { notify.fail(err.message); }
+    } catch (err) { notify.fail(err.display || err.message); }
     finally { setBusy(null); }
   };
 

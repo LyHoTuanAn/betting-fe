@@ -91,7 +91,7 @@ function LoginScreen({onLogin}) {
     event.preventDefault();
     setBusy(true); setError('');
     try { onLogin(await api.login(username.trim(), password)); }
-    catch (err) { setError(err.message); }
+    catch (err) { setError(err.display || err.message); }
     finally { setBusy(false); }
   };
 
