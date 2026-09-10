@@ -1,69 +1,190 @@
 import {useEffect, useRef, useState} from 'react';
-import {ArrowUpRight, Check, Coins, Flame, Lock, Plus, Timer, X, Zap} from 'lucide-react';
+import {ArrowUpRight, Check, Coins, Flame, Lock, Play, Plus, Timer, X, Zap} from 'lucide-react';
 import {ResultFx} from '../shared/ResultFx.jsx';
 import {Topbar} from '../shared/Topbar.jsx';
 import {playCelebrationAudio} from '../shared/audio.js';
 import {money} from '../shared/format.js';
 import {useGameFx} from '../shared/hooks.js';
-import {SEATS_CONFIG, createDeck, evaluate7Cards} from './poker-engine.js';
+import {api} from '../shared/api.js';
+import {SEATS_CONFIG} from './poker-engine.js';
 import './poker.css';
 
 export function Poker({goHome, balance, setBalance, sound, setSound, token}) {
   const [fx, triggerFx, dismissFx] = useGameFx();
-  const [stage, setStage] = useState('preflop'); // preflop, flop, turn, river, showdown
-  const [pot, setPot] = useState(125000);
+  const [stage, setStage] = useState('idle'); // idle, flop, turn, river, showdown, folded
+  const [handId, setHandId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [pot, setPot] = useState(0);
   const [currentBet, setCurrentBet] = useState(10000);
-  const [userBet, setUserBet] = useState(10000);
   const [raiseAmount, setRaiseAmount] = useState(20000);
+  const [raiseInput, setRaiseInput] = useState('');
+  const [isEditingRaise, setIsEditingRaise] = useState(false);
+  const [anteAmount, setAnteAmount] = useState(() => (balance > 0 && balance < 10000 ? Math.max(5000, balance) : 10000));
+  const [anteInput, setAnteInput] = useState('');
+  const [isEditingAnte, setIsEditingAnte] = useState(false);
   const [timer, setTimer] = useState(12);
   const [autoCheck, setAutoCheck] = useState(false);
-  const [handNo, setHandNo] = useState(4921);
-  const [statusMsg, setStatusMsg] = useState('Lượt hành động của bạn');
+  const [handNo, setHandNo] = useState(1);
+  const [statusMsg, setStatusMsg] = useState('Sẵn sàng vào bàn');
 
   // Cards State
-  const [deck, setDeck] = useState(() => createDeck());
-  const [heroHand, setHeroHand] = useState([
-    { rank: 14, label: 'A', suit: 's', symbol: '♠', color: '#1a1f2c' },
-    { rank: 13, label: 'K', suit: 'h', symbol: '♥', color: '#ef4444' }
-  ]);
-  const [communityCards, setCommunityCards] = useState([
-    { rank: 14, label: 'A', suit: 's', symbol: '♠', color: '#1a1f2c' },
-    { rank: 13, label: 'K', suit: 'd', symbol: '♦', color: '#f59e0b' },
-    { rank: 7, label: '7', suit: 's', symbol: '♠', color: '#1a1f2c' }
-  ]);
-  const [handRank, setHandRank] = useState('Đôi A (One Pair)');
-  const [handEnded, setHandEnded] = useState(false);
+  const [heroHand, setHeroHand] = useState([]);
+  const [dealerHand, setDealerHand] = useState([]);
+  const [communityCards, setCommunityCards] = useState([]);
+  const [handRank, setHandRank] = useState('');
+  const [handEnded, setHandEnded] = useState(true);
 
   // Sound ref
   const soundRef = useRef(sound);
   useEffect(() => { soundRef.current = sound; }, [sound]);
 
-  // Start a fresh hand
-  const startNewHand = () => {
-    const newDeck = createDeck();
-    const hero = [newDeck[0], newDeck[1]];
-    const community = [newDeck[2], newDeck[3], newDeck[4]];
-    
-    setDeck(newDeck.slice(10));
-    setHeroHand(hero);
-    setCommunityCards(community);
-    setStage('flop');
-    setPot(125000);
-    setCurrentBet(10000);
-    setUserBet(10000);
-    setRaiseAmount(20000);
-    setTimer(12);
-    setHandEnded(false);
-    setHandNo(h => h + 1);
-
-    const evaluated = evaluate7Cards([...hero, ...community]);
-    setHandRank(evaluated.name);
-    setStatusMsg(`Flop đã mở · ${evaluated.name}`);
+  // Start a fresh hand via Backend API
+  const startNewHand = async (customAnte = 10000) => {
+    if (loading) return;
+    const ante = customAnte;
+    if (balance < ante) {
+      triggerFx('diceLose', 'KHÔNG ĐỦ VÀNG ĐỂ ĐẶT ANTE', 2200);
+      setStatusMsg('Số dư không đủ để vào bàn. Vui lòng nạp thêm vàng.');
+      return;
+    }
+    setLoading(true);
+    setStatusMsg('Đang chia bài từ máy chủ...');
+    try {
+      const res = await api('/games/poker/deal', {
+        token,
+        method: 'POST',
+        body: JSON.stringify({ante})
+      });
+      setHandId(res.handId);
+      setHeroHand(res.heroHand || []);
+      setDealerHand([]);
+      setCommunityCards(res.communityCards || []);
+      setStage(res.stage || 'flop');
+      setPot(res.pot || ante * 2);
+      setCurrentBet(res.currentBet || ante);
+      setRaiseAmount((res.currentBet || ante) * 2);
+      setTimer(12);
+      setHandEnded(false);
+      setHandNo(h => h + 1);
+      setHandRank(res.handRank || '');
+      setStatusMsg(`Flop đã mở · ${res.handRank || ''}`);
+      if (res.balance !== undefined) setBalance(res.balance);
+    } catch (err) {
+      triggerFx('diceLose', err.message || 'Không thể chia bài', 2200);
+      setStatusMsg(err.message || 'Lỗi bắt đầu ván');
+    } finally {
+      setLoading(false);
+    }
   };
+
+  // Send player action to Backend API
+  const sendAction = async (action, amount) => {
+    if (!handId || loading || handEnded) return;
+    setLoading(true);
+    try {
+      const res = await api('/games/poker/action', {
+        token,
+        method: 'POST',
+        body: JSON.stringify({handId, action, amount})
+      });
+
+      if (res.balance !== undefined) {
+        setBalance(res.balance);
+      }
+
+      if (res.stage === 'folded') {
+        setStage('folded');
+        setHandEnded(true);
+        setStatusMsg('Bạn đã Fold (Bỏ bài)');
+        triggerFx('diceLose', 'BỎ BÀI', 2000);
+        setTimeout(() => {
+          setStage('idle');
+          setStatusMsg('Ván đã kết thúc. Bấm "Vào bàn mới" để tiếp tục.');
+        }, 2200);
+        return;
+      }
+
+      if (res.stage === 'showdown') {
+        setStage('showdown');
+        setHandEnded(true);
+        if (res.communityCards) setCommunityCards(res.communityCards);
+        if (res.dealerHand) setDealerHand(res.dealerHand);
+        if (res.heroRank) setHandRank(res.heroRank);
+
+        if (res.winner === 'hero') {
+          playCelebrationAudio('bigWin', soundRef.current);
+          triggerFx('bigWin', `+${money(res.payout)}`, 4500);
+          setStatusMsg(`🎉 BẠN THẮNG POT: +${money(res.payout)} với ${res.heroRank}! (Nhà cái: ${res.dealerRank})`);
+        } else if (res.winner === 'tie') {
+          triggerFx('diceWin', `HOÀ CƯỢC: +${money(res.payout)}`, 3000);
+          setStatusMsg(`🤝 Ván hoà (${res.heroRank}) · Hoàn ${money(res.payout)} cược`);
+        } else {
+          triggerFx('diceLose', 'NHÀ CÁI ĂN TRỌN', 2800);
+          setStatusMsg(`💔 Nhà cái thắng với ${res.dealerRank} (Bạn: ${res.heroRank})`);
+        }
+
+        setTimeout(() => {
+          setStage('idle');
+          setStatusMsg('Ván đã kết thúc. Bấm "Vào bàn mới" để tiếp tục.');
+        }, 6000);
+        return;
+      }
+
+      // Still in hand (turn or river)
+      setStage(res.stage);
+      if (res.communityCards) setCommunityCards(res.communityCards);
+      if (res.handRank) setHandRank(res.handRank);
+      if (res.pot) setPot(res.pot);
+      if (res.currentBet) setCurrentBet(res.currentBet);
+      const streetLabel = res.stage === 'turn' ? 'Turn (4 lá)' : 'River (5 lá)';
+      setStatusMsg(`${streetLabel} đã mở · ${res.handRank || ''}`);
+      setTimer(12);
+    } catch (err) {
+      triggerFx('diceLose', err.message || 'Lỗi hành động', 2200);
+      setStatusMsg(err.message || 'Không thể thực hiện hành động');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Check active hand or start hand on mount
+  useEffect(() => {
+    let unmounted = false;
+    api('/games/poker/active', {token})
+      .then(res => {
+        if (unmounted) return;
+        if (res?.active) {
+          setHandId(res.active.handId);
+          setHeroHand(res.active.heroHand || []);
+          setCommunityCards(res.active.communityCards || []);
+          setStage(res.active.stage || 'flop');
+          setPot(res.active.pot || 20000);
+          setCurrentBet(res.active.currentBet || 10000);
+          setRaiseAmount((res.active.currentBet || 10000) * 2);
+          setHandRank(res.active.handRank || '');
+          setHandEnded(false);
+          setStatusMsg(`Đang tiếp tục ván · ${res.active.handRank || ''}`);
+        } else {
+          // Khởi động ván đầu tiên nếu đủ vàng
+          if (balance >= 10000) {
+            startNewHand(10000);
+          } else {
+            setStage('idle');
+            setStatusMsg('Sẵn sàng vào bàn (Ante: 10.000 vàng)');
+          }
+        }
+      })
+      .catch(() => {
+        if (unmounted) return;
+        setStage('idle');
+        setStatusMsg('Sẵn sàng vào bàn');
+      });
+    return () => { unmounted = true; };
+  }, []);
 
   // Timer countdown
   useEffect(() => {
-    if (handEnded) return;
+    if (handEnded || stage === 'idle') return;
     const interval = setInterval(() => {
       setTimer(t => {
         if (t <= 1) {
@@ -74,98 +195,14 @@ export function Poker({goHome, balance, setBalance, sound, setSound, token}) {
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [handEnded, autoCheck, stage]);
-
-  // Advance stage
-  const advanceStage = () => {
-    if (stage === 'flop') {
-      // Reveal Turn (4th card)
-      const turnCard = deck[0];
-      const newComm = [...communityCards, turnCard];
-      setCommunityCards(newComm);
-      setDeck(d => d.slice(1));
-      setStage('turn');
-      const evalTurn = evaluate7Cards([...heroHand, ...newComm]);
-      setHandRank(evalTurn.name);
-      setStatusMsg(`Turn đã mở (${turnCard.label}${turnCard.symbol}) · ${evalTurn.name}`);
-    } else if (stage === 'turn') {
-      // Reveal River (5th card)
-      const riverCard = deck[0];
-      const newComm = [...communityCards, riverCard];
-      setCommunityCards(newComm);
-      setDeck(d => d.slice(1));
-      setStage('river');
-      const evalRiver = evaluate7Cards([...heroHand, ...newComm]);
-      setHandRank(evalRiver.name);
-      setStatusMsg(`River đã mở (${riverCard.label}${riverCard.symbol}) · ${evalRiver.name}`);
-    } else if (stage === 'river') {
-      // Showdown
-      setStage('showdown');
-      setHandEnded(true);
-      const evalFinal = evaluate7Cards([...heroHand, ...communityCards]);
-      setHandRank(evalFinal.name);
-      
-      const wonAmount = pot + 185000;
-      setBalance(b => b + wonAmount);
-      playCelebrationAudio('bigWin', soundRef.current);
-      triggerFx('bigWin', `+${money(wonAmount)}`, 4000);
-      setStatusMsg(`🎉 BẠN THẮNG POT: +${money(wonAmount)} với ${evalFinal.name}!`);
-      
-      setTimeout(startNewHand, 5500);
-    }
-  };
+  }, [handEnded, autoCheck, stage, handId]);
 
   // Player Actions
-  const handleFold = () => {
-    setStatusMsg('Bạn đã Fold (Bỏ bài)');
-    setHandEnded(true);
-    triggerFx('diceLose', 'BỎ BÀI', 1800);
-    setTimeout(startNewHand, 2500);
-  };
-
-  const handleCheck = () => {
-    setStatusMsg('Bạn đã Check (Xem bài)');
-    advanceStage();
-  };
-
-  const handleCall = () => {
-    const callCost = Math.max(10000, currentBet);
-    if (balance < callCost) return;
-    setBalance(b => b - callCost);
-    setPot(p => p + callCost * 2);
-    setStatusMsg(`Bạn đã Call ${money(callCost)}`);
-    advanceStage();
-  };
-
-  const handleRaise = () => {
-    const raiseCost = raiseAmount;
-    if (balance < raiseCost) return;
-    setBalance(b => b - raiseCost);
-    setPot(p => p + raiseCost * 2);
-    setCurrentBet(raiseCost);
-    setStatusMsg(`Bạn đã Tố (Raise) ${money(raiseCost)}!`);
-    advanceStage();
-  };
-
-  const handleAllIn = () => {
-    const allInAmt = Math.min(balance, 1000000);
-    setBalance(b => b - allInAmt);
-    setPot(p => p + allInAmt * 2);
-    setStatusMsg(`🔥 BẠN ĐÃ ALL-IN ${money(allInAmt)}!`);
-    
-    // Fast forward directly to Showdown
-    if (communityCards.length < 5) {
-      const needed = 5 - communityCards.length;
-      const extraCards = deck.slice(0, needed);
-      const finalComm = [...communityCards, ...extraCards];
-      setCommunityCards(finalComm);
-      setDeck(d => d.slice(needed));
-    }
-    setStage('river');
-    setTimeout(() => {
-      advanceStage();
-    }, 1200);
-  };
+  const handleFold = () => sendAction('fold');
+  const handleCheck = () => sendAction('check');
+  const handleCall = () => sendAction('call');
+  const handleRaise = () => sendAction('raise', raiseAmount);
+  const handleAllIn = () => sendAction('allin');
 
   return (
     <div className={'screen pokerScreen ' + (fx.type ? `fx-${fx.type}` : '')}>
@@ -277,6 +314,19 @@ export function Poker({goHome, balance, setBalance, sound, setSound, token}) {
                   ))}
                 </div>
               )}
+
+              {/* Dealer Hole Cards (Revealed at Showdown on Seat 3) */}
+              {seat.id === 3 && dealerHand.length === 2 && (
+                <div className="heroHandBox" style={{position: 'absolute', top: '70px', left: '-15px', zIndex: 15}}>
+                  {dealerHand.map((c, idx) => (
+                    <div key={idx} className="pokerCard" style={{boxShadow: '0 0 10px rgba(255, 215, 0, 0.6)'}}>
+                      <span className="cardCornerTop" style={{color: c.color}}>{c.label}</span>
+                      <span className="cardSuitCenter" style={{color: c.color}}>{c.symbol}</span>
+                      <span className="cardCornerBottom" style={{color: c.color}}>{c.label}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -296,68 +346,172 @@ export function Poker({goHome, balance, setBalance, sound, setSound, token}) {
             </button>
           </div>
 
-          {/* 5 Primary Action Buttons */}
-          <div className="actionButtonsGrid">
-            <button
-              className="pokerActBtn fold"
-              onClick={handleFold}
-              disabled={handEnded}
-            >
-              <X />
-              <span>Fold</span>
-            </button>
+          {/* Action Buttons: Show Start Hand when ended, otherwise Show Poker Actions */}
+          {handEnded ? (
+            <div className="pokerStartHandCard">
+              <div className="pokerAnteInputRow">
+                <span className="pokerAnteLabel">Mức Ante:</span>
+                <div className="pokerAnteInputBox" title="Nhập mức Ante tùy ý">
+                  <span className="antePrefix">🪙</span>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    className="pokerAnteInput"
+                    value={isEditingAnte ? anteInput : money(anteAmount)}
+                    onFocus={() => {
+                      setIsEditingAnte(true);
+                      setAnteInput(String(anteAmount));
+                    }}
+                    onChange={(e) => {
+                      const raw = e.target.value.replace(/\D/g, '');
+                      setAnteInput(raw);
+                      const val = parseInt(raw, 10);
+                      if (!isNaN(val) && val > 0) setAnteAmount(val);
+                    }}
+                    onBlur={() => {
+                      setIsEditingAnte(false);
+                      const val = parseInt(anteInput, 10);
+                      if (!isNaN(val) && val >= 5000) {
+                        setAnteAmount(Math.min(val, Math.max(balance, 5000)));
+                      } else {
+                        setAnteAmount(5000);
+                      }
+                    }}
+                    disabled={loading}
+                  />
+                </div>
+                <div className="pokerAntePills">
+                  {[5000, 10000, 25000, 50000, 100000].map(v => (
+                    <button
+                      key={v}
+                      type="button"
+                      className={`antePillBtn ${anteAmount === v ? 'active' : ''}`}
+                      onClick={() => {
+                        setAnteAmount(v);
+                        setAnteInput(String(v));
+                      }}
+                      disabled={loading}
+                    >
+                      {money(v)}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    className="antePillBtn max"
+                    onClick={() => {
+                      const maxA = Math.max(5000, Math.min(balance, 50000000));
+                      setAnteAmount(maxA);
+                      setAnteInput(String(maxA));
+                    }}
+                    disabled={loading}
+                  >
+                    ALL
+                  </button>
+                </div>
+              </div>
 
-            <button
-              className="pokerActBtn"
-              onClick={handleCheck}
-              disabled={handEnded}
-            >
-              <Check />
-              <span>Check</span>
-            </button>
+              <button
+                className="pokerActBtn call startDealBtn"
+                onClick={() => startNewHand(anteAmount)}
+                disabled={loading || balance < anteAmount}
+              >
+                <Play size={18} />
+                <span>{loading ? 'ĐANG CHIA BÀI...' : `VÀO BÀN MỚI (ANTE: ${money(anteAmount)} VÀNG)`}</span>
+              </button>
+            </div>
+          ) : (
+            <div className="actionButtonsGrid">
+              <button
+                className="pokerActBtn fold"
+                onClick={handleFold}
+                disabled={loading}
+              >
+                <X />
+                <span>Fold</span>
+              </button>
 
-            <button
-              className="pokerActBtn call"
-              onClick={handleCall}
-              disabled={handEnded || balance < currentBet}
-            >
-              <Plus />
-              <span>Call {money(currentBet)}</span>
-            </button>
+              <button
+                className="pokerActBtn"
+                onClick={handleCheck}
+                disabled={loading}
+              >
+                <Check />
+                <span>Check</span>
+              </button>
 
-            <button
-              className="pokerActBtn raise"
-              onClick={handleRaise}
-              disabled={handEnded || balance < raiseAmount}
-            >
-              <ArrowUpRight />
-              <span>Raise {money(raiseAmount)}</span>
-            </button>
+              <button
+                className="pokerActBtn call"
+                onClick={handleCall}
+                disabled={loading || balance < currentBet}
+              >
+                <Plus />
+                <span>Call {money(currentBet)}</span>
+              </button>
 
-            <button
-              className="pokerActBtn allin"
-              onClick={handleAllIn}
-              disabled={handEnded || balance <= 0}
-            >
-              <Flame />
-              <span>All-In</span>
-            </button>
-          </div>
+              <button
+                className="pokerActBtn raise"
+                onClick={handleRaise}
+                disabled={loading || balance < raiseAmount}
+              >
+                <ArrowUpRight />
+                <span>Raise {money(raiseAmount)}</span>
+              </button>
+
+              <button
+                className="pokerActBtn allin"
+                onClick={handleAllIn}
+                disabled={loading || balance <= 0}
+              >
+                <Flame />
+                <span>All-In</span>
+              </button>
+            </div>
+          )}
 
           {/* Quick Denominations & Multipliers Bar */}
           <div className="pokerBetToolBar">
+            <div className="pokerCustomRaiseWrap" title="Nhập số tiền muốn tố tùy ý">
+              <span className="pokerRaiseLabel">Tố:</span>
+              <input
+                type="text"
+                inputMode="numeric"
+                className="pokerCustomRaiseInput"
+                value={isEditingRaise ? raiseInput : money(raiseAmount)}
+                onFocus={() => {
+                  setIsEditingRaise(true);
+                  setRaiseInput(String(raiseAmount));
+                }}
+                onChange={(e) => {
+                  const raw = e.target.value.replace(/\D/g, '');
+                  setRaiseInput(raw);
+                  const val = parseInt(raw, 10);
+                  if (!isNaN(val) && val > 0) setRaiseAmount(val);
+                }}
+                onBlur={() => {
+                  setIsEditingRaise(false);
+                  const val = parseInt(raiseInput, 10);
+                  if (!isNaN(val) && val >= currentBet) {
+                    setRaiseAmount(Math.min(val, balance));
+                  } else {
+                    setRaiseAmount(Math.min(currentBet * 2, balance));
+                  }
+                }}
+                disabled={loading || handEnded}
+              />
+            </div>
+
             <div className="chipPillsRow">
-              <button className="pokerChipBtn c500" onClick={() => setRaiseAmount(500000)}>500K</button>
-              <button className="pokerChipBtn c100" onClick={() => setRaiseAmount(100000)}>100K</button>
-              <button className="pokerChipBtn c25" onClick={() => setRaiseAmount(25000)}>25K</button>
-              <button className="pokerChipBtn c5" onClick={() => setRaiseAmount(5000)}>5K</button>
+              <button className="pokerChipBtn c500" onClick={() => { setRaiseAmount(500000); setRaiseInput('500000'); }}>500K</button>
+              <button className="pokerChipBtn c100" onClick={() => { setRaiseAmount(100000); setRaiseInput('100000'); }}>100K</button>
+              <button className="pokerChipBtn c25" onClick={() => { setRaiseAmount(25000); setRaiseInput('25000'); }}>25K</button>
+              <button className="pokerChipBtn c5" onClick={() => { setRaiseAmount(5000); setRaiseInput('5000'); }}>5K</button>
             </div>
 
             <div className="quickMultipliersRow">
               <button className="quickMulBtn" onClick={() => setRaiseAmount(r => r * 2)}>2x</button>
               <button className="quickMulBtn" onClick={() => setRaiseAmount(r => r * 3)}>3x</button>
               <button className="quickMulBtn" onClick={() => setRaiseAmount(pot)}>Pot</button>
-              <button className="quickMulBtn max" onClick={() => setRaiseAmount(Math.min(balance, 1000000))}>Max</button>
+              <button className="quickMulBtn max" onClick={() => setRaiseAmount(Math.min(balance, 50000000))}>Max</button>
             </div>
           </div>
         </div>

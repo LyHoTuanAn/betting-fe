@@ -16,7 +16,13 @@ export function Slot({goHome,balance,setBalance,sound,setSound,token}){
  const spinTimers=useRef([]);
  const pendingBalance=useRef(null);
  const [fx,triggerFx,dismissFx]=useGameFx();
- const [bet,setBet]=useState(10000),[spinning,setSpinning]=useState(false),[slotStage,setSlotStage]=useState('idle'),[spinningCols,setSpinningCols]=useState(()=>Array(5).fill(false)),[grid,setGrid]=useState(createGrid),[jackpot,setJackpot]=useState(99999991035),[win,setWin]=useState(0),[turbo,setTurbo]=useState(false),[auto,setAuto]=useState(false);
+ const [bet,setBet]=useState(() => {
+  if (balance > 0 && balance < 10000) return Math.max(BET_LIMITS.slot.min, balance);
+  return 10000;
+ });
+ const [betInput,setBetInput]=useState('');
+ const [isEditingBet,setIsEditingBet]=useState(false);
+ const [spinning,setSpinning]=useState(false),[slotStage,setSlotStage]=useState('idle'),[spinningCols,setSpinningCols]=useState(()=>Array(5).fill(false)),[grid,setGrid]=useState(createGrid),[jackpot,setJackpot]=useState(99999991035),[win,setWin]=useState(0),[turbo,setTurbo]=useState(false),[auto,setAuto]=useState(false);
  
  useEffect(()=>{const t=setInterval(()=>setJackpot(v=>v+Math.floor(Math.random()*90+10)),1000);return()=>clearInterval(t)},[]);
  useEffect(()=>()=>spinTimers.current.forEach(clearTimeout),[]);
@@ -182,9 +188,28 @@ export function Slot({goHome,balance,setBalance,sound,setSound,token}){
         <span className="betLabelSub">5 HÀNG THƯỞNG</span>
        </div>
        <div className="betPicker">
-        <button onClick={()=>stepBet('down')} disabled={spinning || bet <= BET_LIMITS.slot.min} aria-label="Giảm cược"><Minus/></button>
-        <strong className="betDisplay">{money(bet)}</strong>
-        <button onClick={()=>stepBet('up')} disabled={spinning || bet >= BET_LIMITS.slot.max} aria-label="Tăng cược"><Plus/></button>
+        <button type="button" onClick={()=>stepBet('down')} disabled={spinning || bet <= BET_LIMITS.slot.min} aria-label="Giảm cược"><Minus/></button>
+        <input
+         type="text"
+         inputMode="numeric"
+         className="betDisplay betDisplayInput"
+         disabled={spinning}
+         value={isEditingBet ? betInput : money(bet)}
+         onFocus={() => { setBetInput(String(bet)); setIsEditingBet(true); }}
+         onChange={e => {
+          const raw = e.target.value.replace(/\D/g, '');
+          setBetInput(raw);
+          setBet(Number(raw) || 0);
+         }}
+         onBlur={() => {
+          setIsEditingBet(false);
+          const num = Number(betInput) || 0;
+          const clamped = Math.min(BET_LIMITS.slot.max, Math.max(BET_LIMITS.slot.min, num));
+          setBet(clamped);
+         }}
+         title="Nhấn để nhập số vàng cược tùy chỉnh"
+        />
+        <button type="button" onClick={()=>stepBet('up')} disabled={spinning || bet >= BET_LIMITS.slot.max} aria-label="Tăng cược"><Plus/></button>
        </div>
       </div>
 

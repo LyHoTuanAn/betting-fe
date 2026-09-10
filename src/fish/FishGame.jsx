@@ -16,7 +16,7 @@ import {createFish, fishTypes} from './fish-data.js';
 export function FishGame({goHome,balance,setBalance,sound,setSound,token}){
   const comboRef=useRef(0),comboTimer=useRef(null),fireTimerRef=useRef(null),pointerRef=useRef(null),shootRef=useRef(null),aimFrameRef=useRef(null),socketRef=useRef(null),playerIdRef=useRef(null);
  const [fx,triggerFx,dismissFx]=useGameFx();
- const area=useRef(null),[power,setPower]=useState(1000),[shots,setShots]=useState([]),[hits,setHits]=useState([]),[coins,setCoins]=useState([]),[fishes,setFishes]=useState(()=>Array.from({length:12},(_,i)=>createFish(i))),[target,setTarget]=useState({x:50,y:45}),[aim,setAim]=useState(0),[eventNotice,setEventNotice]=useState(null),[frenzy,setFrenzy]=useState(false);
+ const area=useRef(null),[power,setPower]=useState(1000),[powerInput,setPowerInput]=useState(''),[isEditingPower,setIsEditingPower]=useState(false),[shots,setShots]=useState([]),[hits,setHits]=useState([]),[coins,setCoins]=useState([]),[fishes,setFishes]=useState(()=>Array.from({length:12},(_,i)=>createFish(i))),[target,setTarget]=useState({x:50,y:45}),[aim,setAim]=useState(0),[eventNotice,setEventNotice]=useState(null),[frenzy,setFrenzy]=useState(false);
  const [roomInfo,setRoomInfo]=useState({count:0,capacity:6});
  const exitPopup=usePopup();
  const [roomReady,setRoomReady]=useState(false),[loadProgress,setLoadProgress]=useState(35);
@@ -230,12 +230,38 @@ export function FishGame({goHome,balance,setBalance,sound,setSound,token}){
     {hits.map(h=><div className={'hit fishHit '+(h.miss?'miss':'')+' '+(h.killed?'killed':'')} key={h.id} style={{left:h.x+'%',top:h.y+'%'}}><i className="impactRing"/>{!h.miss&&<><span className="captureNet"/><span className="captureNet netTwo"/>{!compactFishFx&&<span className="captureNet netThree"/>}<span className="waterImpact"/>{Array.from({length:compactFishFx?4:8},(_,n)=><em key={n} style={{'--spark-angle':`${n*(compactFishFx?90:45)}deg`}}/>)}</>}{h.miss?'MISS':h.killed?'HẠ CÁ':'TRÚNG'}{!h.miss&&<b>-{h.damage}</b>}</div>)}
     {coins.map(c=><div className="fishReward" key={c.id} style={{left:c.x+'%',top:c.y+'%'}}><span className="rewardRays"/><strong>+{money(c.value)}</strong><span className="rewardLabel">{c.combo>=3?`COMBO x${Math.min(10,c.combo)}`:'NHẬN VÀNG'}</span>{(compactFishFx?fxCoins.slice(0,16):[...fxCoins,...fxCoins]).map((coin,n)=><i key={n} style={{animationDelay:`${n*.012}s`,'--rx':`${Math.cos(n*.72)*(92+n%7*11)}px`,'--ry':`${Math.sin(n*.72)*(72+n%5*12)-48}px`,'--coin-size':`${15+n%4*5}px`}}/>)}{fxBits.slice(0,compactFishFx?7:18).map(bit=><em key={bit.id} style={{'--rx':`${Math.cos(bit.id*1.7)*(70+bit.id%5*12)}px`,'--ry':`${Math.sin(bit.id*1.7)*(58+bit.id%4*10)-30}px`,animationDelay:`${bit.id*.015}s`}}/>)}</div>)}
     <div className={'cannon realCannon '+(shots.length?'firing':'')} style={{'--aim':`${aim}deg`}}>
-     <div className="betQuick">{[100,1000,5000,10000].map(v=><button key={v} className={power===v?'active':''} onPointerDown={e=>{e.stopPropagation();setPower(v)}}>{v>=1000?v/1000+'K':v}</button>)}</div>
+     <div className="betQuick">{[100,500,1000,2000,5000,10000].map(v=><button key={v} className={power===v?'active':''} onPointerDown={e=>{e.stopPropagation();setPower(v);setPowerInput(String(v));}}>{v>=1000?v/1000+'K':v}</button>)}</div>
      <div className="cannonAim"><img src="/assets/fish-cannon-real.webp" alt="Súng bắn cá 3D" loading="eager" decoding="async"/><div className="muzzleBeam"/></div>
-     <div className="power"><button onPointerDown={e=>{e.stopPropagation();setPower(Math.max(BET_LIMITS.fish.min,power-100))}}><Minus/></button><strong>{money(power)}</strong><button onPointerDown={e=>{e.stopPropagation();setPower(Math.min(BET_LIMITS.fish.max,power+100))}}><Plus/></button></div>
+     <div className="power">
+      <button onPointerDown={e=>{e.stopPropagation();setPower(Math.max(BET_LIMITS.fish.min,power-100))}}><Minus/></button>
+      <input
+       type="text"
+       inputMode="numeric"
+       className="powerInput"
+       value={isEditingPower?powerInput:money(power)}
+       onPointerDown={e=>e.stopPropagation()}
+       onFocus={()=>{setIsEditingPower(true);setPowerInput(String(power));}}
+       onChange={e=>{
+        const raw=e.target.value.replace(/\D/g,'');
+        setPowerInput(raw);
+        const val=parseInt(raw,10);
+        if(!isNaN(val)&&val>0)setPower(Math.min(BET_LIMITS.fish.max,val));
+       }}
+       onBlur={()=>{
+        setIsEditingPower(false);
+        const val=parseInt(powerInput,10);
+        if(!isNaN(val)){
+         setPower(Math.min(BET_LIMITS.fish.max,Math.max(BET_LIMITS.fish.min,val)));
+        }else{
+         setPower(BET_LIMITS.fish.min);
+        }
+       }}
+       title="Nhập công suất đạn tùy ý"
+      />
+      <button onPointerDown={e=>{e.stopPropagation();setPower(Math.min(BET_LIMITS.fish.max,power+100))}}><Plus/></button>
+     </div>
     </div>
    </main>
   </div>
  );
 }
-
