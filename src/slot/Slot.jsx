@@ -169,41 +169,43 @@ export function Slot({goHome,balance,setBalance,sound,setSound,token}){
      )}
     </div>
 
-    <section className="controlPanel">
-     <div className="controlTop">
-      <div className="betPickerLabel">
-       <p className="betLabelTitle">MỨC CƯỢC</p>
-       <span className="betLabelSub">5 HÀNG THƯỞNG</span>
+    <div className="slotControlSections">
+     <section className="betSectionCard">
+      <div className="controlTop">
+       <div className="betPickerLabel">
+        <p className="betLabelTitle">MỨC CƯỢC</p>
+        <span className="betLabelSub">5 HÀNG THƯỞNG</span>
+       </div>
+       <div className="betPicker">
+        <button onClick={()=>stepBet('down')} disabled={spinning || bet <= BET_LIMITS.slot.min} aria-label="Giảm cược"><Minus/></button>
+        <strong className="betDisplay">{money(bet)}</strong>
+        <button onClick={()=>stepBet('up')} disabled={spinning || bet >= BET_LIMITS.slot.max} aria-label="Tăng cược"><Plus/></button>
+       </div>
       </div>
-      <div className="betPicker">
-       <button onClick={()=>stepBet('down')} disabled={spinning || bet <= BET_LIMITS.slot.min} aria-label="Giảm cược"><Minus/></button>
-       <strong className="betDisplay">{money(bet)}</strong>
-       <button onClick={()=>stepBet('up')} disabled={spinning || bet >= BET_LIMITS.slot.max} aria-label="Tăng cược"><Plus/></button>
+
+      <div className="betPresetsRow">
+       {betPresets.map(preset => (
+        <button
+         key={preset}
+         type="button"
+         className={`betPresetChip ${bet === preset ? 'active' : ''}`}
+         disabled={spinning}
+         onClick={()=>setBet(preset)}
+        >
+         {formatChip(preset)}
+        </button>
+       ))}
       </div>
-     </div>
 
-     <div className="betPresetsRow">
-      {betPresets.map(preset => (
-       <button
-        key={preset}
-        type="button"
-        className={`betPresetChip ${bet === preset ? 'active' : ''}`}
-        disabled={spinning}
-        onClick={()=>setBet(preset)}
-       >
-        {formatChip(preset)}
-       </button>
-      ))}
-     </div>
+      <div className="betQuickActions">
+       <button type="button" className="quickBetBtn" disabled={spinning} onClick={()=>setBet(BET_LIMITS.slot.min)}>MIN</button>
+       <button type="button" className="quickBetBtn" disabled={spinning} onClick={()=>setBet(Math.max(BET_LIMITS.slot.min, Math.floor(bet / 2)))}>÷2</button>
+       <button type="button" className="quickBetBtn" disabled={spinning} onClick={()=>setBet(Math.min(BET_LIMITS.slot.max, bet * 2))}>×2</button>
+       <button type="button" className="quickBetBtn" disabled={spinning} onClick={()=>setBet(Math.min(BET_LIMITS.slot.max, Math.max(BET_LIMITS.slot.min, Math.floor(balance))))}>MAX</button>
+      </div>
+     </section>
 
-     <div className="betQuickActions">
-      <button type="button" className="quickBetBtn" disabled={spinning} onClick={()=>setBet(BET_LIMITS.slot.min)}>MIN</button>
-      <button type="button" className="quickBetBtn" disabled={spinning} onClick={()=>setBet(Math.max(BET_LIMITS.slot.min, Math.floor(bet / 2)))}>÷2</button>
-      <button type="button" className="quickBetBtn" disabled={spinning} onClick={()=>setBet(Math.min(BET_LIMITS.slot.max, bet * 2))}>×2</button>
-      <button type="button" className="quickBetBtn" disabled={spinning} onClick={()=>setBet(Math.min(BET_LIMITS.slot.max, Math.max(BET_LIMITS.slot.min, Math.floor(balance))))}>MAX</button>
-     </div>
-
-     <div className="controlActions">
+     <section className="spinSectionCard">
       <div className="toggles">
        <button className={auto?'on':''} onClick={()=>setAuto(!auto)}>
         <RotateCcw className={auto?'rotating':''}/>Auto
@@ -217,8 +219,8 @@ export function Slot({goHome,balance,setBalance,sound,setSound,token}){
        <span className="spinBtnText">{spinning?'ĐANG QUAY...':'QUAY'}</span>
        <div className="spinBtnGlow"></div>
       </button>
-     </div>
-    </section>
+     </section>
+    </div>
    </main>
   </div>
  );

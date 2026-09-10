@@ -164,28 +164,35 @@ button{font:inherit;color:inherit;border:0;cursor:pointer;-webkit-tap-highlight-
 .nav .navMain{flex:0 0 54px;height:54px;border-radius:50%;background:linear-gradient(180deg,#fff099 0%,#f5a623 50%,#c77a02 100%);border:2.5px solid #fff3b0;color:#3e1f00;display:grid;place-items:center;transform:translateY(-14px);box-shadow:0 6px 18px #f5a62388,inset 0 1px 0 #fff;pointer-events:auto!important}
 .nav .navMain svg{width:26px;height:26px;stroke-width:3}
 
-.jackpot{height:104px;border-radius:18px;border:2px solid #ffd464;background:linear-gradient(180deg,#1c1308 0%,#0e0904 100%);display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;overflow:hidden;box-shadow:inset 0 0 30px #d4922155,0 0 24px #e59c1544,0 12px 28px #000a}.jackpotCrown{position:absolute;top:5px;font-size:15px;filter:drop-shadow(0 0 8px #ffd700);animation:pulse 2s infinite}.jackpot small{font:800 13px Oswald;color:#fce289;letter-spacing:4px;margin-top:10px;text-shadow:0 0 8px #f5a623aa}.jackpot strong{font:900 clamp(30px,9.5vw,42px) Oswald;color:#fff2a8;text-shadow:0 0 16px #ffbe26,0 2px 4px #000;letter-spacing:1px;line-height:1}.jackpotGleam{position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,0.18) 50%,transparent 70%);transform:translateX(-100%);animation:jackpotShimmer 4s infinite}
-.reelsContainer{position:relative;margin-top:14px;padding:2px 0}
-.paylineIndicator{position:absolute;top:50%;transform:translateY(-50%);z-index:20;width:24px;height:44px;display:grid;place-items:center;background:linear-gradient(180deg,#ffd868,#ca8006);color:#3f2100;font-weight:900;font-size:12px;border-radius:6px;box-shadow:0 0 14px #ffc107,inset 0 1px 0 #fff;animation:paylinePulse 1.4s ease-in-out infinite alternate}
-.paylineIndicator.left{left:-8px;border-radius:6px 12px 12px 6px}
-.paylineIndicator.right{right:-8px;border-radius:12px 6px 6px 12px}
-.reelsContainer.isSpinning .reels{box-shadow:0 0 28px #f5a62366,inset 0 0 30px #000,inset 0 0 15px #ffd70033}
+/* Jackpot */
+.jackpot{height:clamp(46px,7.2vh,66px);border-radius:clamp(12px,1.8vh,16px);border:2px solid #ffd464;background:linear-gradient(180deg,#1c1308 0%,#0e0904 100%);display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;overflow:hidden;flex-shrink:0;box-shadow:inset 0 0 20px #d4922155,0 0 16px #e59c1544,0 6px 16px #000a}
+.jackpotCrown{position:absolute;top:clamp(2px,0.4vh,4px);font-size:clamp(11px,1.6vh,14px);filter:drop-shadow(0 0 6px #ffd700);animation:pulse 2s infinite}
+.jackpot small{font:800 clamp(9px,1.4vh,11.5px) Oswald;color:#fce289;letter-spacing:clamp(2px,0.7vw,4px);margin-top:clamp(4px,0.7vh,7px);text-shadow:0 0 6px #f5a623aa}
+.jackpot strong{font:900 clamp(20px,3.6vh,34px) Oswald;color:#fff2a8;text-shadow:0 0 14px #ffbe26,0 2px 4px #000;letter-spacing:1px;line-height:1}
+.jackpotGleam{position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,0.18) 50%,transparent 70%);transform:translateX(-100%);animation:jackpotShimmer 4s infinite}
+
+/* Reels Container */
+.reelsContainer{position:relative;margin:0;padding:0;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;width:100%}
+.paylineIndicator{position:absolute;top:50%;transform:translateY(-50%);z-index:20;width:clamp(18px,3vh,24px);height:clamp(34px,6vh,46px);display:grid;place-items:center;background:linear-gradient(180deg,#ffd868,#ca8006);color:#3f2100;font-weight:900;font-size:clamp(10px,1.5vh,12px);border-radius:6px;box-shadow:0 0 12px #ffc107,inset 0 1px 0 #fff;animation:paylinePulse 1.4s ease-in-out infinite alternate}
+.paylineIndicator.left{left:-6px;border-radius:6px 10px 10px 6px}
+.paylineIndicator.right{right:-6px;border-radius:10px 6px 6px 10px}
+.reelsContainer.isSpinning .reels{box-shadow:0 0 24px #f5a62366,inset 0 0 25px #000,inset 0 0 12px #ffd70033}
 .reelsContainer.hasWon .reels{animation:winningFrameGlow 1s ease-in-out infinite alternate}
-.reels{position:relative;padding:8px 6px;display:grid;grid-template-columns:repeat(5,1fr);background:linear-gradient(180deg,#14100b 0%,#0a0806 50%,#14100b 100%);border:3px solid #df9e28;border-radius:16px;gap:5px;overflow:hidden;box-shadow:inset 0 0 25px #000,0 12px 30px #000c,0 0 18px #a86c1244}
-.reels::before,.reels::after{content:'';position:absolute;left:0;right:0;height:36px;z-index:15;pointer-events:none}
+.reels{position:relative;width:100%;padding:clamp(4px,0.8vh,8px) clamp(4px,1vw,8px);display:grid;grid-template-columns:repeat(5,calc((100% - 16px)/5))!important;background:linear-gradient(180deg,#14100b 0%,#0a0806 50%,#14100b 100%);border:2.5px solid #df9e28;border-radius:16px;gap:clamp(2px,0.6vw,5px);overflow:hidden;box-shadow:inset 0 0 25px #000,0 8px 24px #000c,0 0 16px #a86c1244}
+.reels::before,.reels::after{content:'';position:absolute;left:0;right:0;height:clamp(24px,4vh,40px);z-index:15;pointer-events:none}
 .reels::before{top:0;background:linear-gradient(180deg,rgba(5,3,1,0.92) 0%,rgba(10,8,5,0.6) 45%,transparent 100%);border-bottom:1px solid rgba(255,215,0,0.12)}
 .reels::after{bottom:0;background:linear-gradient(0deg,rgba(5,3,1,0.92) 0%,rgba(10,8,5,0.6) 45%,transparent 100%);border-top:1px solid rgba(255,215,0,0.12)}
 .reelsGlassGlare{position:absolute;inset:0;background:linear-gradient(125deg,rgba(255,255,255,0.09) 0%,transparent 35%,rgba(255,255,255,0.03) 60%,transparent 100%);pointer-events:none;z-index:16}
-.reelCol{display:block;height:290px;min-width:0;overflow:hidden;position:relative;contain:layout paint;border-radius:8px}
-.reelCol.suspense{box-shadow:0 0 16px #ff7b00,inset 0 0 12px #ffc107;border:1px solid #ffa000;animation:suspenseThrob 0.45s infinite alternate}
+.reelCol{display:block!important;height:clamp(160px,26vh,260px)!important;min-width:0;width:100%!important;max-width:100%!important;overflow:hidden;position:relative;contain:layout paint;border-radius:8px}
+.reelCol.suspense{box-shadow:0 0 14px #ff7b00,inset 0 0 10px #ffc107;border:1px solid #ffa000;animation:suspenseThrob 0.45s infinite alternate}
 .reelCol.stopped .reelColumnFlash{position:absolute;inset:0;background:linear-gradient(180deg,#fff0,#fff8 50%,#fff0);pointer-events:none;z-index:12;animation:reelFlash 0.38s ease-out forwards}
-.reelTrack{display:grid;grid-auto-rows:54px;gap:5px;width:100%;will-change:transform}
-.symbol{height:54px;border-radius:10px;background:linear-gradient(165deg,#2f2416 0%,#18140e 55%,#0d0b08 100%);display:grid;place-items:center;border:1px solid #7a5823;box-shadow:inset 0 1px 0 #ffffff22,inset 0 -2px 4px #000000a0,0 2px 5px #00000088;position:relative;overflow:hidden;transition:border-color 0.25s,box-shadow 0.25s}
+.reelTrack{display:grid;grid-auto-rows:clamp(28px,4.8vh,47px)!important;gap:clamp(2px,0.4vh,4px)!important;width:100%;will-change:transform}
+.symbol{height:clamp(28px,4.8vh,47px)!important;min-width:0;width:100%;border-radius:clamp(6px,1vh,10px);background:linear-gradient(165deg,#2f2416 0%,#18140e 55%,#0d0b08 100%);display:grid;place-items:center;border:1px solid #7a5823;box-shadow:inset 0 1px 0 #ffffff22,inset 0 -2px 4px #000000a0,0 2px 4px #00000088;position:relative;overflow:hidden;transition:border-color 0.25s,box-shadow 0.25s}
 .symbol.middleRow{border-color:#d49a2a;background:linear-gradient(165deg,#3c2e1c 0%,#201912 55%,#140f0a 100%)}
 .symbol.isWinning{animation:winningSymbolPop 0.8s ease-in-out infinite alternate!important;border:2px solid #fff2a8!important;box-shadow:inset 0 0 18px #ffe57f,0 0 20px #ffc107,0 0 35px #ff980088!important;z-index:10}
 .symContent{display:flex;align-items:center;justify-content:center;width:100%;height:100%;position:relative}
 .symGleam{position:absolute;top:-40%;left:-40%;width:30%;height:180%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);transform:rotate(25deg);pointer-events:none;animation:symShine 3.6s infinite}
-.symbolSvg{width:38px;height:38px;display:block;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.6));transition:transform 0.2s ease}
+.symbolSvg{width:clamp(20px,3.5vh,34px);height:clamp(20px,3.5vh,34px);display:block;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.6));transition:transform 0.2s ease}
 .symbolSvg.diamondSvg{filter:drop-shadow(0 0 8px rgba(0,210,255,0.7)) drop-shadow(0 2px 4px #000)}
 .symbolSvg.crownSvg{filter:drop-shadow(0 0 10px rgba(255,215,0,0.7)) drop-shadow(0 2px 4px #000)}
 .symbolSvg.sevenSvg{filter:drop-shadow(0 0 10px rgba(255,59,48,0.7)) drop-shadow(0 2px 4px #000)}
@@ -204,54 +211,333 @@ button{font:inherit;color:inherit;border:0;cursor:pointer;-webkit-tap-highlight-
 .symbolSvg.orbSvg{filter:drop-shadow(0 0 10px rgba(217,70,239,0.85)) drop-shadow(0 2px 4px #000)}
 .sevenWrapper,.crownWrapper,.gemWrapper,.barWrapper,.starWrapper,.tiaraWrapper,.pouchWrapper,.coinWrapper,.cloverWrapper,.bellWrapper,.cherryWrapper,.thunderWrapper,.grapeWrapper,.dragonWrapper,.jokerWrapper,.orbWrapper{display:flex;align-items:center;justify-content:center;width:100%;height:100%}
 .winSparkles{position:absolute;inset:0;pointer-events:none;display:flex;justify-content:space-between;padding:4px;font-size:12px;animation:winSparklePop 0.6s infinite alternate}
-.winLine{height:42px;display:grid;place-items:center;font:800 12px Oswald;color:#e8d196;letter-spacing:1px;margin:6px 0 2px}
-.winLine.winning .winLineBadge{background:linear-gradient(90deg,#ffeb85,#f5a623);color:#4a2700;padding:6px 18px;border-radius:20px;font-size:14px;box-shadow:0 0 20px #ffc107,0 4px 10px #000;animation:pop 0.5s ease-out}
-.controlPanel{border:2px solid #6b4d1f;background:linear-gradient(180deg,#2b2114 0%,#19130c 100%);border-radius:18px;padding:12px 14px;margin-top:2px;box-shadow:inset 0 1px 0 #fff2,0 8px 24px #0008}
-.controlTop{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.winLine{height:clamp(18px,2.8vh,26px);display:grid;place-items:center;font:800 clamp(9px,1.3vh,11px) Oswald;color:#e8d196;letter-spacing:.8px;margin:0;flex-shrink:0}
+.winLine.winning .winLineBadge{background:linear-gradient(90deg,#ffeb85,#f5a623);color:#4a2700;padding:clamp(3px,0.5vh,5px) clamp(10px,2vw,16px);border-radius:18px;font-size:clamp(11px,1.7vh,13px);box-shadow:0 0 16px #ffc107,0 4px 10px #000;animation:pop 0.5s ease-out}
+
+/* Slot Control Sections (Separated Cards with Breathing Room) */
+.slotControlSections{display:flex;flex-direction:column;gap:clamp(8px,1.3vh,14px);flex-shrink:0;width:100%}
+.betSectionCard{
+ background:linear-gradient(180deg,#241a10 0%,#130d07 100%);
+ border:1.5px solid #6b4d1f;
+ border-radius:14px;
+ padding:clamp(8px,1.2vh,12px) clamp(10px,2.5vw,16px);
+ box-shadow:0 6px 18px #000a,inset 0 1px 0 #ffffff18;
+ display:flex;
+ flex-direction:column;
+ gap:clamp(6px,0.9vh,10px);
+}
+.controlTop{display:flex;align-items:center;justify-content:space-between}
 .betPickerLabel{display:flex;flex-direction:column;gap:1px}
-.betLabelTitle{margin:0;font:800 11px Oswald;color:#caa969;letter-spacing:1px}
-.betLabelSub{font:700 9px Oswald;color:#e89f2a;letter-spacing:0.5px}
-.betPicker{display:flex;align-items:center;gap:8px}
-.betPicker button{width:36px;height:34px;border-radius:9px;background:linear-gradient(180deg,#423521 0%,#261d11 100%);border:1px solid #7c5d2c;display:grid;place-items:center;color:#ffe699;box-shadow:0 2px 4px #000;transition:transform .1s,filter .1s}
+.betLabelTitle{margin:0;font:800 clamp(9.5px,1.4vh,11px) Oswald;color:#caa969;letter-spacing:.8px}
+.betLabelSub{font:700 clamp(8px,1.2vh,9.5px) Oswald;color:#e89f2a;letter-spacing:.4px}
+.betPicker{display:flex;align-items:center;gap:clamp(6px,1.5vw,10px)}
+.betPicker button{
+ width:clamp(30px,4.5vh,38px);
+ height:clamp(28px,4.2vh,34px);
+ border-radius:8px;
+ background:linear-gradient(180deg,#423521 0%,#261d11 100%);
+ border:1px solid #7c5d2c;
+ display:grid;
+ place-items:center;
+ color:#ffe699;
+ box-shadow:0 2px 4px #000;
+ transition:transform .1s,filter .1s;
+}
 .betPicker button:active{transform:scale(0.92)}
-.betDisplay{background:linear-gradient(180deg,#9e1e12 0%,#610d05 100%);border:1px solid #e75d34;border-radius:10px;min-width:105px;padding:6px 10px;text-align:center;font:800 15px Oswald;color:#fff;box-shadow:inset 0 1px 0 #ff8a65,0 2px 6px #0006}
-.betPresetsRow{display:flex;gap:5px;overflow-x:auto;padding-bottom:5px;margin-bottom:7px;scrollbar-width:none}
+.betPicker button svg{width:clamp(14px,2vh,18px);height:clamp(14px,2vh,18px)}
+.betDisplay{
+ background:linear-gradient(180deg,#9e1e12 0%,#610d05 100%);
+ border:1px solid #e75d34;
+ border-radius:9px;
+ min-width:clamp(85px,22vw,110px);
+ padding:clamp(3px,0.5vh,6px) clamp(8px,1.5vw,12px);
+ text-align:center;
+ font:800 clamp(13px,2.1vh,16px) Oswald;
+ color:#fff;
+ box-shadow:inset 0 1px 0 #ff8a65,0 2px 6px #0006;
+}
+.betPresetsRow{display:flex;gap:clamp(4px,1vw,7px);overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
 .betPresetsRow::-webkit-scrollbar{display:none}
-.betPresetChip{flex:1;min-width:36px;height:28px;border-radius:8px;background:linear-gradient(180deg,#302619 0%,#18120b 100%);border:1px solid #6b4e20;color:#e6c987;font:800 11px Oswald;display:grid;place-items:center;cursor:pointer;transition:all 0.15s ease;box-shadow:0 2px 4px #000}
+.betPresetChip{
+ flex:1;
+ min-width:clamp(30px,6.5vw,38px);
+ height:clamp(22px,3.3vh,28px);
+ border-radius:7px;
+ background:linear-gradient(180deg,#302619 0%,#18120b 100%);
+ border:1px solid #6b4e20;
+ color:#e6c987;
+ font:800 clamp(9.5px,1.4vh,11.5px) Oswald;
+ display:grid;
+ place-items:center;
+ cursor:pointer;
+ transition:all .15s ease;
+ box-shadow:0 2px 4px #000;
+}
 .betPresetChip:active:not(:disabled){transform:scale(0.92)}
-.betPresetChip.active{background:linear-gradient(180deg,#ffd700 0%,#d97706 100%);color:#3a1d00;border-color:#fff2a8;font-weight:900;box-shadow:0 0 10px #ffd70088,inset 0 1px 0 #fff;transform:translateY(-1px)}
+.betPresetChip.active{
+ background:linear-gradient(180deg,#ffd700 0%,#d97706 100%);
+ color:#3a1d00;
+ border-color:#fff2a8;
+ font-weight:900;
+ box-shadow:0 0 10px #ffd70088,inset 0 1px 0 #fff;
+ transform:translateY(-1px);
+}
 .betPresetChip:disabled{opacity:0.5;cursor:not-allowed}
-.betQuickActions{display:flex;gap:5px;margin-bottom:10px}
-.quickBetBtn{flex:1;height:26px;border-radius:7px;background:linear-gradient(180deg,#241c13 0%,#130e09 100%);border:1px solid #553e1a;color:#d5b572;font:800 10px Oswald;letter-spacing:0.5px;display:grid;place-items:center;cursor:pointer;transition:all 0.15s ease}
+.betQuickActions{display:flex;gap:clamp(4px,1vw,7px)}
+.quickBetBtn{
+ flex:1;
+ height:clamp(20px,3vh,26px);
+ border-radius:6px;
+ background:linear-gradient(180deg,#241c13 0%,#130e09 100%);
+ border:1px solid #553e1a;
+ color:#d5b572;
+ font:800 clamp(9px,1.3vh,10.5px) Oswald;
+ letter-spacing:.5px;
+ display:grid;
+ place-items:center;
+ cursor:pointer;
+ transition:all .15s ease;
+}
 .quickBetBtn:hover:not(:disabled){border-color:#ffd700;color:#fff}
 .quickBetBtn:active:not(:disabled){transform:scale(0.94);background:#382711}
 .quickBetBtn:disabled{opacity:0.4;cursor:not-allowed}
-.controlActions{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.toggles{display:flex;gap:10px}
-.toggles button{background:linear-gradient(180deg,#302619 0%,#1d160e 100%);border:1px solid #57401c;border-radius:12px;color:#a89f91;display:flex;flex-direction:column;align-items:center;font:700 10px Oswald;letter-spacing:1px;padding:6px 12px;gap:3px;box-shadow:0 2px 4px #000;transition:all .2s}
+
+/* Spin Section Card */
+.spinSectionCard{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:clamp(10px,2.5vw,16px);
+ background:linear-gradient(180deg,#1c140c 0%,#0d0905 100%);
+ border:1.5px solid #573e18;
+ border-radius:14px;
+ padding:clamp(8px,1.2vh,12px) clamp(10px,2.5vw,16px);
+ box-shadow:0 6px 18px #000a,inset 0 1px 0 #ffffff14;
+}
+.toggles{display:flex;gap:clamp(6px,1.5vw,10px)}
+.toggles button{
+ background:linear-gradient(180deg,#302619 0%,#1d160e 100%);
+ border:1px solid #57401c;
+ border-radius:10px;
+ color:#a89f91;
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+ font:700 clamp(9px,1.4vh,11px) Oswald;
+ letter-spacing:.8px;
+ padding:clamp(4px,0.7vh,8px) clamp(8px,2vw,14px);
+ gap:2px;
+ min-width:clamp(46px,11vw,56px);
+ box-shadow:0 2px 4px #000;
+ transition:all .2s;
+}
 .toggles button.on{background:linear-gradient(180deg,#614717 0%,#3b2a0c 100%);border-color:#ffca36;color:#ffda73;box-shadow:0 0 12px #ffc10744}
-.toggles button svg{width:18px;height:18px}
+.toggles button svg{width:clamp(15px,2.2vh,18px);height:clamp(15px,2.2vh,18px)}
 .toggles .rotating{animation:spin 1.5s linear infinite}
 .toggles .flashing{animation:pulse 0.6s infinite}
-.spinBtn{flex:1;height:56px;border-radius:14px;background:linear-gradient(180deg,#fff29e 0%,#f7b733 45%,#ca7a02 100%);border:2px solid #ffea79;color:#4c2900;font:900 20px Oswald;letter-spacing:2px;box-shadow:0 6px 20px #e59c1588,inset 0 2px 4px #fff,inset 0 -3px 4px #783e00;position:relative;overflow:hidden;display:grid;place-items:center;transition:transform .12s,filter .2s}
-.spinBtn:active:not(:disabled){transform:translateY(3px) scale(0.97);box-shadow:0 2px 8px #e59c1588}
+.spinBtn{
+ flex:1;
+ height:clamp(46px,7vh,58px);
+ border-radius:12px;
+ background:linear-gradient(180deg,#fff29e 0%,#f7b733 45%,#ca7a02 100%);
+ border:2px solid #ffea79;
+ color:#4c2900;
+ font:900 clamp(16px,2.6vh,21px) Oswald;
+ letter-spacing:2px;
+ box-shadow:0 6px 20px #e59c1588,inset 0 2px 4px #fff,inset 0 -2px 4px #783e00;
+ position:relative;
+ overflow:hidden;
+ display:grid;
+ place-items:center;
+ transition:transform .12s,filter .2s;
+}
+.spinBtn:active:not(:disabled){transform:translateY(2px) scale(0.97);box-shadow:0 2px 8px #e59c1588}
 .spinBtn:disabled{filter:grayscale(0.4) brightness(0.85);cursor:not-allowed}
 .spinBtn.spinningBtn{animation:spinBtnThrob 1s ease-in-out infinite alternate}
 .spinBtnGlow{position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);transform:translateX(-100%);animation:btnShine 2.8s infinite}
-.diceScreen{background:radial-gradient(circle at 50% 34%,#41310f,#0c0c08 72%)}.diceBody{padding:13px;text-align:center}.roundNo{font-size:10px;background:#483a1d;display:inline-block;padding:5px 12px;border-radius:10px;color:#d6bd80}.timer{font:700 44px Oswald;color:#ffe49b;text-shadow:0 0 12px #db9c1c;margin:2px}.timer.danger{color:#ff493f;animation:pulse .5s infinite}.bowl{width:min(100%,340px);height:210px;margin:0 auto 10px;padding-inline:18px;background:radial-gradient(ellipse at 50% 80%,#d3973e 0,#4e2908 48%,#15100b 50%);display:grid;place-items:center;filter:drop-shadow(0 7px 8px #000);border-radius:45%}.diceTray{position:relative;z-index:2;display:flex;align-items:flex-end;justify-content:center;gap:12px;margin-top:76px;padding-inline:10px;perspective:800px}.diceCube{width:52px;height:52px;transform-style:preserve-3d;filter:drop-shadow(0 8px 9px #2c1504)}.diceCube.rolling{animation:diceRoll .72s cubic-bezier(.2,.72,.23,1.05) infinite}.diceInner{width:100%;height:100%;border-radius:12px;background:linear-gradient(145deg,#fffef9,#eadfc8 58%,#b89152);border:1px solid #f6deb0;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:7px;box-shadow:inset 0 -3px 5px #a97631,inset 0 3px 5px #fff8,0 2px 5px #0006}.pip{width:10px;height:10px;border-radius:50%;place-self:center;background:radial-gradient(circle at 35% 35%,#4b3110,#0b0600 80%);opacity:0;transform:scale(.3)}.pip.show{opacity:1;transform:scale(1)}.sides{display:flex;gap:9px}.sides button{flex:1;height:116px;border-radius:10px;background:linear-gradient(#302a1c,#17150e);border:1px solid #897142;display:flex;flex-direction:column;justify-content:center;gap:5px}.sides button.selected{border:2px solid #ffcb50;box-shadow:inset 0 0 22px #ffc12a55,0 0 10px #ffc12a}.sides strong{font:700 24px Oswald}.sides small{color:#d2aa61}.sides span{font-size:11px;color:#a99974}.betNote{font-size:11px;color:#ffd36a;min-height:15px}.history{display:flex;align-items:center;gap:5px;padding:9px 0;overflow:hidden}.history b{font-size:11px;margin-right:3px}.history i{font-style:normal;width:25px;height:25px;flex:none;border-radius:50%;display:grid;place-items:center;font:700 11px Oswald}.history .tai{background:#df9b15;color:#4b2c00}.history .xiu{background:#302d27;border:1px solid #6d6658}.chips{display:flex;justify-content:space-between;margin:6px 0 13px}.chips button{width:53px;height:53px;border-radius:50%;background:#332c20;border:3px dashed #725a30;font:700 11px Oswald}.chips button.active{background:#e9a71f;border-color:#ffe177;color:#3f2b05;transform:translateY(-5px)}.placeBtn{width:100%;height:57px;border-radius:10px;background:linear-gradient(90deg,#ffe8a0,#ea960b);color:#593400;font-weight:900;display:flex;justify-content:center;align-items:center;gap:8px}.placeBtn svg{width:18px}
-.fishScreen{background:#004f6c}.fishScreen .topbar{position:absolute;top:0;left:0;right:0;background:linear-gradient(#061d22cc,transparent);border:0}.fishTitle{height:135px;position:absolute;z-index:4;top:56px;left:0;right:0;text-align:center;pointer-events:none;text-shadow:0 4px 2px #063d57,0 0 12px #fff}.fishTitle b,.fishTitle span{font:700 36px Oswald;display:block;color:#ffe180;line-height:1.1;letter-spacing:2px}.fishTitle span{font-size:24px}.ocean{height:100dvh;min-height:680px;position:relative;background-image:linear-gradient(#002f4b22,#00101788),url('/assets/underwater-kingdom.webp');background-size:cover;background-position:center;overflow:hidden;touch-action:none}.movingFish{position:absolute;z-index:5;left:-90px;filter:drop-shadow(0 5px 5px #003345);animation:swim 9s linear infinite;user-select:none}.movingFish:nth-child(even){animation-direction:reverse;transform:scaleX(-1)}.movingFish small{font:bold 9px Oswald;position:absolute;top:-9px;left:25%;background:#001d2aaa;padding:2px 5px;border-radius:6px;color:#ffe36f}.crosshair{position:absolute;z-index:8;transform:translate(-50%,-50%);color:#ffe260;filter:drop-shadow(0 0 6px #ffcc00)}.crosshair svg{width:70px;height:70px;stroke-width:1.2}.shot{position:absolute;left:50%;bottom:66px;width:8px;height:8px;border-radius:50%;background:#fff6ad;box-shadow:0 0 12px 5px #00d9ff;z-index:9;animation:shot .45s linear forwards}.hit{position:absolute;z-index:20;transform:translate(-50%,-50%);font:700 20px Oswald;color:#ffe14f;text-shadow:0 2px #6d3400;animation:hit .9s forwards}.cannon{position:absolute;z-index:12;left:50%;bottom:-8px;transform:translateX(-50%);width:170px;height:126px;border-radius:60px 60px 0 0;background:linear-gradient(100deg,#302513,#d9a72c,#33230b);border:2px solid #ffe373;text-align:center;padding-top:35px;box-shadow:0 -5px 18px #0008}.power{height:36px;display:flex;align-items:center;justify-content:center;gap:7px;background:#17140fcc;margin:0 12px;border-radius:12px}.power button{width:28px;height:28px;border-radius:50%;background:#3a3326;display:grid;place-items:center}.power svg{width:14px}.power strong{font:700 13px Oswald;min-width:65px}.cannon small{font-size:9px;color:#ffdc69}
-@keyframes pulse{50%{transform:scale(1.05);filter:brightness(1.15)}}@keyframes reel{to{transform:translateY(35px)}}@keyframes diceRoll{0%{transform:translateY(0) rotate(0)}25%{transform:translateY(-8px) rotate(85deg)}50%{transform:translateY(4px) rotate(170deg)}75%{transform:translateY(-3px) rotate(260deg)}100%{transform:translateY(0) rotate(360deg)}}@keyframes pop{50%{transform:scale(1.18)}}@keyframes swim{from{left:-100px}to{left:calc(100% + 100px)}}@keyframes shot{to{left:var(--x);bottom:calc(100% - var(--y))}}@keyframes hit{to{transform:translate(-50%,-120%) scale(1.4);opacity:0}}
+
+/* Dice (Tài Xỉu) Spacing & Design */
+.diceScreen{background:radial-gradient(circle at 50% 25%,#3d260c 0%,#150f06 45%,#080705 100%);display:flex;flex-direction:column;height:100dvh!important;height:100svh!important;max-height:100dvh!important;overflow:hidden!important}
+.diceBody{
+ flex:1;
+ min-height:0;
+ width:min(100%,560px);
+ margin:0 auto;
+ display:flex;
+ flex-direction:column;
+ justify-content:space-between;
+ padding:clamp(6px,1.2vh,12px) clamp(12px,3vw,20px) clamp(10px,1.8vh,18px);
+ box-sizing:border-box;
+ overflow:hidden;
+ text-align:center;
+ gap:clamp(6px,1.1vh,12px);
+}
+.diceHeader{display:flex;flex-direction:column;align-items:center;gap:clamp(2px,0.4vh,5px);flex-shrink:0}
+.roundNo{font:800 clamp(10px,1.4vh,12px) Oswald;background:rgba(72,58,29,0.85);border:1px solid #7c612e;padding:clamp(3px,0.4vh,5px) clamp(10px,2.5vw,16px);border-radius:999px;color:#f5dc9e;letter-spacing:1px;box-shadow:0 2px 8px #0006}
+.timer{font:900 clamp(26px,4.4vh,38px) Oswald;color:#ffe68d;text-shadow:0 0 16px #ffb300,0 2px 4px #000;margin:0;line-height:1;position:relative;letter-spacing:2px}
+.timer.danger{color:#ff493f;animation:pulse .5s infinite;text-shadow:0 0 16px #ff3424}
+.timer:after{content:'';position:absolute;left:50%;top:50%;width:clamp(52px,8vh,72px);height:clamp(52px,8vh,72px);border-radius:50%;border:2px solid #ffd35c55;border-top-color:#fff4b0;transform:translate(-50%,-50%);animation:timerCircle 18s linear infinite;pointer-events:none}
+.bowl{width:min(100%,clamp(230px,38vh,330px));height:clamp(120px,19vh,175px);margin:0 auto;padding-inline:12px;background:none;position:relative;display:grid;place-items:center;filter:drop-shadow(0 8px 10px #000);border-radius:45%;flex:1;min-height:0}
+.bowl>img{position:absolute;width:100%;height:100%;object-fit:contain;transition:transform .35s ease,filter .35s ease}
+.bowl.rolling>img{transform:translateY(-3px) scale(1.03);filter:brightness(1.12) drop-shadow(0 0 10px #ffdc78)}
+.diceTray{position:relative;z-index:2;display:flex;align-items:flex-end;justify-content:center;gap:clamp(8px,1.8vw,14px);margin-top:clamp(26px,5.5vh,52px);padding-inline:8px;perspective:800px}
+.diceCube{width:clamp(34px,5.2vh,46px);height:clamp(34px,5.2vh,46px);transform-style:preserve-3d;filter:drop-shadow(0 8px 9px #2c1504)}
+.diceCube.rolling{animation:diceRoll .72s cubic-bezier(.2,.72,.23,1.05) infinite}
+.diceInner{width:100%;height:100%;border-radius:clamp(8px,1.3vh,12px);background:linear-gradient(145deg,#fffef9,#eadfc8 58%,#b89152);border:1px solid #f6deb0;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:clamp(4px,0.8vh,6px);box-shadow:inset 0 -2px 4px #a97631,inset 0 2px 4px #fff8,0 2px 5px #0006}
+.pip{width:clamp(6px,1vh,8.5px);height:clamp(6px,1vh,8.5px);border-radius:50%;place-self:center;background:radial-gradient(circle at 35% 35%,#4b3110,#0b0600 80%);opacity:0;transform:scale(.3)}
+.pip.show{opacity:1;transform:scale(1)}
+
+/* Dice Control Sections (Divided into Clean Visual Cards) */
+.diceControlSections{display:flex;flex-direction:column;gap:clamp(7px,1.2vh,12px);flex-shrink:0;width:100%}
+.diceSidesCard{
+ background:linear-gradient(180deg,#241a10 0%,#130d07 100%);
+ border:1.5px solid #6b4d1f;
+ border-radius:14px;
+ padding:clamp(8px,1.2vh,12px) clamp(10px,2.5vw,16px);
+ box-shadow:0 6px 18px #000a,inset 0 1px 0 #ffffff18;
+ display:flex;
+ flex-direction:column;
+ gap:clamp(6px,0.9vh,10px);
+}
+.sides{display:flex;gap:clamp(8px,2vw,14px)}
+.sides button{
+ flex:1;
+ height:clamp(56px,8.4vh,74px);
+ border-radius:12px;
+ background:linear-gradient(180deg,#2c2114 0%,#150e07 100%);
+ border:1.5px solid #6b4e23;
+ box-shadow:0 6px 16px #000a,inset 0 1px 0 #fff2;
+ display:flex;
+ flex-direction:column;
+ justify-content:center;
+ align-items:center;
+ gap:2px;
+ padding:clamp(4px,0.6vh,6px);
+ transition:all .15s;
+}
+.sides button.selected{border:2px solid #ffcb50;box-shadow:inset 0 0 20px #ffc12a55,0 0 14px #ffc12a}
+.sides strong{font:900 clamp(17px,2.6vh,24px) Oswald;line-height:1;color:#ffe894}
+.sides small{color:#d4a755;font:700 clamp(10.5px,1.5vh,12.5px) Oswald}
+.sides span{font-size:clamp(9.5px,1.3vh,11.5px);color:#a1917b}
+.betStatusRow{display:flex;flex-direction:column;gap:clamp(3px,0.5vh,5px);align-items:center;justify-content:center}
+.betNote{font-size:clamp(10.5px,1.4vh,12.5px);font-weight:600;color:#ffd56b;min-height:16px;margin:0;line-height:1.2;text-align:center}
+.history{display:flex;align-items:center;justify-content:center;gap:6px}
+.history b{font:800 clamp(10.5px,1.4vh,12px) Oswald;color:#caa969}
+.historyDots{display:flex;gap:clamp(3px,0.8vw,6px)}
+.history i{
+ font-style:normal;
+ width:clamp(18px,2.7vh,24px);
+ height:clamp(18px,2.7vh,24px);
+ flex:none;
+ border-radius:50%;
+ display:grid;
+ place-items:center;
+ font:800 clamp(9.5px,1.4vh,11.5px) Oswald;
+ box-shadow:0 2px 5px #0006;
+}
+.history .tai{background:linear-gradient(180deg,#f5a623,#c77a02);color:#3e1f00;border:1px solid #ffe285}
+.history .xiu{background:linear-gradient(180deg,#383329,#1f1c16);border:1px solid #736856;color:#e8ded1}
+
+.diceActionCard{
+ background:linear-gradient(180deg,#1c140c 0%,#0d0905 100%);
+ border:1.5px solid #573e18;
+ border-radius:14px;
+ padding:clamp(8px,1.2vh,12px) clamp(10px,2.5vw,16px);
+ box-shadow:0 6px 18px #000a,inset 0 1px 0 #ffffff14;
+ display:flex;
+ flex-direction:column;
+ gap:clamp(7px,1.1vh,11px);
+}
+.chips{display:flex;justify-content:space-between;gap:clamp(6px,1.5vw,12px);margin:0}
+.chips button{
+ width:clamp(40px,6.2vh,52px);
+ height:clamp(40px,6.2vh,52px);
+ border-radius:50%;
+ background:radial-gradient(circle at 35% 30%,#3d2f19,#1a1309);
+ border:2.5px dashed #8a6c35;
+ font:900 clamp(10.5px,1.6vh,12.5px) Oswald;
+ color:#ffd875;
+ box-shadow:0 4px 12px #000a;
+ display:grid;
+ place-items:center;
+ transition:transform .12s,border-color .12s;
+}
+.chips button.active{
+ background:radial-gradient(circle at 35% 30%,#fff099,#f5a623 50%,#b86e00);
+ border:2.5px solid #fff5b8;
+ color:#3b1e00;
+ transform:translateY(-3px);
+ box-shadow:0 0 16px #f5a623aa,0 6px 14px #000c;
+}
+.placeBtn{
+ width:100%;
+ height:clamp(46px,7vh,56px);
+ border-radius:12px;
+ background:linear-gradient(180deg,#ffe58f 0%,#f5a623 50%,#c47600 100%);
+ border:1.5px solid #fff2a8;
+ color:#3b1e00;
+ font:900 clamp(15px,2.3vh,18px) Oswald;
+ letter-spacing:1px;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ gap:8px;
+ flex-shrink:0;
+ box-shadow:0 4px 18px #f5a62366,inset 0 1px 0 #fff;
+ transition:transform .12s,filter .15s;
+}
+.placeBtn:active:not(:disabled){transform:scale(0.98)}
+.placeBtn:disabled{opacity:0.45;cursor:not-allowed;filter:grayscale(0.5)}
+.placeBtn svg{width:clamp(16px,2.5vh,20px);height:clamp(16px,2.5vh,20px)}
+
+/* Fish (Bắn Cá) Base & Responsive */
+.fishScreen{background:#004f6c;height:100dvh!important;height:100svh!important;max-height:100dvh!important;overflow:hidden!important}
+.fishScreen .topbar{position:absolute;top:0;left:0;right:0;background:linear-gradient(#061d22cc,transparent);border:0;z-index:50}
+.fishTitle{height:clamp(34px,5vh,48px);position:absolute;z-index:18;top:clamp(46px,6.5vh,56px);left:0;right:0;text-align:center;pointer-events:none;text-shadow:0 2px 2px #063d57,0 0 10px #fff}
+.fishTitle b,.fishTitle span{font:700 clamp(16px,2.5vh,24px) Oswald;display:block;color:#ffe180;line-height:1.1;letter-spacing:1.5px}
+.fishTitle span{font-size:clamp(10px,1.6vh,14px);line-height:1}
+.ocean{height:100dvh!important;height:100svh!important;max-height:100dvh!important;position:relative;background-image:linear-gradient(#002f4b22,#00101788),url('/assets/underwater-kingdom.webp');background-size:cover;background-position:center;overflow:hidden;touch-action:none;overscroll-behavior:none}
+.movingFish{position:absolute;z-index:5;left:-90px;filter:drop-shadow(0 5px 5px #003345);animation:swim 9s linear infinite;user-select:none}
+.movingFish:nth-child(even){animation-direction:reverse;transform:scaleX(-1)}
+.movingFish small{font:bold 9px Oswald;position:absolute;top:-9px;left:25%;background:#001d2aaa;padding:2px 5px;border-radius:6px;color:#ffe36f}
+.crosshair{position:absolute;z-index:8;transform:translate(-50%,-50%);color:#ffe260;filter:drop-shadow(0 0 6px #ffcc00)}
+.crosshair svg{width:clamp(56px,8vh,70px);height:clamp(56px,8vh,70px);stroke-width:1.2}
+.shot{position:absolute;left:50%;bottom:66px;width:8px;height:8px;border-radius:50%;background:#fff6ad;box-shadow:0 0 12px 5px #00d9ff;z-index:9;animation:shot .45s linear forwards}
+.hit{position:absolute;z-index:20;transform:translate(-50%,-50%);font:700 clamp(16px,2.5vh,20px) Oswald;color:#ffe14f;text-shadow:0 2px #6d3400;animation:hit .9s forwards}
+.cannon{position:absolute;z-index:12;left:50%;bottom:-8px;transform:translateX(-50%);width:clamp(120px,18vh,170px);height:clamp(90px,14vh,126px);border-radius:60px 60px 0 0;background:linear-gradient(100deg,#302513,#d9a72c,#33230b);border:2px solid #ffe373;text-align:center;padding-top:clamp(20px,3.5vh,35px);box-shadow:0 -5px 18px #0008}
+.power{height:clamp(24px,3.6vh,36px);display:flex;align-items:center;justify-content:center;gap:6px;background:#17140fcc;margin:0 10px;border-radius:10px}
+.power button{width:clamp(20px,3vh,28px);height:clamp(20px,3vh,28px);border-radius:50%;background:#3a3326;display:grid;place-items:center}
+.power svg{width:clamp(11px,1.6vh,14px)}
+.power strong{font:700 clamp(10px,1.5vh,13px) Oswald;min-width:clamp(46px,7vh,65px)}
+.cannon small{font-size:8.5px;color:#ffdc69}
+@keyframes pulse{50%{transform:scale(1.05);filter:brightness(1.15)}}
+@keyframes reel{to{transform:translateY(35px)}}
+@keyframes diceRoll{0%{transform:translateY(0) rotate(0)}25%{transform:translateY(-8px) rotate(85deg)}50%{transform:translateY(4px) rotate(170deg)}75%{transform:translateY(-3px) rotate(260deg)}100%{transform:translateY(0) rotate(360deg)}}
+@keyframes pop{50%{transform:scale(1.18)}}
+@keyframes swim{from{left:-100px}to{left:calc(100% + 100px)}}
+@keyframes shot{to{left:var(--x);bottom:calc(100% - var(--y))}}
+@keyframes hit{to{transform:translate(-50%,-120%) scale(1.4);opacity:0}}
 @media(min-width:700px){body:before{content:'GOLDZONE';position:fixed;left:5vw;top:43%;font:900 10vw Oswald;color:#ffffff08;letter-spacing:2vw}.screen{border-left:1px solid #5f451d;border-right:1px solid #5f451d}}
 
 /* Additional Game Screen Overrides */
-.slotScreen{background:linear-gradient(#180e05bb,#100c07dd),url('/assets/slot-bg.webp') center/cover fixed;min-height:100dvh}
+.slotScreen{background:linear-gradient(#180e05bb,#100c07dd),url('/assets/slot-bg.webp') center/cover fixed;height:100dvh!important;height:100svh!important;max-height:100dvh!important;overflow:hidden!important;display:flex;flex-direction:column}
+.slotBody{
+ flex:1;
+ min-height:0;
+ width:min(100%,600px);
+ margin:0 auto;
+ display:flex;
+ flex-direction:column;
+ justify-content:space-between;
+ padding:clamp(6px,1vh,12px) clamp(10px,2.5vw,16px) clamp(10px,1.8vh,18px);
+ box-sizing:border-box;
+ overflow:hidden;
+ gap:clamp(6px,1vh,12px);
+}
 .symbol img{width:48px;height:48px;object-fit:contain}
-.bowl{background:none;position:relative}
-.bowl>img{position:absolute;width:100%;height:100%;object-fit:contain;transition:transform .35s ease,filter .35s ease}
-.bowl.rolling>img{transform:translateY(-3px) scale(1.03);filter:brightness(1.12) drop-shadow(0 0 10px #ffdc78)}
 .movingFish{width:85px;height:65px;left:-140px;font-size:initial}
 .movingFish>img{width:100%;height:100%;object-fit:contain}
-.slotBody,.diceBody{width:min(100%,980px);margin:0 auto;padding-left:clamp(12px,3vw,24px);padding-right:clamp(12px,3vw,24px)}
 .resultFx{position:absolute;inset:0;z-index:45;pointer-events:none;overflow:hidden}
 .fx-lose{animation:loseShake .42s linear 2}
 .fx-win .jackpot,.fx-win .bowl,.fx-win .ocean,.fx-win .reels{animation:winPulse 1.2s ease-out}
@@ -260,9 +546,9 @@ button{font:inherit;color:inherit;border:0;cursor:pointer;-webkit-tap-highlight-
 @media(min-width:768px){
  .hero{height:240px}
  .cardArt{height:155px}
- .reels{max-width:760px;margin-inline:auto}
- .controlPanel{max-width:760px;margin:2px auto 0}
- .sides,.chips,.history,.placeBtn,.betNote,.roundNo,.timer,.bowl{max-width:760px;margin-left:auto;margin-right:auto}
+ .reels{max-width:720px;margin-inline:auto}
+ .controlPanel{max-width:720px;margin:2px auto 0}
+ .sides,.chips,.history,.placeBtn,.betNote,.roundNo,.timer,.bowl{max-width:720px;margin-left:auto;margin-right:auto}
 }
 
 @keyframes loseShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}50%{transform:translateX(4px)}75%{transform:translateX(-3px)}}
@@ -527,6 +813,30 @@ button{font:inherit;color:inherit;border:0;cursor:pointer;-webkit-tap-highlight-
  width: 100%!important;
  max-width: 680px!important;
  padding: 12px 10px!important;
+}
+
+/* Fish Game FX is 100% non-blocking so players can hold down and shoot continuously */
+.fishScreen .resultFx,
+.fishScreen .resultFx *,
+.resultFx.fishTheme,
+.resultFx.fishTheme *,
+.resultFx.fishWin,
+.resultFx.fishWin *,
+.resultFx.bossWin,
+.resultFx.bossWin *,
+.resultFx.combo,
+.resultFx.combo *{
+ pointer-events: none !important;
+ -webkit-user-select: none !important;
+ user-select: none !important;
+ touch-action: none !important;
+}
+
+.victoryCard.fishTheme .victoryTapHint,
+.resultFx.fishWin .victoryTapHint,
+.resultFx.bossWin .victoryTapHint,
+.resultFx.combo .victoryTapHint{
+ display: none !important;
 }
 
 .victoryCard.fishTheme .cardCornerGlow,
@@ -1758,10 +2068,13 @@ button{font:inherit;color:inherit;border:0;cursor:pointer;-webkit-tap-highlight-
 @keyframes deathShockwave{0%{opacity:1;transform:translate(-50%,-50%) scale(.2)}100%{opacity:0;transform:translate(-50%,-50%) scale(4.5)}}
 @keyframes fishDeathDeluxe{0%{filter:brightness(1);transform:scale(1)}24%{filter:brightness(3) saturate(1.8);transform:scale(1.14)}55%{filter:brightness(1.8) saturate(0);transform:scale(.92) rotate(-5deg)}100%{filter:brightness(0);opacity:0;transform:scale(.25) rotate(18deg)}}
 
-/* Fish game camera stays completely fixed; only gameplay objects move. */
+/* Game camera stays completely fixed; no scrolling on mobile */
+body:has(.slotScreen),body:has(.slotScreen) #root,
+body:has(.diceScreen),body:has(.diceScreen) #root,
 body:has(.fishScreen),body:has(.fishScreen) #root{
  width:100%;
  height:100svh;
+ height:100dvh;
  overflow:hidden!important;
  overscroll-behavior:none;
 }
@@ -1770,6 +2083,7 @@ body:has(.fishScreen),body:has(.fishScreen) #root{
  inset:0!important;
  width:100vw!important;
  height:100svh!important;
+ height:100dvh!important;
  min-height:0!important;
  max-width:none!important;
  overflow:hidden!important;
@@ -1850,28 +2164,25 @@ body:has(.fishScreen),body:has(.fishScreen) #root{
 .fishHpBar{position:absolute;left:50%;top:-10px;width:64%;height:5px;transform:translateX(-50%) rotate(calc(-1*var(--fish-rot,0deg))) scaleY(var(--fish-flip,1));border-radius:3px;background:#00000099;border:1px solid #0009;overflow:hidden;pointer-events:none}
 .fishHpBar i{display:block;height:100%;background:linear-gradient(90deg,#ff5a3c,#ffd257);transition:width .12s linear}
 
-/* Màn chơi cho topbar nằm tuyệt đối rồi đẩy .fishTitle xuống bằng `top`, nhưng
-   .fishTitle lại là position:relative nên nó chỉ dịch chuyển chứ không chừa chỗ,
-   khiến tên phòng đè lên dòng đếm ngược. Phòng chờ không có mặt biển để phủ lên,
-   nên trả cả hai về luồng bình thường và bỏ hẳn offset — không cần đoán chiều cao
-   topbar (64px, hay 56px trên màn cảm ứng). */
+/* Màn chơi cho topbar nằm tuyệt đối rồi đẩy .fishTitle xuống bằng `top`.
+   Phòng chờ không có mặt biển để phủ lên, nên trả cả hai về luồng bình thường. */
 .fishWaiting .topbar{position:relative}
-.fishWaiting .fishTitle{top:0;height:auto;margin:14px 0 2px}
-.fishWaiting .waitRoom{display:flex;flex-direction:column;align-items:center;gap:14px;padding:22px 16px}
-.waitLead{color:#ffd980;font:700 14px Oswald;letter-spacing:.6px;text-align:center;margin:0}
-.waitSeats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:420px}
-.waitSeat{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 6px;border-radius:12px;background:linear-gradient(180deg,#1d2b3a,#101a24);border:1px solid #2b4256;color:#7f96a8}
-.waitSeat svg{width:26px;height:26px}
-.waitSeat span{font:700 12px Oswald;color:#cfe3f2}
-.waitSeat small{font:700 9px Oswald;letter-spacing:1px}
+.fishWaiting .fishTitle{top:0;height:auto;margin:clamp(4px,1vh,12px) 0 2px}
+.fishWaiting .waitRoom{display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;gap:clamp(6px,1.2vh,12px);padding:clamp(8px,1.5vh,18px) 16px;flex:1;min-height:0;overflow:hidden}
+.waitLead{color:#ffd980;font:700 clamp(11px,1.7vh,14px) Oswald;letter-spacing:.6px;text-align:center;margin:0}
+.waitSeats{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(6px,1vh,10px);width:100%;max-width:380px}
+.waitSeat{display:flex;flex-direction:column;align-items:center;gap:2px;padding:clamp(6px,1vh,12px) 4px;border-radius:10px;background:linear-gradient(180deg,#1d2b3a,#101a24);border:1px solid #2b4256;color:#7f96a8}
+.waitSeat svg{width:clamp(18px,2.8vh,24px);height:clamp(18px,2.8vh,24px)}
+.waitSeat span{font:700 clamp(10px,1.5vh,12px) Oswald;color:#cfe3f2}
+.waitSeat small{font:700 clamp(8px,1.2vh,9px) Oswald;letter-spacing:.8px}
 .waitSeat.joined{border-color:#3d6f96;color:#9dc4de}
 .waitSeat.ready{border-color:#37d39a;background:linear-gradient(180deg,#12362c,#0c2119);color:#4be0aa;box-shadow:0 0 14px #37d39a44}
 .waitSeat.empty{opacity:.45;border-style:dashed}
-.waitCount{color:#8fa9bd;font:600 12px Oswald;margin:0}
-.waitActions{display:flex;gap:10px;width:100%;max-width:420px}
-.waitReady{flex:2;height:46px;border:0;border-radius:12px;background:linear-gradient(180deg,#ffd257,#c8860c);color:#3a2200;font:800 15px Oswald;letter-spacing:1px;cursor:pointer;box-shadow:0 4px 10px #0007}
+.waitCount{color:#8fa9bd;font:600 clamp(10px,1.5vh,12px) Oswald;margin:0}
+.waitActions{display:flex;gap:8px;width:100%;max-width:380px}
+.waitReady{flex:2;height:clamp(36px,5.2vh,44px);border:0;border-radius:10px;background:linear-gradient(180deg,#ffd257,#c8860c);color:#3a2200;font:800 clamp(12px,1.8vh,14px) Oswald;letter-spacing:.8px;cursor:pointer;box-shadow:0 3px 8px #0007}
 .waitReady.on{background:linear-gradient(180deg,#37d39a,#12805c);color:#04241a}
-.waitLeave{flex:1;height:46px;border:1px solid #6b4e20;border-radius:12px;background:#1a1409;color:#e6c987;font:800 13px Oswald;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.waitLeave{flex:1;height:clamp(36px,5.2vh,44px);border:1px solid #6b4e20;border-radius:10px;background:#1a1409;color:#e6c987;font:800 clamp(11px,1.6vh,12.5px) Oswald;letter-spacing:.8px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px}
 .waitLeave svg{width:16px;height:16px}
 .movingFish.fish3d .fishModel{
  will-change:transform;
@@ -2006,8 +2317,8 @@ body:has(.fishScreen),body:has(.fishScreen) #root{
  .fish3d.dragoncarp .realFish,.fish3d.mermaid .realFish{filter:none!important}
  .resultFx .resultGlow,.resultFx .resultCore{filter:none!important}
  .fxRay{box-shadow:0 0 8px #ffd54f!important}
- .slotBody{max-width:100vw;overflow-x:hidden}
- .slotBody .reels{width:calc(100vw - 24px)!important;max-width:calc(100vw - 24px)!important}
+ .slotBody{max-width:min(100vw,720px);overflow-x:hidden}
+ .slotBody .reels{width:100%!important;max-width:100%!important}
 }
 
 /* Pointer-space overlays must not inherit the generic ocean child positioning. */
@@ -2034,20 +2345,20 @@ button,.spinBtn,.cardHit,.playBtn{
 }
 .reelCol{
  display:block!important;
- height:290px!important;
+ height:clamp(155px,25vh,260px)!important;
  min-width:0;
  overflow:hidden;
  position:relative;
  contain:layout paint;
- border-radius:8px;
+ border-radius:7px;
 }
-.reels{grid-template-columns:repeat(5,calc((100% - 20px)/5))!important}
+.reels{grid-template-columns:repeat(5,calc((100% - 16px)/5))!important}
 .reels>.reelCol{width:100%!important;max-width:100%!important}
-.reelCol .symbol{min-width:0;width:100%;overflow:hidden;height:54px!important}
+.reelCol .symbol{min-width:0;width:100%;overflow:hidden;height:clamp(27px,4.7vh,48px)!important}
 .reelTrack{
  display:grid;
- grid-auto-rows:54px!important;
- gap:5px!important;
+ grid-auto-rows:clamp(27px,4.7vh,48px)!important;
+ gap:clamp(2px,0.4vh,4px)!important;
  width:100%;
  will-change:transform;
 }
@@ -2121,7 +2432,7 @@ button,.spinBtn,.cardHit,.playBtn{
 }
 
 /* Fish durability is intentionally hidden from players. */
-.fishScreen .fishHp{display:none!important}
+.fishScreen .fishHp, .fishScreen .fishHpBar, .fishHp, .fishHpBar{display:none!important}
 .fishEventNotice.active{
  border-color:#fff5ad;
  background:linear-gradient(180deg,#3b2309f2,#0a0b0ded);

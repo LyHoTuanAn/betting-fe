@@ -43,6 +43,7 @@ export const api = {
   get: (path) => request(path),
   post: (path, body) => request(path, {method: 'POST', body: JSON.stringify(body ?? {})}),
   patch: (path, body) => request(path, {method: 'PATCH', body: JSON.stringify(body)}),
+  del: (path) => request(path, {method: 'DELETE'}),
   login: async (username, password) => {
     const data = await request('/auth/login', {method: 'POST', body: JSON.stringify({username, password})});
     if (data.user.role !== 'ADMIN') throw new ApiError('Tài khoản này không có quyền quản trị', 'ADMIN_REQUIRED');

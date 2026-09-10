@@ -36,6 +36,30 @@ export default function UsersPage({notify}) {
     finally { setBusy(null); }
   };
 
+  /**
+   * Xoá là không lấy lại được, nên popup bắt gõ đúng tên tài khoản thay vì chỉ
+   * bấm "Đồng ý" — tránh xoá nhầm dòng bên cạnh.
+   */
+  const removeUser = async (user) => {
+    const typed = await notify.prompt({
+      title: 'Xoá vĩnh viễn tài khoản?',
+      message: user.displayName + ' (@' + user.username + ') sẽ bị xoá khỏi hệ thống cùng toàn bộ số dư, lịch sử chơi, sổ quỹ và lệnh nạp/rút. Thao tác này không thể hoàn tác.',
+      label: 'Gõ "' + user.username + '" để xác nhận',
+      placeholder: user.username,
+      maxLength: 24,
+      confirmLabel: 'Xoá vĩnh viễn', danger: true, tone: 'fail'
+    });
+    if (typed === null) return;
+    if (typed.trim() !== user.username) return notify.warn('Tên tài khoản không khớp, chưa xoá gì cả.');
+    setBusy(user.id);
+    try {
+      await api.del('/admin/users/' + user.id);
+      notify.ok('Đã xoá vĩnh viễn @' + user.username);
+      reload();
+    } catch (err) { notify.fail(err.message); }
+    finally { setBusy(null); }
+  };
+
   return (
     <Card
       title="Người chơi"
@@ -66,6 +90,7 @@ export default function UsersPage({notify}) {
                     {user.status === 'ACTIVE'
                       ? <button className="danger sm" disabled={busy === user.id} onClick={() => setUserStatus(user, 'SUSPENDED')}>Khóa</button>
                       : <button className="primary sm" disabled={busy === user.id} onClick={() => setUserStatus(user, 'ACTIVE')}>Mở khóa</button>}
+                    {user.role !== 'ADMIN' && <button className="danger sm" disabled={busy === user.id} onClick={() => removeUser(user)}>Xóa</button>}
                   </td>
                 </tr>
               ))}

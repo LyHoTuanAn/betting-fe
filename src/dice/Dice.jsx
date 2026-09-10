@@ -145,17 +145,57 @@ export function Dice({goHome,balance,setBalance,sound,setSound,token}){
   }
  };
 
- return <div className={'screen diceScreen '+(fx.type?`fx-${fx.type}`:'')}><ResultFx fx={fx} onDismiss={dismissFx}/><Topbar balance={balance} onBack={goHome} sound={sound} setSound={setSound}/><main className="diceBody"><div className="roundNo">PHIÊN #{roundNo}</div><div className={'timer '+(time<6?'danger':'')}>00:{String(time).padStart(2,'0')}</div>
- <div className={'bowl diceTable '+(rolling?'rolling ':'')+(reveal?'reveal':'')}>
-  <div className="diceScene">
-   <div className="dicePlate"><i/><span/></div>
-   <div className="diceTray">{dice.map((d,i)=><DiceFace key={i} value={d} rolling={rolling} delay={i*120}/>)}</div>
-   <div className="diceSmoke"/>
-   <div className="diceCup" aria-hidden="true"><i className="cupTop"/><i className="cupBody"/><i className="cupLip"/><i className="cupShine"/></div>
+ return (
+  <div className={'screen diceScreen '+(fx.type?`fx-${fx.type}`:'')}>
+   <ResultFx fx={fx} onDismiss={dismissFx}/>
+   <Topbar balance={balance} onBack={goHome} sound={sound} setSound={setSound}/>
+   <main className="diceBody">
+    <div className="diceHeader">
+     <div className="roundNo">PHIÊN #{roundNo}</div>
+     <div className={'timer '+(time<6?'danger':'')}>00:{String(time).padStart(2,'0')}</div>
+    </div>
+    <div className={'bowl diceTable '+(rolling?'rolling ':'')+(reveal?'reveal':'')}>
+     <div className="diceScene">
+      <div className="dicePlate"><i/><span/></div>
+      <div className="diceTray">{dice.map((d,i)=><DiceFace key={i} value={d} rolling={rolling} delay={i*120}/>)}</div>
+      <div className="diceSmoke"/>
+      <div className="diceCup" aria-hidden="true"><i className="cupTop"/><i className="cupBody"/><i className="cupLip"/><i className="cupShine"/></div>
+     </div>
+    </div>
+    <div className="diceControlSections">
+     <section className="diceSidesCard">
+      <div className="sides">
+       <button className={side==='T'?'selected':''} onClick={()=>bettingOpen&&setSide('T')}>
+        <strong>TÀI</strong>
+        <small>11 - 17</small>
+        <span>Tổng: 1.2B</span>
+       </button>
+       <button className={side==='X'?'selected':''} onClick={()=>bettingOpen&&setSide('X')}>
+        <strong>XỈU</strong>
+        <small>3 - 10</small>
+        <span>Tổng: 850M</span>
+       </button>
+      </div>
+      <div className="betStatusRow">
+       <p className="betNote">{note}</p>
+       <div className="history">
+        <b>Lịch sử</b>
+        <div className="historyDots">{history.map((h,i)=><i className={h==='T'?'tai':'xiu'} key={i}>{h}</i>)}</div>
+       </div>
+      </div>
+     </section>
+
+     <section className="diceActionCard">
+      <div className="chips">
+       {[1000,10000,100000,1000000].map(x=><button className={chip===x?'active':''} onClick={()=>setChip(x)} key={x}>{x>=1000000?'1M':x/1000+'K'}</button>)}
+       <button className={chip===Math.min(balance,BET_LIMITS.dice.max)?'active':''} onClick={()=>setChip(Math.min(balance,BET_LIMITS.dice.max))}>ALL</button>
+      </div>
+      <button className="placeBtn" onClick={place} disabled={!side||chip<BET_LIMITS.dice.min||chip>balance||chip>BET_LIMITS.dice.max||time<=2||placed>0||!bettingOpen}>
+       <Coins/> ĐẶT CƯỢC {placed>0&&`(${money(placed)})`}
+      </button>
+     </section>
+    </div>
+   </main>
   </div>
- </div>
- <div className="sides"><button className={side==='T'?'selected':''} onClick={()=>bettingOpen&&setSide('T')}><strong>TÀI</strong><small>11 - 17</small><span>Tổng: 1.2B</span></button><button className={side==='X'?'selected':''} onClick={()=>bettingOpen&&setSide('X')}><strong>XỈU</strong><small>3 - 10</small><span>Tổng: 850M</span></button></div>
- <p className="betNote">{note}</p><div className="history"><b>Lịch sử</b>{history.map((h,i)=><i className={h==='T'?'tai':'xiu'} key={i}>{h}</i>)}</div>
- <div className="chips">{[1000,10000,100000,1000000].map(x=><button className={chip===x?'active':''} onClick={()=>setChip(x)} key={x}>{x>=1000000?'1M':x/1000+'K'}</button>)}<button onClick={()=>setChip(Math.min(balance,BET_LIMITS.dice.max))}>ALL</button></div>
- <button className="placeBtn" onClick={place} disabled={!side||chip<BET_LIMITS.dice.min||chip>balance||chip>BET_LIMITS.dice.max||time<=2||placed>0||!bettingOpen}><Coins/> ĐẶT CƯỢC {placed>0&&`(${money(placed)})`}</button></main></div>;
+ );
 }
