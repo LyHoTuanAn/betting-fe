@@ -4,73 +4,142 @@ import {ResultFx} from '../shared/ResultFx.jsx';
 import {useGameFx} from '../shared/hooks.js';
 import {playCelebrationAudio} from '../shared/audio.js';
 import {money} from '../shared/format.js';
-import {
-  calculateHandScore,
-  check21Plus3,
-  checkPerfectPairs,
-  createShoe
-} from './blackjack-engine.js';
+import {api} from '../shared/api.js';
 import './blackjack.css';
 
 const CHIP_VALUES = [1000, 5000, 25000, 100000, 500000, 1000000];
 
+/**
+ * Blackjack server-authoritative: chia bài, rút, dằn và chốt đều do backend
+ * quyết định (provably fair, ghi GameRound). Component chỉ vẽ lại state máy chủ
+ * trả về — không còn bộ bài hay điểm số nào được tính trên client.
+ */
 export function Blackjack({goHome, balance, setBalance, sound, setSound, token, user}) {
   const [fx, triggerFx, dismissFx] = useGameFx();
-  const [shoe, setShoe] = useState(() => createShoe(6));
   const [selectedChip, setSelectedChip] = useState(25000);
   const [mainBet, setMainBet] = useState(25000);
   const [lastMainBet, setLastMainBet] = useState(25000);
   const [sideBetPair, setSideBetPair] = useState(0);
   const [sideBetPoker, setSideBetPoker] = useState(0);
 
-  // Game state: 'betting', 'playerTurn', 'dealerTurn', 'settled'
-  const [gameState, setGameState] = useState('betting');
-  const [dealerCards, setDealerCards] = useState([]);
+  const [gameState, setGameState] = useState('betting'); // betting | playerTurn | dealerTurn | settled
+  const [handId, setHandId] = useState(null);
   const [playerCards, setPlayerCards] = useState([]);
+  const [dealerCards, setDealerCards] = useState([]);
+  const [playerScore, setPlayerScore] = useState({total: 0, isSoft: false, isBust: false, isBlackjack: false});
+  const [dealerScore, setDealerScore] = useState(null);
+  const [dealerVisibleScore, setDealerVisibleScore] = useState(0);
   const [turnTimer, setTurnTimer] = useState(15);
   const [winStreak, setWinStreak] = useState(0);
-  const [pastResults, setPastResults] = useState(['W', 'W', 'L']);
+  const [pastResults, setPastResults] = useState([]);
   const [toastMsg, setToastMsg] = useState('');
   const [guideMsg, setGuideMsg] = useState('👉 Chọn mức phỉnh và bấm CHIA BÀI để bắt đầu');
+  const [busy, setBusy] = useState(false);
 
   const soundRef = useRef(sound);
   useEffect(() => { soundRef.current = sound; }, [sound]);
+  const busyRef = useRef(false);
+  const standRef = useRef(() => {});
 
-  const showToast = (msg, duration = 2000) => {
+  const showToast = (msg, duration = 2200) => {
     setToastMsg(msg);
     setTimeout(() => {
       setToastMsg(curr => curr === msg ? '' : curr);
     }, duration);
   };
 
-  const drawCard = (currentShoe) => {
-    let s = currentShoe;
-    if (s.length < 15) {
-      s = createShoe(6);
-    }
-    const card = s[0];
-    const rem = s.slice(1);
-    setShoe(rem);
-    return { card, newShoe: rem };
-  };
+  // Khôi phục ván đang dở (reload/F5 giữa ván) từ máy chủ
+  useEffect(() => {
+    if (!token) return;
+    let cancelled = false;
+    api('/games/blackjack/active', {token}).then(data => {
+      if (cancelled || !data?.active) return;
+      const a = data.active;
+      setHandId(a.handId);
+      setMainBet(a.mainBet || a.bet);
+      setPlayerCards(a.playerCards || []);
+      setPlayerScore(a.playerScore || {total: 0});
+      setDealerCards(a.dealerCards || []);
+      setDealerVisibleScore(a.dealerVisibleScore || 0);
+      setGameState(a.stage === 'player' ? 'playerTurn' : 'settled');
+      setGuideMsg('👉 Đã khôi phục ván đang chơi: RÚT hoặc DẰNG');
+      if (typeof a.balance === 'number') setBalance(a.balance);
+    }).catch(() => {});
+    return () => { cancelled = true; };
+  }, [token]);
 
-  // Turn timer countdown
+  // Đếm ngược lượt: hết giờ tự động dằn bài (server cũng có TTL riêng)
   useEffect(() => {
     if (gameState !== 'playerTurn') return;
     const interval = setInterval(() => {
       setTurnTimer(t => {
         if (t <= 1) {
-          handleStand();
+          standRef.current();
           return 0;
         }
         return t - 1;
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [gameState, playerCards, dealerCards]);
+  }, [gameState]);
 
-  // Initial deal
-  const handleDeal = () => {
+  const outcomeMessage = (data) => {
+    const p = data.payout ?? 0;
+    switch (data.outcome) {
+      case 'blackjack': return `🔥 BLACKJACK! Bạn thắng +${money(p)} (3:2)!`;
+      case 'win': return data.note ? `${data.note} +${money(p)}` : `🎉 Bạn THẮNG +${money(p)}!`;
+      case 'push': return `🤝 HÒA CƯỢC — hoàn lại ${money(data.mainBet || 0)}.`;
+      case 'surrender': return `Bỏ bài: nhận lại ${money(p)}.`;
+      case 'bust': return `💥 QUẮC (${data.playerScore?.total})! Thua ${money(data.mainBet || 0)}.`;
+      default: return `💔 Nhà cái thắng (${data.playerScore?.total} vs ${data.dealerScore?.total}).`;
+    }
+  };
+
+  const applySettled = (data) => {
+    setGameState('settled');
+    setHandId(null);
+    setPlayerCards(data.playerCards || []);
+    setPlayerScore(data.playerScore || {total: 0});
+    setDealerCards(data.dealerCards || []);
+    setDealerScore(data.dealerScore || null);
+    if (typeof data.balance === 'number') setBalance(data.balance);
+    setGuideMsg(outcomeMessage(data));
+    const won = ['blackjack', 'win'].includes(data.outcome);
+    const push = data.outcome === 'push';
+    setPastResults(r => [won ? 'W' : push ? 'P' : 'L', ...r.slice(0, 4)]);
+    setWinStreak(s => won ? s + 1 : 0);
+    if (data.outcome === 'blackjack') {
+      playCelebrationAudio('bigWin', soundRef.current);
+      triggerFx('bigWin', `+${money(data.payout || 0)}`, 4500);
+    } else if (won) {
+      playCelebrationAudio('jackpot', soundRef.current);
+      triggerFx('jackpot', `+${money(data.payout || 0)}`, 4000);
+    } else if (push) {
+      triggerFx('diceWin', 'HÒA CƯỢC (PUSH)', 2500);
+    } else {
+      triggerFx('diceLose', data.outcome === 'bust' ? `QUÁ ĐIỂM (${data.playerScore?.total})` : 'THUA CƯỢC', 2500);
+    }
+  };
+
+  const applyServer = (data) => {
+    setPlayerCards(data.playerCards || []);
+    setPlayerScore(data.playerScore || {total: 0});
+    setDealerCards(data.dealerCards || []);
+    if (data.dealerScore !== null && data.dealerScore !== undefined) setDealerScore(data.dealerScore);
+    setDealerVisibleScore(data.dealerVisibleScore || 0);
+    if (typeof data.balance === 'number') setBalance(data.balance);
+    if (data.stage === 'settled') {
+      applySettled(data);
+      return;
+    }
+    setGameState('playerTurn');
+    setTurnTimer(15);
+    setHandId(data.handId);
+    setGuideMsg(`Điểm hiện tại: ${data.playerScore?.total ?? 0}. RÚT tiếp hay DẰNG bài?`);
+  };
+
+  const handleDeal = async () => {
+    if (busyRef.current) return;
     const totalWager = mainBet + sideBetPair + sideBetPoker;
     if (totalWager <= 0) {
       showToast('Vui lòng đặt cược trước khi chia bài!');
@@ -80,217 +149,78 @@ export function Blackjack({goHome, balance, setBalance, sound, setSound, token, 
       showToast('Số dư của bạn không đủ để đặt cược!');
       return;
     }
-
-    setBalance(b => b - totalWager);
-    setLastMainBet(mainBet);
-
-    let curShoe = shoe;
-    const p1 = drawCard(curShoe); curShoe = p1.newShoe;
-    const d1 = drawCard(curShoe); curShoe = d1.newShoe;
-    const p2 = drawCard(curShoe); curShoe = p2.newShoe;
-    const d2 = drawCard(curShoe); curShoe = d2.newShoe;
-
-    const initialPlayerCards = [p1.card, p2.card];
-    const initialDealerCards = [d1.card, d2.card];
-
-    setPlayerCards(initialPlayerCards);
-    setDealerCards(initialDealerCards);
-    setTurnTimer(15);
-
-    // Evaluate side bets
-    let sidePayout = 0;
-    if (sideBetPair > 0) {
-      const pairRes = checkPerfectPairs(p1.card, p2.card);
-      if (pairRes.won) {
-        const winAmount = sideBetPair * (pairRes.multiplier + 1);
-        sidePayout += winAmount;
-        showToast(`🎉 Thắng ${pairRes.label}: +${money(winAmount)}`);
+    busyRef.current = true; setBusy(true);
+    try {
+      const data = await api('/games/blackjack/deal', {
+        token, method: 'POST',
+        body: JSON.stringify({bet: mainBet, sidePair: sideBetPair, side21: sideBetPoker})
+      });
+      setLastMainBet(mainBet);
+      applyServer(data);
+      const sides = data.sideResults || {};
+      const sideWins = [sides.pair, sides.p21].filter(s => s?.won && s.payout > 0);
+      if (sideWins.length > 0) {
+        showToast(`🎉 Cược phụ thắng: ${sideWins.map(s => `${s.label} +${money(s.payout)}`).join(' · ')}`, 3200);
       }
-    }
-    if (sideBetPoker > 0) {
-      const pokerRes = check21Plus3(p1.card, p2.card, d1.card);
-      if (pokerRes.won) {
-        const winAmount = sideBetPoker * (pokerRes.multiplier + 1);
-        sidePayout += winAmount;
-        showToast(`🎉 Thắng ${pokerRes.label}: +${money(winAmount)}`);
-      }
-    }
-
-    if (sidePayout > 0) {
-      setBalance(b => b + sidePayout);
-    }
-
-    const pScore = calculateHandScore(initialPlayerCards);
-    const dScore = calculateHandScore(initialDealerCards);
-
-    // Check instant Blackjack (21 with 2 cards)
-    if (pScore.isBlackjack) {
-      setGameState('settled');
-      if (dScore.isBlackjack) {
-        // Push
-        setBalance(b => b + mainBet);
-        setGuideMsg('🤝 Cả hai đều được BLACKJACK! Hòa tiền cược.');
-        setPastResults(r => ['P', ...r.slice(0, 4)]);
-        triggerFx('diceWin', 'HÒA CƯỢC (PUSH)', 2500);
-      } else {
-        // Natural 3:2 payout
-        const bjWin = mainBet + Math.floor(mainBet * 1.5);
-        setBalance(b => b + bjWin);
-        setGuideMsg(`🔥 BLACKJACK! Bạn thắng +${money(bjWin)} (Tỷ lệ 3:2)!`);
-        setWinStreak(s => s + 1);
-        setPastResults(r => ['W', ...r.slice(0, 4)]);
-        playCelebrationAudio('bigWin', soundRef.current);
-        triggerFx('bigWin', `+${money(bjWin)}`, 4500);
-      }
-      return;
-    }
-
-    setGameState('playerTurn');
-    setGuideMsg('👉 Lượt của bạn: Bấm RÚT để thêm bài hoặc DẰNG nếu đã đủ điểm');
-  };
-
-  // Player HIT (Rút thêm bài)
-  const handleHit = () => {
-    if (gameState !== 'playerTurn') return;
-    const { card } = drawCard(shoe);
-    const nextCards = [...playerCards, card];
-    setPlayerCards(nextCards);
-
-    const score = calculateHandScore(nextCards);
-    if (score.isBust) {
-      setGameState('settled');
-      setGuideMsg(`💥 QUẮC (${score.total} điểm)! Quá 21 điểm - Bạn đã thua.`);
-      setWinStreak(0);
-      setPastResults(r => ['L', ...r.slice(0, 4)]);
-      triggerFx('diceLose', `QUÁ ĐIỂM (${score.total})`, 2500);
-    } else if (score.total === 21) {
-      showToast('Đạt 21 điểm hoàn hảo! Chuyển lượt nhà cái...');
-      setTimeout(() => finishDealerTurn(nextCards), 700);
-    } else {
-      setGuideMsg(`Điểm hiện tại: ${score.total} điểm. RÚT tiếp hay DẰNG bài?`);
+    } catch (err) {
+      showToast(err.display || 'Không chia được bài, thử lại nhé!');
+    } finally {
+      busyRef.current = false; setBusy(false);
     }
   };
 
-  // Player STAND (Dằn bài / Dừng)
-  const handleStand = () => {
-    if (gameState !== 'playerTurn') return;
-    const pTotal = calculateHandScore(playerCards).total;
-    showToast(`Bạn dừng ở ${pTotal} điểm`);
-    finishDealerTurn(playerCards);
+  const doAction = async (action) => {
+    if (busyRef.current || !handId) return;
+    busyRef.current = true; setBusy(true);
+    try {
+      const data = await api('/games/blackjack/action', {
+        token, method: 'POST',
+        body: JSON.stringify({handId, action})
+      });
+      if (action === 'double') showToast(`Gấp đôi (${money(data.mainBet)})!`);
+      applyServer(data);
+    } catch (err) {
+      showToast(err.display || 'Máy chủ từ chối nước đi này.');
+    } finally {
+      busyRef.current = false; setBusy(false);
+    }
   };
 
-  // Player DOUBLE (Gấp đôi cược & rút đúng 1 lá)
+  const handleHit = () => { if (gameState === 'playerTurn') doAction('hit'); };
+  const handleStand = () => { if (gameState === 'playerTurn') doAction('stand'); };
   const handleDouble = () => {
     if (gameState !== 'playerTurn' || playerCards.length !== 2) return;
     if (balance < mainBet) {
       showToast('Số dư không đủ để cược gấp đôi!');
       return;
     }
-
-    setBalance(b => b - mainBet);
-    const newMainBet = mainBet * 2;
-    setMainBet(newMainBet);
-
-    const { card } = drawCard(shoe);
-    const nextCards = [...playerCards, card];
-    setPlayerCards(nextCards);
-    showToast(`Gấp đôi (${money(newMainBet)})! Rút 1 lá: ${card.rank}${card.symbol}`);
-
-    const score = calculateHandScore(nextCards);
-    if (score.isBust) {
-      setGameState('settled');
-      setGuideMsg(`💥 QUẮC (${score.total} điểm)! Thua cược gấp đôi ${money(newMainBet)}.`);
-      setWinStreak(0);
-      setPastResults(r => ['L', ...r.slice(0, 4)]);
-      triggerFx('diceLose', `QUÁ ĐIỂM (${score.total})`, 2500);
-    } else {
-      setTimeout(() => finishDealerTurn(nextCards, newMainBet), 900);
-    }
+    doAction('double');
   };
-
-  // Player FOLD / SURRENDER (Đầu hàng lấy lại 50%)
   const handleSurrender = () => {
     if (gameState !== 'playerTurn' || playerCards.length !== 2) return;
-    const refund = Math.floor(mainBet / 2);
-    setBalance(b => b + refund);
-    setGameState('settled');
-    setGuideMsg(`Bỏ bài: Nhận lại 50% cược (${money(refund)}).`);
-    setWinStreak(0);
-    setPastResults(r => ['L', ...r.slice(0, 4)]);
-    triggerFx('diceLose', 'BỎ BÀI (FOLD)', 2000);
+    doAction('surrender');
   };
+  standRef.current = handleStand;
 
-  // Dealer Turn & Winner Settlement
-  const finishDealerTurn = (finalPlayerCards, activeBet = mainBet) => {
-    setGameState('dealerTurn');
-    setGuideMsg('⏳ Nhà cái đang mở bài và rút...');
-
-    let curDealer = [...dealerCards];
-    let curShoe = shoe;
-    let dScore = calculateHandScore(curDealer);
-
-    const stepDealer = () => {
-      if (dScore.total < 17) {
-        const drawn = drawCard(curShoe);
-        curShoe = drawn.newShoe;
-        curDealer.push(drawn.card);
-        setDealerCards([...curDealer]);
-        dScore = calculateHandScore(curDealer);
-        setTimeout(stepDealer, 650);
-      } else {
-        const pScore = calculateHandScore(finalPlayerCards);
-        setGameState('settled');
-
-        if (dScore.isBust) {
-          const winAmount = activeBet * 2;
-          setBalance(b => b + winAmount);
-          setGuideMsg(`🎉 Nhà cái QUẮC (${dScore.total} điểm)! Bạn thắng +${money(winAmount)}!`);
-          setWinStreak(s => s + 1);
-          setPastResults(r => ['W', ...r.slice(0, 4)]);
-          playCelebrationAudio('jackpot', soundRef.current);
-          triggerFx('jackpot', `+${money(winAmount)}`, 4000);
-        } else if (pScore.total > dScore.total) {
-          const winAmount = activeBet * 2;
-          setBalance(b => b + winAmount);
-          setGuideMsg(`🎉 Bạn (${pScore.total} điểm) THẮNG Nhà cái (${dScore.total} điểm)! +${money(winAmount)}`);
-          setWinStreak(s => s + 1);
-          setPastResults(r => ['W', ...r.slice(0, 4)]);
-          playCelebrationAudio('bigWin', soundRef.current);
-          triggerFx('bigWin', `+${money(winAmount)}`, 4000);
-        } else if (pScore.total === dScore.total) {
-          setBalance(b => b + activeBet);
-          setGuideMsg(`🤝 HÒA (${pScore.total} điểm)! Hoàn lại ${money(activeBet)}.`);
-          setPastResults(r => ['P', ...r.slice(0, 4)]);
-          triggerFx('diceWin', 'HÒA CƯỢC (PUSH)', 2500);
-        } else {
-          setGuideMsg(`💔 Nhà cái (${dScore.total} điểm) thắng Bạn (${pScore.total} điểm).`);
-          setWinStreak(0);
-          setPastResults(r => ['L', ...r.slice(0, 4)]);
-          triggerFx('diceLose', `THUA (${pScore.total} vs ${dScore.total})`, 2500);
-        }
-      }
-    };
-
-    setTimeout(stepDealer, 500);
-  };
-
-  const playerScoreObj = calculateHandScore(playerCards);
-  const dealerScoreObj = calculateHandScore(dealerCards);
-  const dealerVisibleScore = gameState === 'playerTurn' && dealerCards.length >= 1
-    ? (dealerCards[0].rank === 'A' ? 11 : dealerCards[0].value)
-    : dealerScoreObj.total;
-
-  const canDouble = gameState === 'playerTurn' && playerCards.length === 2 && balance >= mainBet;
-  const canSurrender = gameState === 'playerTurn' && playerCards.length === 2;
+  const canDouble = gameState === 'playerTurn' && playerCards.length === 2 && balance >= mainBet && !busy;
+  const canSurrender = gameState === 'playerTurn' && playerCards.length === 2 && !busy;
 
   const formatScoreBadge = (scoreObj, isDealer = false) => {
-    if (scoreObj.total === 0) return '0';
+    if (!scoreObj || scoreObj.total === 0) return '0';
     if (isDealer && gameState === 'playerTurn') return `${dealerVisibleScore} + ?`;
     if (scoreObj.isBlackjack) return '🔥 XÌ DÁCH';
     if (scoreObj.isBust) return `💥 QUẮC (${scoreObj.total})`;
     if (scoreObj.total === 21) return '⭐ 21 ĐIỂM';
     return `${scoreObj.total} Điểm`;
   };
+
+  // Máy chủ chỉ gửi lá úp khi ván chưa chốt — client tự vẽ lá úp ẩn
+  const dealerRender = gameState === 'playerTurn' && dealerCards.length === 1
+    ? [...dealerCards, {id: 'hole-card'}]
+    : dealerCards;
+  const dealerScoreObj = gameState === 'playerTurn'
+    ? {total: dealerVisibleScore}
+    : (dealerScore || {total: 0});
 
   return (
     <div className={'screen bjScreen ' + (fx.type ? `fx-${fx.type}` : '')}>
@@ -314,17 +244,17 @@ export function Blackjack({goHome, balance, setBalance, sound, setSound, token, 
             </div>
 
             <div className="bjCardHand">
-              {dealerCards.length === 0 ? (
+              {dealerRender.length === 0 ? (
                 <div className="bjCardPlaceholder">
                   <div className="bjEmptyCardSlot" />
                   <div className="bjEmptyCardSlot" />
                 </div>
               ) : (
-                dealerCards.map((card, idx) => {
-                  const isHidden = idx === 1 && gameState === 'playerTurn';
+                dealerRender.map((card, idx) => {
+                  const isHidden = card.id === 'hole-card';
                   if (isHidden) {
                     return (
-                      <div key={idx} className="bjCard bjCardFacedown">
+                      <div key={card.id} className="bjCard bjCardFacedown">
                         <div className="bjCardBackPattern">
                           <span>⚜️</span>
                         </div>
@@ -362,7 +292,7 @@ export function Blackjack({goHome, balance, setBalance, sound, setSound, token, 
               <div
                 className={`bjSideSpot ${sideBetPair > 0 ? 'hasBet' : ''}`}
                 onClick={() => {
-                  if (gameState === 'playerTurn' || gameState === 'dealerTurn') return;
+                  if (gameState === 'playerTurn' || gameState === 'dealerTurn' || busy) return;
                   setSideBetPair(p => p === 0 ? selectedChip : p + selectedChip > 500000 ? 0 : p + selectedChip);
                 }}
               >
@@ -379,7 +309,7 @@ export function Blackjack({goHome, balance, setBalance, sound, setSound, token, 
               <div
                 className={`bjMainSpot ${mainBet > 0 ? 'hasBet' : ''}`}
                 onClick={() => {
-                  if (gameState === 'playerTurn' || gameState === 'dealerTurn') return;
+                  if (gameState === 'playerTurn' || gameState === 'dealerTurn' || busy) return;
                   setMainBet(m => m + selectedChip);
                 }}
               >
@@ -393,7 +323,7 @@ export function Blackjack({goHome, balance, setBalance, sound, setSound, token, 
               <div
                 className={`bjSideSpot ${sideBetPoker > 0 ? 'hasBet' : ''}`}
                 onClick={() => {
-                  if (gameState === 'playerTurn' || gameState === 'dealerTurn') return;
+                  if (gameState === 'playerTurn' || gameState === 'dealerTurn' || busy) return;
                   setSideBetPoker(p => p === 0 ? selectedChip : p + selectedChip > 500000 ? 0 : p + selectedChip);
                 }}
               >
@@ -417,8 +347,8 @@ export function Blackjack({goHome, balance, setBalance, sound, setSound, token, 
                   <span>⏱️ {turnTimer}s</span>
                 </div>
               )}
-              <div className={`bjScoreBadge ${playerScoreObj.isBust ? 'bust' : playerScoreObj.isBlackjack ? 'blackjack' : 'player'}`}>
-                {formatScoreBadge(playerScoreObj, false)}
+              <div className={`bjScoreBadge ${playerScore.isBust ? 'bust' : playerScore.isBlackjack ? 'blackjack' : 'player'}`}>
+                {formatScoreBadge(playerScore, false)}
               </div>
             </div>
 
@@ -452,12 +382,12 @@ export function Blackjack({goHome, balance, setBalance, sound, setSound, token, 
           {/* Phase A: Player Turn Action Buttons */}
           {gameState === 'playerTurn' ? (
             <div className="bjTurnActionsGrid">
-              <button className="bjTurnBtn hit" onClick={handleHit}>
+              <button className="bjTurnBtn hit" disabled={busy} onClick={handleHit}>
                 <span className="btnMain">RÚT THÊM</span>
                 <span className="btnSub">(HIT)</span>
               </button>
 
-              <button className="bjTurnBtn stand" onClick={handleStand}>
+              <button className="bjTurnBtn stand" disabled={busy} onClick={handleStand}>
                 <span className="btnMain">DẰNG BÀI</span>
                 <span className="btnSub">(STAND)</span>
               </button>
@@ -521,7 +451,7 @@ export function Blackjack({goHome, balance, setBalance, sound, setSound, token, 
                   ✕ XÓA CƯỢC
                 </button>
 
-                <button className="bjDealPrimaryBtn" onClick={handleDeal}>
+                <button className="bjDealPrimaryBtn" disabled={busy} onClick={handleDeal}>
                   <span>CHIA BÀI</span>
                   <small>({money(mainBet + sideBetPair + sideBetPoker)})</small>
                 </button>

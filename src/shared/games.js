@@ -75,10 +75,15 @@ export const FALLBACK_GAMES = [
     subtitle: 'Xì Dách hoàng gia 3:2',
     enabled: true,
     sortOrder: 6,
-    minBet: 50,
+    minBet: 1000,
     maxBet: 2500000,
     theoreticalRtp: 0.995,
-    config: { bjPayout: 1.5, dealerStand: 17, doubleAllowed: 1, surrenderAllowed: 1 },
+    config: {
+      bjPayout: 1.5, dealerStand: 17, surrenderBp: 5000,
+      ppPerfectX: 25, ppColoredX: 12, ppMixedX: 6,
+      p21SuitedTripsX: 100, p21StraightFlushX: 40, p21ThreeKindX: 30,
+      p21StraightX: 10, p21FlushX: 9
+    },
     stats: { rounds: 64, bet: 16000000, payout: 15920000, houseNet: 80000, actualRtp: 0.995 }
   },
   {
@@ -90,7 +95,7 @@ export const FALLBACK_GAMES = [
     minBet: 10000,
     maxBet: 10000000,
     theoreticalRtp: 0.98,
-    config: { betPerCard: 10000, chatHeoMulti: 2, tuQuyMulti: 4 },
+    config: { winX: 1.9, heoChopX: 0.5, tuQuyChopX: 1 },
     stats: { rounds: 72, bet: 28800000, payout: 28224000, houseNet: 576000, actualRtp: 0.98 }
   }
 ];

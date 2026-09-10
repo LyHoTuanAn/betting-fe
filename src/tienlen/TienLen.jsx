@@ -4,15 +4,15 @@ import {ResultFx} from '../shared/ResultFx.jsx';
 import {useGameFx} from '../shared/hooks.js';
 import {playCelebrationAudio} from '../shared/audio.js';
 import {money} from '../shared/format.js';
-import {
-  analyzeCombination,
-  canBeat,
-  deal4Players,
-  findBestMove,
-  sortByRank,
-  sortBySuit
-} from './tienlen-engine.js';
+import {api} from '../shared/api.js';
+import {analyzeCombination, canBeat, findBestMove, sortByRank, sortBySuit} from './tienlen-engine.js';
 import './tienlen.css';
+
+const TL_CHIPS = [10000, 50000, 100000, 500000, 1000000];
+
+// Khớp BOT_NAMES bên backend: bot1 → phải, bot2 → trên, bot3 → trái.
+const SEAT_OF = {hero: 'hero', bot1: 'right', bot2: 'top', bot3: 'left'};
+const SEAT_NAME = {hero: 'Bạn', right: 'HoàngTửĐỏ', top: 'ĐạiGia_SàiGòn', left: 'BảoNgọc_VIP'};
 
 const OPPONENTS = [
   {
@@ -38,62 +38,73 @@ const OPPONENTS = [
   }
 ];
 
-export function TienLen({goHome, balance, setBalance, sound, setSound, user}) {
+/**
+ * Tiến Lên server-authoritative: chia bài, kiểm tra combo, lượt bot và chốt
+ * thắng thua đều do backend xử lý. Client chỉ chọn bài, gửi nước đi rồi vẽ lại
+ * state máy chủ trả về (moves được animate tuần tự cho sinh động).
+ */
+export function TienLen({goHome, balance, setBalance, sound, setSound, token, user}) {
   const [fx, triggerFx, dismissFx] = useGameFx();
-  const [betPerCard] = useState(10000);
-  const [sortMode, setSortMode] = useState('rank'); // 'rank', 'suit', 'combo'
+  const [phase, setPhase] = useState('betting'); // betting | playing | settled
+  const [selectedChip, setSelectedChip] = useState(100000);
+  const [betAmount, setBetAmount] = useState(100000);
+  const [sortMode, setSortMode] = useState('rank');
+  const [handId, setHandId] = useState(null);
   const [heroHand, setHeroHand] = useState([]);
-  const [botHands, setBotHands] = useState({ top: [], left: [], right: [] });
+  const [botCounts, setBotCounts] = useState({top: 13, left: 13, right: 13});
   const [selectedCardIds, setSelectedCardIds] = useState(new Set());
-  const [currentTurn, setCurrentTurn] = useState('hero'); // 'hero', 'right', 'top', 'left'
+  const [currentTurn, setCurrentTurn] = useState('hero'); // hero | right | top | left
   const [foldedPlayers, setFoldedPlayers] = useState(new Set());
   const [tableCombo, setTableCombo] = useState(null);
-  const [lastPlayedBy, setLastPlayedBy] = useState('BảoNgọc_VIP vừa đánh Đôi Heo');
-  const [pot, setPot] = useState(120000);
-  const [roundNo, setRoundNo] = useState(4);
-  const [turnTimer, setTurnTimer] = useState(14);
+  const [lastPlayedBy, setLastPlayedBy] = useState('Chọn mức cược để bắt đầu');
+  const [turnTimer, setTurnTimer] = useState(15);
   const [toastMsg, setToastMsg] = useState('');
   const [floatingEmojis, setFloatingEmojis] = useState([]);
+  const [busy, setBusy] = useState(false);
 
   const soundRef = useRef(sound);
   useEffect(() => { soundRef.current = sound; }, [sound]);
+  const busyRef = useRef(false);
+  const passRef = useRef(() => {});
 
-  // Initial Deal
-  const initGame = () => {
-    const hands = deal4Players();
-    setHeroHand(hands.hero);
-    setBotHands({
-      top: hands.bot2,
-      left: hands.bot3,
-      right: hands.bot1
-    });
-    setSelectedCardIds(new Set());
-    setFoldedPlayers(new Set());
-    // Initial display table combo (Đôi Heo 2♥ 2♠)
-    const initial2Heart = { id: '2-hearts', rank: '2', rankOrder: 12, suit: 'hearts', symbol: '♥', color: '#ffb4ab', isRed: true, score: 51 };
-    const initial2Spade = { id: '2-spades', rank: '2', rankOrder: 12, suit: 'spades', symbol: '♠', color: '#dfe2f1', isRed: false, score: 48 };
-    setTableCombo({
-      type: 'PAIR',
-      cards: [initial2Heart, initial2Spade],
-      highestCard: initial2Heart,
-      label: 'Đôi Heo',
-      length: 2
-    });
-    setCurrentTurn('hero');
-    setTurnTimer(14);
+  const showToast = (msg, duration = 2400) => {
+    setToastMsg(msg);
+    setTimeout(() => {
+      setToastMsg(curr => curr === msg ? '' : curr);
+    }, duration);
   };
 
-  useEffect(() => {
-    initGame();
-  }, []);
+  const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-  // Timer countdown
+  // Khôi phục ván đang dở sau reload (máy chủ giữ state trong 20 phút)
   useEffect(() => {
+    if (!token) return;
+    let cancelled = false;
+    api('/games/tienlen/active', {token}).then(data => {
+      if (cancelled || !data?.active) return;
+      const a = data.active;
+      setHandId(a.handId);
+      setBetAmount(a.bet);
+      setHeroHand(a.heroHand || []);
+      setBotCounts(Object.fromEntries((a.bots || []).map(b => [b.key, b.cardsLeft])));
+      setTableCombo(a.table || null);
+      setCurrentTurn(SEAT_OF[a.turn] || 'hero');
+      setLastPlayedBy(a.lastPlayedBy || '');
+      setPhase('playing');
+      setTurnTimer(15);
+      if (typeof a.balance === 'number') setBalance(a.balance);
+    }).catch(() => {});
+    return () => { cancelled = true; };
+  }, [token]);
+
+  // Đếm ngược lượt: hết giờ tự bỏ lượt (nếu đang bị đè bài)
+  useEffect(() => {
+    if (phase !== 'playing') return;
     const interval = setInterval(() => {
       setTurnTimer(t => {
         if (t <= 1) {
-          if (currentTurn === 'hero') {
-            handlePass();
+          if (currentTurn === 'hero' && tableCombo && !busyRef.current) {
+            passRef.current();
           }
           return 15;
         }
@@ -101,69 +112,157 @@ export function TienLen({goHome, balance, setBalance, sound, setSound, user}) {
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [currentTurn]);
+  }, [phase, currentTurn, tableCombo]);
 
-  // Bot turns AI simulation
-  useEffect(() => {
-    if (currentTurn === 'hero') return;
+  const resetToBetting = (message = 'Chọn mức cược để bắt đầu') => {
+    setPhase('betting');
+    setHandId(null);
+    setHeroHand([]);
+    setBotCounts({top: 13, left: 13, right: 13});
+    setSelectedCardIds(new Set());
+    setFoldedPlayers(new Set());
+    setTableCombo(null);
+    setCurrentTurn('hero');
+    setLastPlayedBy(message);
+  };
 
-    const timer = setTimeout(() => {
-      const botKey = currentTurn;
-      const botHand = botHands[botKey] || [];
-
-      // If bot is already folded in this trick
-      if (foldedPlayers.has(botKey)) {
-        nextTurn(botKey);
-        return;
-      }
-
-      // Find move
-      const move = findBestMove(botHand, tableCombo);
-      if (move && move.length > 0) {
-        const combo = analyzeCombination(move);
-        const remaining = botHand.filter(c => !move.some(m => m.id === c.id));
-        setBotHands(prev => ({ ...prev, [botKey]: remaining }));
-        setTableCombo(combo);
-        const botName = OPPONENTS.find(o => o.id === botKey)?.name || 'Người chơi';
-        setLastPlayedBy(`${botName} vừa đánh ${combo.label}`);
-        setPot(p => p + 10000);
-
-        if (remaining.length === 0) {
-          // Bot won
-          triggerFx('diceLose', `${botName.toUpperCase()} ĐÃ VỀ NHẤT!`, 3000);
-          setTimeout(initGame, 4000);
-          return;
-        }
-      } else {
-        // Bot passes
-        setFoldedPlayers(prev => new Set([...prev, botKey]));
-        const botName = OPPONENTS.find(o => o.id === botKey)?.name || 'Người chơi';
-        setLastPlayedBy(`${botName} đã bỏ lượt`);
-      }
-
-      nextTurn(botKey);
-    }, 1200);
-
-    return () => clearTimeout(timer);
-  }, [currentTurn, tableCombo, foldedPlayers, botHands]);
-
-  const nextTurn = (curr) => {
-    const turnOrder = ['hero', 'right', 'top', 'left'];
-    const idx = turnOrder.indexOf(curr);
-    const nextPlayer = turnOrder[(idx + 1) % 4];
-
-    // Check if 3 players have folded -> clear trick and start free turn
-    const activeFolded = new Set(foldedPlayers);
-    if (activeFolded.size >= 3) {
+  const handleDeal = async () => {
+    if (busyRef.current) return;
+    if (balance < betAmount) {
+      showToast('Số dư của bạn không đủ để đặt cược!');
+      return;
+    }
+    busyRef.current = true; setBusy(true);
+    try {
+      const data = await api('/games/tienlen/deal', {
+        token, method: 'POST',
+        body: JSON.stringify({bet: betAmount})
+      });
+      setBalance(data.balance);
+      setHandId(data.handId);
+      setHeroHand(data.heroHand || []);
+      setBotCounts(Object.fromEntries((data.bots || []).map(b => [b.key, b.cardsLeft])));
+      setSelectedCardIds(new Set());
       setFoldedPlayers(new Set());
       setTableCombo(null);
-      setLastPlayedBy('Vòng mới: Người thắng lượt trước được quyền ra bài');
-      // Winner of previous trick gets turn
-      setCurrentTurn(curr);
-    } else {
-      setCurrentTurn(nextPlayer);
+      setCurrentTurn(SEAT_OF[data.turn] || 'hero');
+      setLastPlayedBy(data.lastPlayedBy || 'Ván mới — bạn ra bài tự do');
+      setPhase('playing');
+      setTurnTimer(15);
+      showToast(`Đã chia bài — cược ${money(betAmount)}`);
+    } catch (err) {
+      if (err.code === 'HAND_IN_PROGRESS' && err.details) {
+        // Có ván dở trên server: vào lại ván đó thay vì mở ván mới
+        const a = err.details;
+        setHandId(a.handId);
+        setBetAmount(a.bet);
+        setHeroHand(a.heroHand || []);
+        setBotCounts(Object.fromEntries((a.bots || []).map(b => [b.key, b.cardsLeft])));
+        setTableCombo(a.table || null);
+        setCurrentTurn(SEAT_OF[a.turn] || 'hero');
+        setLastPlayedBy(a.lastPlayedBy || '');
+        setPhase('playing');
+        setTurnTimer(15);
+        showToast('Bạn còn ván chưa xong, chơi nốt nhé!');
+      } else {
+        showToast(err.display || 'Không chia được bài, thử lại nhé!');
+      }
+    } finally {
+      busyRef.current = false; setBusy(false);
     }
-    setTurnTimer(15);
+  };
+
+  const applySettled = (data) => {
+    setBalance(data.balance);
+    setHeroHand(data.heroHand || []);
+    setBotCounts(Object.fromEntries((data.bots || []).map(b => [b.key, b.cardsLeft])));
+    setTableCombo(data.table || null);
+    setLastPlayedBy(data.reason || data.lastPlayedBy || 'Ván đã kết thúc');
+    setPhase('settled');
+    setHandId(null);
+    setSelectedCardIds(new Set());
+    setFoldedPlayers(new Set());
+    if (data.heroWin) {
+      playCelebrationAudio('jackpot', soundRef.current);
+      triggerFx('jackpot', `TỚI NHẤT! +${money(data.payout || 0)}`, 4500);
+      showToast(`🎉 Bạn VỀ NHẤT — nhận ${money(data.payout || 0)}!`, 4000);
+    } else {
+      triggerFx('diceLose', `${data.reason || 'ĐỐI THỦ VỀ NHẤT'}`, 3000);
+      showToast(`💔 ${data.reason || 'Bạn thua ván này'} — mất ${money(data.bet || betAmount)}`, 3600);
+    }
+  };
+
+  // Animate tuần tự các nước bot rồi áp state cuối cùng từ máy chủ
+  const applyPlay = async (data) => {
+    if (busyRef.current) return;
+    busyRef.current = true; setBusy(true);
+    try {
+      setSelectedCardIds(new Set());
+      for (const move of data.moves || []) {
+        const seat = SEAT_OF[move.by] || 'hero';
+        if (move.pass) {
+          setFoldedPlayers(prev => new Set([...prev, seat]));
+          setLastPlayedBy(`${move.byName} đã bỏ lượt`);
+        } else if (move.combo) {
+          setTableCombo(move.combo);
+          setFoldedPlayers(prev => {
+            const next = new Set(prev);
+            next.delete(seat);
+            return next;
+          });
+          if (seat !== 'hero') {
+            setBotCounts(prev => ({...prev, [seat]: Math.max(0, (prev[seat] ?? 13) - move.combo.cards.length)}));
+          }
+          if (move.bonus > 0) {
+            setLastPlayedBy(`${move.byName} vừa đánh ${move.combo.label} 🔥 CHẶT +${money(move.bonus)}`);
+            playCelebrationAudio('bigWin', soundRef.current);
+            triggerFx('bigWin', `🔥 CHẶT HEO/HÀNG +${money(move.bonus)}`, 3000);
+          } else {
+            setLastPlayedBy(`${move.byName} vừa đánh ${move.combo.label}`);
+          }
+        } else if (move.newRound) {
+          setFoldedPlayers(new Set());
+          setTableCombo(null);
+          setLastPlayedBy('Vòng mới — người thắng lượt trước ra bài tự do');
+        }
+        await sleep(850);
+      }
+      if (data.settled) {
+        applySettled(data);
+        return;
+      }
+      setBalance(data.balance);
+      setHeroHand(data.heroHand || []);
+      setBotCounts(Object.fromEntries((data.bots || []).map(b => [b.key, b.cardsLeft])));
+      setTableCombo(data.table || null);
+      setCurrentTurn(SEAT_OF[data.turn] || 'hero');
+      setLastPlayedBy(data.lastPlayedBy || '');
+      setFoldedPlayers(prev => (data.table ? prev : new Set()));
+      setTurnTimer(15);
+    } finally {
+      busyRef.current = false; setBusy(false);
+    }
+  };
+
+  const sendPlay = async (action, cardIds) => {
+    if (busyRef.current || !handId) return;
+    busyRef.current = true; setBusy(true);
+    try {
+      const data = await api('/games/tienlen/play', {
+        token, method: 'POST',
+        body: JSON.stringify({handId, action, ...(cardIds ? {cardIds} : {})})
+      });
+      await applyPlay(data);
+    } catch (err) {
+      if (['HAND_NOT_FOUND', 'HAND_ENDED'].includes(err.code)) {
+        showToast('Ván đã kết thúc trên máy chủ, mở ván mới nhé!');
+        resetToBetting('Ván đã kết thúc — chọn cược để chơi tiếp');
+      } else {
+        showToast(err.display || 'Máy chủ từ chối nước đi này.');
+      }
+    } finally {
+      busyRef.current = false; setBusy(false);
+    }
   };
 
   // Card selection toggle
@@ -176,97 +275,68 @@ export function TienLen({goHome, balance, setBalance, sound, setSound, user}) {
     });
   };
 
-  // Sorting hand
+  // Sorting hand (chỉ sắp xếp hiển thị, không đổi giá trị)
   const handleSort = (mode) => {
     setSortMode(mode);
-    if (mode === 'suit') {
-      setHeroHand(prev => sortBySuit(prev));
-    } else {
-      setHeroHand(prev => sortByRank(prev));
-    }
+    setHeroHand(prev => mode === 'suit' ? sortBySuit(prev) : sortByRank(prev));
   };
 
   // Player Play Hand
   const handlePlay = () => {
-    if (currentTurn !== 'hero') return;
+    if (currentTurn !== 'hero' || busy) return;
     const selectedCards = heroHand.filter(c => selectedCardIds.has(c.id));
     if (selectedCards.length === 0) {
-      setToastMsg('Vui lòng chọn lá bài muốn đánh!');
+      showToast('Vui lòng chọn lá bài muốn đánh!');
       return;
     }
-
     const combo = analyzeCombination(selectedCards);
     if (!combo) {
-      setToastMsg('Tổ hợp bài không hợp lệ (không phải Đôi, Sám, Sảnh...)!');
+      showToast('Tổ hợp bài không hợp lệ (không phải Đôi, Sám, Sảnh...)!');
       return;
     }
-
     if (tableCombo && !canBeat(combo, tableCombo)) {
-      setToastMsg('Bài của bạn không đủ lớn để đè bài trên bàn!');
+      showToast('Bài của bạn không đủ lớn để đè bài trên bàn!');
       return;
     }
-
-    // Valid play!
-    const remaining = heroHand.filter(c => !selectedCardIds.has(c.id));
-    setHeroHand(remaining);
-    setSelectedCardIds(new Set());
-    setTableCombo(combo);
-    setLastPlayedBy(`Bạn vừa đánh ${combo.label}`);
-    setPot(p => p + 20000);
-
-    // Check if player won
-    if (remaining.length === 0) {
-      const winPayout = pot + betPerCard * (botHands.top.length + botHands.left.length + botHands.right.length);
-      setBalance(b => b + winPayout);
-      playCelebrationAudio('jackpot', soundRef.current);
-      triggerFx('jackpot', `+${money(winPayout)}`, 4500);
-      setToastMsg(`🎉 BẠN ĐÃ TỚI NHẤT! NHẬN +${money(winPayout)}!`);
-      setTimeout(initGame, 5000);
-      return;
-    }
-
-    // Special chop celebration
-    if (combo.type === 'FOUR_OF_A_KIND' || combo.type === 'FOUR_PAIRS_PINE' || (tableCombo?.highestCard?.rank === '2' && combo.type !== 'SINGLE')) {
-      playCelebrationAudio('bigWin', soundRef.current);
-      triggerFx('bigWin', '🔥 CHẶT HEO / CHẶT HÀNG! +50.000', 3000);
-      setBalance(b => b + 50000);
-    }
-
-    nextTurn('hero');
+    sendPlay('play', [...selectedCardIds]);
   };
 
   // Player Pass Turn
   const handlePass = () => {
-    if (currentTurn !== 'hero') return;
+    if (currentTurn !== 'hero' || busy) return;
     if (!tableCombo) {
-      setToastMsg('Bạn đang có lượt tự do, không thể bỏ lượt!');
+      showToast('Bạn đang có lượt tự do, phải đánh bài!');
       return;
     }
-    setFoldedPlayers(prev => new Set([...prev, 'hero']));
-    setLastPlayedBy('Bạn đã bỏ lượt');
-    setSelectedCardIds(new Set());
-    nextTurn('hero');
+    sendPlay('pass');
   };
+  passRef.current = handlePass;
 
-  // Player Hint (Gợi ý)
+  // Player Hint (Gợi ý — engine local chỉ dùng để gợi ý, kết quả vẫn do server duyệt)
   const handleHint = () => {
+    if (currentTurn !== 'hero') return;
     const move = findBestMove(heroHand, tableCombo);
     if (move && move.length > 0) {
       setSelectedCardIds(new Set(move.map(c => c.id)));
-      setToastMsg(`Gợi ý: ${move.map(c => c.rank + c.symbol).join(' ')}`);
+      showToast(`Gợi ý: ${move.map(c => c.rank + c.symbol).join(' ')}`);
     } else {
-      setToastMsg('Không có bài hợp lệ để đè! Bạn nên Bỏ lượt.');
+      showToast('Không có bài hợp lệ để đè! Bạn nên Bỏ lượt.');
     }
   };
 
   // Floating Emojis
   const spawnEmoji = (symbol) => {
     const id = Date.now() + Math.random();
-    setFloatingEmojis(prev => [...prev, { id, symbol, left: 50 + (Math.random() * 30 - 15) }]);
+    setFloatingEmojis(prev => [...prev, {id, symbol, left: 50 + (Math.random() * 30 - 15)}]);
     setTimeout(() => {
       setFloatingEmojis(prev => prev.filter(e => e.id !== id));
     }, 1800);
   };
+
+  const turnLabel = currentTurn === 'hero'
+    ? 'LƯỢT CỦA BẠN'
+    : `CHỜ ${SEAT_NAME[currentTurn] || 'ĐỐI THỦ'}...`;
+  const canAct = currentTurn === 'hero' && !busy && phase === 'playing';
 
   return (
     <div className={'screen tlScreen ' + (fx.type ? `fx-${fx.type}` : '')}>
@@ -286,18 +356,18 @@ export function TienLen({goHome, balance, setBalance, sound, setSound, user}) {
             </div>
             <div className="tlTablePill">
               <span className="material-symbols-outlined text-[14px] text-[#ffc174]">table_restaurant</span>
-              <span>BÀN #888 • VÁN {roundNo}/10</span>
+              <span>ĐẠI GIA • CƯỢC {money(betAmount)}</span>
             </div>
           </div>
 
           <div className="tlStatusBottomRow">
             <div className="tlBetPerCard">
               <span className="material-symbols-outlined text-[15px] text-[#ffb77d]">monetization_on</span>
-              <span>Cược: <strong className="text-[#dfe2f1] font-semibold">{money(betPerCard)}/lá</strong></span>
+              <span>Về nhất: <strong className="text-[#dfe2f1] font-semibold">x1.9 tiền cược</strong></span>
             </div>
             <div className="tlRuleTags">
-              <span className="tlRuleTag green">Chặt Heo: x2</span>
-              <span className="tlRuleTag gold">Tứ Quý: x4</span>
+              <span className="tlRuleTag green">Chặt Heo: +50%</span>
+              <span className="tlRuleTag gold">Tứ Quý/Hàng: +100%</span>
             </div>
           </div>
         </div>
@@ -322,7 +392,7 @@ export function TienLen({goHome, balance, setBalance, sound, setSound, user}) {
               </div>
               <div className="tlCardsCountBadge">
                 <span className="material-symbols-outlined text-[14px] text-[#ffb77d]">playing_cards</span>
-                <span>{botHands.top.length}</span>
+                <span>{botCounts.top}</span>
               </div>
             </div>
           </div>
@@ -342,7 +412,7 @@ export function TienLen({goHome, balance, setBalance, sound, setSound, user}) {
               </div>
               <div className="tlCardsCountBadge mt-1">
                 <span className="material-symbols-outlined text-[13px] text-[#56e5a9]">style</span>
-                <span>{botHands.left.length} lá</span>
+                <span>{botCounts.left} lá</span>
               </div>
             </div>
 
@@ -350,8 +420,8 @@ export function TienLen({goHome, balance, setBalance, sound, setSound, user}) {
             <div className="tlCenterArena">
               <div className="tlPotSummaryBadge">
                 <span className="material-symbols-outlined text-[14px] text-[#ffc174]">poker_chip</span>
-                <span>Hũ ván:</span>
-                <span className="tlPotAmount">{money(pot)}</span>
+                <span>Cược ván:</span>
+                <span className="tlPotAmount">{money(betAmount)}</span>
               </div>
 
               {/* Played Cards */}
@@ -410,7 +480,7 @@ export function TienLen({goHome, balance, setBalance, sound, setSound, user}) {
               ) : (
                 <div className="tlCardsCountBadge mt-1">
                   <span className="material-symbols-outlined text-[13px] text-[#56e5a9]">style</span>
-                  <span>{botHands.right.length} lá</span>
+                  <span>{botCounts.right} lá</span>
                 </div>
               )}
             </div>
@@ -420,9 +490,11 @@ export function TienLen({goHome, balance, setBalance, sound, setSound, user}) {
           <div className="tlTurnBanner">
             <div className="tlTurnLabelGroup">
               <span className="material-symbols-outlined text-[18px] text-[#ffc174] animate-bounce">timer</span>
-              <span className="tlTurnTitle">{currentTurn === 'hero' ? 'LƯỢT CỦA BẠN' : 'CHỜ ĐỐI THỦ...'}</span>
+              <span className="tlTurnTitle">{phase === 'playing' ? turnLabel : 'SẴN SÀNG CHƠI'}</span>
               <span className="tlTurnRuleHint">
-                {tableCombo ? `(Cần đè ${tableCombo.label})` : '(Được đánh tự do)'}
+                {phase === 'playing'
+                  ? (tableCombo ? `(Cần đè ${tableCombo.label})` : '(Được đánh tự do)')
+                  : '(Chọn cược rồi chia bài)'}
               </span>
             </div>
 
@@ -460,34 +532,46 @@ export function TienLen({goHome, balance, setBalance, sound, setSound, user}) {
           <div className="tlHandHeader">
             <div className="tlHandCountText">
               <span className="material-symbols-outlined text-[16px] text-[#ffc174]">visibility</span>
-              <span>Tay bài: <strong className="text-[#dfe2f1] font-bold">{heroHand.length} lá</strong></span>
+              <span>
+                {phase === 'playing'
+                  ? <>Tay bài: <strong className="text-[#dfe2f1] font-bold">{heroHand.length} lá</strong></>
+                  : 'Bài của bạn xuất hiện sau khi chia'}
+              </span>
             </div>
 
-            <div className="tlHandSortGroup">
-              <button
-                className={`tlSortBtn ${sortMode === 'combo' ? 'active' : ''}`}
-                onClick={() => handleSort('combo')}
-              >
-                Sảnh/Đôi
-              </button>
-              <button
-                className={`tlSortBtn ${sortMode === 'suit' ? 'active' : ''}`}
-                onClick={() => handleSort('suit')}
-              >
-                Theo Chất
-              </button>
-              <button
-                className={`tlSortBtn ${sortMode === 'rank' ? 'active' : ''}`}
-                onClick={() => handleSort('rank')}
-              >
-                Theo Số
-              </button>
-            </div>
+            {phase === 'playing' && (
+              <div className="tlHandSortGroup">
+                <button
+                  className={`tlSortBtn ${sortMode === 'combo' ? 'active' : ''}`}
+                  onClick={() => handleSort('rank')}
+                >
+                  Sảnh/Đôi
+                </button>
+                <button
+                  className={`tlSortBtn ${sortMode === 'suit' ? 'active' : ''}`}
+                  onClick={() => handleSort('suit')}
+                >
+                  Theo Chất
+                </button>
+                <button
+                  className={`tlSortBtn ${sortMode === 'rank' ? 'active' : ''}`}
+                  onClick={() => handleSort('rank')}
+                >
+                  Theo Số
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Interactive Fanned Hand */}
           <div className="tlHandScrollContainer">
-            {heroHand.map(card => {
+            {phase === 'betting' || phase === 'settled' ? (
+              <div className="text-[13px] text-[#a08e7a] py-6 text-center italic">
+                {phase === 'settled'
+                  ? `Ván kết thúc — ${lastPlayedBy}`
+                  : 'Chọn mức cược bên dưới rồi bấm CHIA BÀI'}
+              </div>
+            ) : heroHand.map(card => {
               const isSelected = selectedCardIds.has(card.id);
               const isHeoVip = card.rank === '2' && card.suit === 'diamonds';
               return (
@@ -514,52 +598,81 @@ export function TienLen({goHome, balance, setBalance, sound, setSound, user}) {
           </div>
 
           {/* Main Action Controls */}
-          <div className="tlActionControlsRow">
-            <button
-              className="tlPassBtn"
-              disabled={currentTurn !== 'hero'}
-              onClick={handlePass}
-            >
-              <span className="material-symbols-outlined text-[18px]">close</span>
-              <span>BỎ LƯỢT</span>
-            </button>
-
-            <button
-              className="tlHintBtn"
-              disabled={currentTurn !== 'hero'}
-              onClick={handleHint}
-            >
-              <span className="material-symbols-outlined text-[18px]">lightbulb</span>
-              <span>GỢI Ý</span>
-            </button>
-
-            <button
-              className="tlPlayBtn"
-              disabled={currentTurn !== 'hero'}
-              onClick={handlePlay}
-            >
-              <span className="material-symbols-outlined text-[20px]">bolt</span>
-              <span>ĐÁNH BÀI</span>
-            </button>
-
-            {/* Social / Emojis */}
-            <div className="tlSocialBtnGroup">
+          {phase === 'playing' ? (
+            <div className="tlActionControlsRow">
               <button
-                className="tlEmojiBtn text-[#ffb4ab]"
-                title="Thả tim"
-                onClick={() => spawnEmoji('❤️')}
+                className="tlPassBtn"
+                disabled={!canAct}
+                onClick={handlePass}
               >
-                <span className="material-symbols-outlined text-[20px]" style={{fontVariationSettings: "'FILL' 1"}}>favorite</span>
+                <span className="material-symbols-outlined text-[18px]">close</span>
+                <span>BỎ LƯỢT</span>
               </button>
+
               <button
-                className="tlEmojiBtn text-[#ffc174]"
-                title="Nâng ly"
-                onClick={() => spawnEmoji('🥂')}
+                className="tlHintBtn"
+                disabled={!canAct}
+                onClick={handleHint}
               >
-                <span className="material-symbols-outlined text-[20px]">wine_bar</span>
+                <span className="material-symbols-outlined text-[18px]">lightbulb</span>
+                <span>GỢI Ý</span>
+              </button>
+
+              <button
+                className="tlPlayBtn"
+                disabled={!canAct}
+                onClick={handlePlay}
+              >
+                <span className="material-symbols-outlined text-[20px]">bolt</span>
+                <span>ĐÁNH BÀI</span>
+              </button>
+
+              {/* Social / Emojis */}
+              <div className="tlSocialBtnGroup">
+                <button
+                  className="tlEmojiBtn text-[#ffb4ab]"
+                  title="Thả tim"
+                  onClick={() => spawnEmoji('❤️')}
+                >
+                  <span className="material-symbols-outlined text-[20px]" style={{fontVariationSettings: "'FILL' 1"}}>favorite</span>
+                </button>
+                <button
+                  className="tlEmojiBtn text-[#ffc174]"
+                  title="Nâng ly"
+                  onClick={() => spawnEmoji('🥂')}
+                >
+                  <span className="material-symbols-outlined text-[20px]">wine_bar</span>
+                </button>
+              </div>
+            </div>
+          ) : (
+            /* Betting Console: chip tray + deal/new-round button */
+            <div className="tlActionControlsRow">
+              <div className="flex items-center gap-1.5 flex-1 overflow-x-auto py-1">
+                {TL_CHIPS.map(val => (
+                  <button
+                    key={val}
+                    className={`tlSortBtn ${selectedChip === val ? 'active' : ''}`}
+                    onClick={() => {
+                      setSelectedChip(val);
+                      setBetAmount(val);
+                    }}
+                  >
+                    {val >= 1000000 ? val / 1000000 + 'M' : val / 1000 + 'K'}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                className="tlPlayBtn"
+                disabled={busy}
+                onClick={() => phase === 'settled' ? resetToBetting() : handleDeal()}
+              >
+                <span className="material-symbols-outlined text-[20px]">bolt</span>
+                <span>{phase === 'settled' ? 'VÁN MỚI' : `CHIA BÀI (${money(betAmount)})`}</span>
               </button>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Floating Emojis Overlay */}

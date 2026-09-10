@@ -36,12 +36,21 @@ const CONFIG_FIELDS = {
   ],
   BLACKJACK: [
     {key: 'bjPayout', label: 'Tỉ lệ Blackjack (3:2 = 1.5)', step: 0.1, min: 1, max: 3, format: v => '×' + v},
-    {key: 'dealerStand', label: 'Điểm nhà cái dừng (Dealer Stand)', step: 1, min: 16, max: 18, format: v => v + ' điểm'}
+    {key: 'dealerStand', label: 'Điểm nhà cái dừng (Dealer Stand)', step: 1, min: 16, max: 18, format: v => v + ' điểm'},
+    {key: 'surrenderBp', label: 'Tỉ lệ hoàn khi Bỏ bài', hint: 'Phần vạn — 5000 nghĩa là hoàn 50% cược', step: 500, min: 0, max: 10000, format: v => percent(v / 10000)},
+    {key: 'ppPerfectX', label: 'Đôi hoàn hảo (cùng chất)', step: 1, min: 0, max: 100, format: v => '×' + v},
+    {key: 'ppColoredX', label: 'Đôi đồng màu', step: 1, min: 0, max: 100, format: v => '×' + v},
+    {key: 'ppMixedX', label: 'Đôi khác màu', step: 1, min: 0, max: 100, format: v => '×' + v},
+    {key: 'p21SuitedTripsX', label: '21+3: Bộ ba đồng chất', step: 1, min: 0, max: 200, format: v => '×' + v},
+    {key: 'p21StraightFlushX', label: '21+3: Thẳng đồng chất', step: 1, min: 0, max: 200, format: v => '×' + v},
+    {key: 'p21ThreeKindX', label: '21+3: Bộ ba', step: 1, min: 0, max: 200, format: v => '×' + v},
+    {key: 'p21StraightX', label: '21+3: Sảnh', step: 1, min: 0, max: 200, format: v => '×' + v},
+    {key: 'p21FlushX', label: '21+3: Đồng chất', step: 1, min: 0, max: 200, format: v => '×' + v}
   ],
   TIENLEN: [
-    {key: 'betPerCard', label: 'Mức cược mỗi lá', step: 1000, min: 1000, max: 1000000, format: v => money(v)},
-    {key: 'chatHeoMulti', label: 'Hệ số phạt Chặt Heo', step: 1, min: 1, max: 10, format: v => '×' + v},
-    {key: 'tuQuyMulti', label: 'Hệ số phạt Tứ Quý', step: 1, min: 1, max: 20, format: v => '×' + v}
+    {key: 'winX', label: 'Bội số về nhất', hint: 'Thắng nhận cược × hệ số (1.9 ≈ RTP 95%)', step: 0.1, min: 1, max: 10, format: v => '×' + v},
+    {key: 'heoChopX', label: 'Thưởng Chặt Heo', hint: 'Nhận ngay cược × hệ số khi đè lá 2', step: 0.1, min: 0, max: 10, format: v => '×' + v},
+    {key: 'tuQuyChopX', label: 'Thưởng Chặt Đôi Heo/Tứ Quý/Hàng', step: 0.5, min: 0, max: 20, format: v => '×' + v}
   ]
 };
 
@@ -77,7 +86,7 @@ function previewRtp(key, config) {
   if (key === 'POKER') return 1 - (value('rakeBp') / 10000 || 0.025);
   if (key === 'ROULETTE') return 36 / 37;
   if (key === 'BLACKJACK') return (value('bjPayout') || 1.5) * 0.048 + 0.923;
-  if (key === 'TIENLEN') return 0.98;
+  if (key === 'TIENLEN') return (value('winX') || 1.9) * 0.5;
   return value('rtp') || 0.95;
 }
 
