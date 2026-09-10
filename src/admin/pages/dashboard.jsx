@@ -5,7 +5,7 @@ import {getMergedGames} from '../../shared/games.js';
 
 export default function DashboardPage({go}) {
   const {data, loading, error} = useAsync(() => Promise.all([
-    api.get('/admin/stats').catch(() => ({users: 0, suspended: 0, pendingWalletRequests: 0, rounds: 0, bet: 0, houseNet: 0, payout: 0})),
+    api.get('/admin/stats').catch(() => ({users: 0, suspended: 0, pendingWithdrawals: 0, unmatchedDeposits: 0, rounds: 0, bet: 0, houseNet: 0, payout: 0})),
     api.get('/admin/games').catch(() => ({games: []}))
   ]), []);
 
