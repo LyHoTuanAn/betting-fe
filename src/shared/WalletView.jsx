@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useState} from 'react';
-import {AlertTriangle, ArrowDownToLine, ArrowUpFromLine, Check, Copy, Landmark, Loader2, Lock, Wallet} from 'lucide-react';
+import {AlertTriangle, ArrowDownToLine, ArrowUpFromLine, Check, Copy, Landmark, Loader2, Lock, QrCode, Wallet} from 'lucide-react';
 import {api} from './api.js';
 import {money} from './format.js';
 
@@ -135,22 +135,33 @@ export function WalletView({token, onBalanceChange, notify}) {
             <p className="wvLoading"><Loader2 size={16} /> Đang lấy thông tin chuyển khoản...</p>
           ) : (
             <>
+              <div className="wvQrCard">
+                <div className="wvQrHeader">
+                  <QrCode size={18} /> Quét mã VietQR nạp tự động
+                </div>
+                <div className="wvQrImgWrapper">
+                  <img
+                    src={`https://img.vietqr.io/image/timo-${info.accountNumber}-compact2.png?addInfo=${encodeURIComponent(info.transferContent)}&accountName=${encodeURIComponent(info.accountName)}`}
+                    alt="Mã QR nạp tiền Timo"
+                    className="wvQrImg"
+                    loading="eager"
+                  />
+                </div>
+                <p className="wvQrSub">Mở app Ngân hàng quét mã — Số tài khoản và nội dung nạp sẽ được điền tự động chính xác 100%.</p>
+              </div>
+
               <div className="wvBankCard">
-                <div className="wvBankHead"><Landmark size={18} /> Chuyển khoản tới</div>
+                <div className="wvBankHead"><Landmark size={18} /> Hoặc chuyển khoản thủ công</div>
                 <div className="wvRow"><span>Ngân hàng</span><b>{info.bankName}</b></div>
                 <div className="wvRow"><span>Số tài khoản</span><b>{info.accountNumber}<CopyButton value={info.accountNumber} label="số tài khoản" /></b></div>
                 <div className="wvRow"><span>Tên tài khoản</span><b>{info.accountName}</b></div>
               </div>
 
-              {/* Nội dung chuyển khoản là mấu chốt của cả luồng nạp tự động:
-                  sai một ký tự thì giao dịch rơi vào UNMATCHED và phải chờ
-                  admin xử lý tay, nên nó được làm nổi bật hơn hẳn phần còn lại. */}
               <div className="wvContentBox">
                 <span>NỘI DUNG CHUYỂN KHOẢN</span>
                 <strong>{info.transferContent}<CopyButton value={info.transferContent} label="nội dung chuyển khoản" /></strong>
               </div>
 
-              <p className="wvAlert"><AlertTriangle size={16} /> {info.note}</p>
               <p className="wvHint">Tiền vào tài khoản thường được cộng tự động trong vòng 1–2 phút sau khi ngân hàng gửi thông báo.</p>
             </>
           )}
