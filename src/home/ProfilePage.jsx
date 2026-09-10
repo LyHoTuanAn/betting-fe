@@ -40,7 +40,6 @@ export function ProfilePage({
   const [walletHistory, setWalletHistory] = useState([]);
   const notice = usePopup();
   const [copied, setCopied] = useState(false);
-  const [claiming, setClaiming] = useState(false);
 
   // VIP Level calculation based on balance/games
   const vipTier = balance >= 5000000 ? 'VIP Kim Cương' : balance >= 1000000 ? 'VIP Vàng' : balance >= 200000 ? 'VIP Bạc' : 'VIP Đồng';
@@ -62,24 +61,6 @@ export function ProfilePage({
       showMsg('Đã cập nhật tên hiển thị thành công!', 'ok');
     } catch (err) {
       showMsg(err.message || 'Lỗi khi cập nhật tên', 'warn');
-    }
-  };
-
-  const claimDaily = async () => {
-    if (claiming) return;
-    setClaiming(true);
-    try {
-      const data = await api('/wallet/daily-bonus', {token, method: 'POST'});
-      if (setUser && user) {
-        setUser({...user, balance: data.balance, lastBonusAt: new Date().toISOString()});
-      } else if (setBalance) {
-        setBalance(data.balance);
-      }
-      showMsg(`🎉 Nhận thành công +${money(data.amount)} vàng điểm danh hàng ngày!`, 'ok');
-    } catch (err) {
-      showMsg(err.message || 'Bạn đã nhận quà hôm nay rồi, hãy quay lại vào ngày mai!', 'warn');
-    } finally {
-      setClaiming(false);
     }
   };
 
@@ -152,8 +133,8 @@ export function ProfilePage({
                 <small>SỐ DƯ HIỆN TẠI</small>
                 <strong><Coins size={18} /> {money(balance)}</strong>
               </div>
-              <button className="vipCheckinBtn" onClick={claimDaily} disabled={claiming}>
-                <Gift size={16} /> <span>Điểm danh 100K</span>
+              <button className="vipCheckinBtn" onClick={() => openPanel ? openPanel('wallet') : setWalletType('deposit')}>
+                <Plus size={16} /> <span>Nạp vàng</span>
               </button>
             </div>
           </div>

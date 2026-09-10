@@ -11,7 +11,6 @@ import {Nav} from './Nav.jsx';
 
 const FILTER_TABS = [
   {key: 'all', label: 'Tất cả'},
-  {key: 'checkin', label: 'Điểm danh'},
   {key: 'deposit', label: 'Thưởng nạp'},
   {key: 'tournament', label: 'Giải đấu'},
   {key: 'slot', label: 'Nổ hũ'},
@@ -33,8 +32,6 @@ export function EventsPage({
 }) {
   const [events, setEvents] = useState([]);
   const [category, setCategory] = useState('all');
-  const [claiming, setClaiming] = useState(false);
-  const [claimedId, setClaimedId] = useState(null);
   const [notice, setNotice] = useState(null);
 
   useEffect(() => {
@@ -53,25 +50,6 @@ export function EventsPage({
       return;
     }
 
-    if (ev.actionType === 'checkin') {
-      if (claiming) return;
-      setClaiming(true);
-      try {
-        const data = await api('/wallet/daily-bonus', {token, method: 'POST'});
-        if (setUser && user) {
-          setUser({...user, balance: data.balance, lastBonusAt: new Date().toISOString()});
-        } else if (setBalance) {
-          setBalance(data.balance);
-        }
-        setClaimedId(ev.id);
-        showToast(`🎉 Nhận thành công +${money(data.amount)} vàng điểm danh mỗi ngày!`, 'ok');
-      } catch (err) {
-        showToast(err.message || 'Bạn đã nhận quà hôm nay rồi, hãy quay lại vào ngày mai!', 'warn');
-      } finally {
-        setClaiming(false);
-      }
-      return;
-    }
 
     if (ev.actionType === 'wallet') {
       if (openPanel) openPanel('wallet');
@@ -191,18 +169,11 @@ export function EventsPage({
                         </a>
                       )}
                       <button
-                        className={'eventActionBtn ' + (claimedId === ev.id ? 'claimed' : '')}
+                        className="eventActionBtn"
                         onClick={() => handleAction(ev)}
-                        disabled={claiming && ev.actionType === 'checkin'}
                       >
-                        {claimedId === ev.id ? (
-                          <><Check size={14} /> Đã nhận quà</>
-                        ) : (
-                          <>
-                            {ev.actionLabel || (ev.actionType === 'checkin' ? 'Điểm danh ngay' : 'Tham gia')}
-                            <ChevronRight size={14} />
-                          </>
-                        )}
+                        {ev.actionLabel || 'Tham gia'}
+                        <ChevronRight size={14} />
                       </button>
                     </div>
                   </div>

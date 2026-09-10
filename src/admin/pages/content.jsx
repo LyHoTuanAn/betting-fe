@@ -16,7 +16,6 @@ const SCREEN_OPTIONS = [
 ];
 
 const CATEGORY_OPTIONS = [
-  {value: 'checkin', label: 'Điểm danh hàng ngày'},
   {value: 'deposit', label: 'Nạp / Khuyến mãi ví'},
   {value: 'tournament', label: 'Giải đấu / Đua Top'},
   {value: 'slot', label: 'Sự kiện Nổ Hũ'},

@@ -49,6 +49,10 @@ export function App() {
   const [panel, setPanel] = useState(null);
   const [sound, setSound] = useState(true);
   const [games, setGames] = useState(FALLBACK_GAMES);
+  // Lỗi khi khôi phục phiên: giữ lại để hiện thành câu cụ thể, thay vì im lặng
+  // đá người chơi về màn đăng nhập như thể họ chưa từng đăng nhập.
+  const [bootError, setBootError] = useState('');
+  const [retry, setRetry] = useState(0);
 
   const setBalance = useCallback(balance => setUser(current => current ? ({
     ...current,
@@ -73,16 +77,24 @@ export function App() {
       setLoading(false);
       return;
     }
+    setLoading(true);
+    setBootError('');
     api('/me', {token})
       .then(data => setUser(data.user))
-      .catch(() => {
-        localStorage.removeItem('goldzone_token');
-        localStorage.removeItem('goldzone_refresh');
-        setUser(null);
-        setToken(null);
+      .catch(err => {
+        // Chỉ lỗi xác thực mới đáng xoá phiên. Mất mạng hay server 500 mà cũng
+        // xoá token thì người chơi bị đăng xuất oan và không biết vì sao.
+        if (err.status === 401 || err.status === 403) {
+          localStorage.removeItem('goldzone_token');
+          localStorage.removeItem('goldzone_refresh');
+          setUser(null);
+          setToken(null);
+        } else {
+          setBootError(err.display || err.message);
+        }
       })
       .finally(() => setLoading(false));
-  }, [token]);
+  }, [token, retry]);
 
   // Danh sách game do admin quản lý; lỗi mạng thì giữ nguyên danh sách mặc định.
   useEffect(() => {
@@ -118,6 +130,14 @@ export function App() {
   };
 
   if (loading) return <div className="appLoading"><Coins /><span>Đang mở kho báu...</span></div>;
+  if (bootError) return (
+    <div className="appLoading">
+      <Coins />
+      <span>{bootError}</span>
+      <button className="authSubmit" onClick={() => setRetry(n => n + 1)}>THỬ LẠI</button>
+      <button className="authSwitch" onClick={logout}>Đăng nhập lại</button>
+    </div>
+  );
   if (!user) return <AuthScreen onAuthenticated={authenticated} />;
 
   const common = {balance: user.balance, setBalance, sound, setSound, token, goHome: () => setScreen('lobby')};
