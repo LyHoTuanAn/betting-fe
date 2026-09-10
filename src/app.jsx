@@ -2,6 +2,8 @@ import {useCallback, useEffect, useState} from 'react';
 import {Coins} from 'lucide-react';
 import {Dice} from './dice/Dice.jsx';
 import {FishGame} from './fish/FishGame.jsx';
+import {Poker} from './poker/Poker.jsx';
+import {Roulette} from './roulette/Roulette.jsx';
 import {EventsPage} from './home/EventsPage.jsx';
 import {HistoryPage} from './home/HistoryPage.jsx';
 import {Lobby} from './home/Lobby.jsx';
@@ -9,14 +11,15 @@ import {ProfilePage} from './home/ProfilePage.jsx';
 import {AccountPanel} from './shared/AccountPanel.jsx';
 import {AuthScreen} from './shared/AuthScreen.jsx';
 import {API_URL, api} from './shared/api.js';
-import {Slot} from './slot/Slot.jsx';
-import {FALLBACK_GAMES, GAME_SCREEN} from './shared/games.js';
+import {FALLBACK_GAMES, GAME_SCREEN, getMergedGames} from './shared/games.js';
 
 const routes = {
   lobby: 'home',
   slot: 'no-hu',
   dice: 'tai-xiu',
   fish: 'ban-ca',
+  poker: 'poker',
+  roulette: 'roulette',
   events: 'su-kien',
   history: 'lich-su',
   profile: 'ca-nhan'
@@ -31,6 +34,9 @@ const routeAliases = {
   dice: 'dice',
   'ban-ca': 'fish',
   fish: 'fish',
+  poker: 'poker',
+  'texas-holdem': 'poker',
+  roulette: 'roulette',
   'su-kien': 'events',
   events: 'events',
   event: 'events',
@@ -48,7 +54,7 @@ export function App() {
   const [loading, setLoading] = useState(!!token);
   const [panel, setPanel] = useState(null);
   const [sound, setSound] = useState(true);
-  const [games, setGames] = useState(FALLBACK_GAMES);
+  const [games, setGames] = useState(() => getMergedGames([]));
 
   const setBalance = useCallback(balance => setUser(current => current ? ({
     ...current,
@@ -84,10 +90,25 @@ export function App() {
       .finally(() => setLoading(false));
   }, [token]);
 
-  // Danh sách game do admin quản lý; lỗi mạng thì giữ nguyên danh sách mặc định.
+  // Danh sách game do admin quản lý, tự động merge fallback và đồng bộ
   useEffect(() => {
-    if (!token) return;
-    api('/games/catalog', {token}).then(data => setGames(data.games)).catch(() => {});
+    const refreshCatalog = () => {
+      if (token) {
+        api('/games/catalog', {token})
+          .then(data => setGames(getMergedGames(data.games)))
+          .catch(() => setGames(getMergedGames([])));
+      } else {
+        setGames(getMergedGames([]));
+      }
+    };
+
+    refreshCatalog();
+    window.addEventListener('goldzone:games_updated', refreshCatalog);
+    window.addEventListener('storage', refreshCatalog);
+    return () => {
+      window.removeEventListener('goldzone:games_updated', refreshCatalog);
+      window.removeEventListener('storage', refreshCatalog);
+    };
   }, [token]);
 
   useEffect(() => {
@@ -132,10 +153,12 @@ export function App() {
     page = <ProfilePage setScreen={setScreen} user={user} setUser={setUser} onLogout={logout} openPanel={setPanel} {...common} />;
   } else {
     // Game catalog kiểm tra
-    const open = games.some(game => GAME_SCREEN[game.key] === screen) ? screen : 'lobby';
+    const open = games.some(game => GAME_SCREEN[game.key] === screen && game.enabled !== false) ? screen : 'lobby';
     page = open === 'slot' ? <Slot {...common} />
       : open === 'dice' ? <Dice {...common} />
       : open === 'fish' ? <FishGame {...common} />
+      : open === 'poker' ? <Poker {...common} />
+      : open === 'roulette' ? <Roulette {...common} />
       : <Lobby setScreen={setScreen} openPanel={setPanel} games={games} {...common} />;
   }
 

@@ -1,0 +1,425 @@
+/* Roulette Screen & Layout */
+.rouletteScreen {
+  width: 100%;
+  height: 100dvh !important;
+  height: 100svh !important;
+  max-height: 100dvh !important;
+  overflow: hidden !important;
+  position: relative;
+  background: radial-gradient(circle at 50% 15%, #1c1524 0%, #0d0a14 50%, #060508 100%);
+  display: flex;
+  flex-direction: column;
+}
+
+.rouletteBody {
+  flex: 1;
+  min-height: 0;
+  width: min(100%, 720px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(4px, 0.8vh, 10px) clamp(8px, 2.5vw, 16px) clamp(8px, 1.5vh, 14px);
+  box-sizing: border-box;
+  overflow: hidden;
+  gap: clamp(4px, 0.8vh, 8px);
+}
+
+/* Wheel Showcase Card */
+.rouletteWheelCard {
+  position: relative;
+  width: 100%;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #1c1f2a 0%, #11141c 100%);
+  border: 1.5px solid rgba(255, 215, 0, 0.25);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.12);
+  padding: clamp(6px, 1vh, 10px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.wheelCardTopRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: clamp(2px, 0.5vh, 6px);
+  z-index: 10;
+}
+
+.recentHistoryRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.historyTitle {
+  font: 800 clamp(9px, 1.3vh, 11px) Oswald;
+  color: #d8c3ad;
+  letter-spacing: 0.5px;
+}
+
+.historyPills {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.recentNumBadge {
+  width: clamp(20px, 3vh, 26px);
+  height: clamp(20px, 3vh, 26px);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font: 900 clamp(9px, 1.4vh, 11.5px) Oswald;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.recentNumBadge.red { background: linear-gradient(180deg, #ef4444, #991b1b); color: #fff; }
+.recentNumBadge.black { background: linear-gradient(180deg, #374151, #1f2937); color: #fff; border: 1px solid #4b5563; }
+.recentNumBadge.green { background: linear-gradient(180deg, #10b981, #047857); color: #fff; }
+
+.tableStatusBadge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #0f131d;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font: 800 clamp(8.5px, 1.2vh, 10.5px) Oswald;
+  color: #4edea3;
+  border: 1px solid rgba(78, 222, 163, 0.3);
+}
+
+.tableStatusBadge.spinning {
+  color: #f59e0b;
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+/* 3D Wheel Animation Container */
+.wheelVisualStage {
+  position: relative;
+  width: clamp(120px, 20vh, 160px);
+  height: clamp(120px, 20vh, 160px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: clamp(2px, 0.4vh, 6px) 0;
+}
+
+.outerRimGold {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: clamp(3px, 0.8vw, 5px) solid #ffc174;
+  background: radial-gradient(circle, #262a35 0%, #0f131d 85%);
+  box-shadow: 0 0 25px rgba(255, 193, 116, 0.25), inset 0 0 20px rgba(0,0,0,0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rotatingWheelDisc {
+  width: clamp(100px, 17vh, 136px);
+  height: clamp(100px, 17vh, 136px);
+  border-radius: 50%;
+  border: 4px solid #353944;
+  background: conic-gradient(
+    #10b981 0deg 9.7deg,
+    #ef4444 9.7deg 19.4deg,
+    #1f2937 19.4deg 29.1deg,
+    #ef4444 29.1deg 38.8deg,
+    #1f2937 38.8deg 48.5deg,
+    #ef4444 48.5deg 58.2deg,
+    #1f2937 58.2deg 67.9deg,
+    #ef4444 67.9deg 77.6deg,
+    #1f2937 77.6deg 87.3deg,
+    #ef4444 87.3deg 97deg,
+    #1f2937 97deg 106.7deg,
+    #ef4444 106.7deg 116.4deg,
+    #1f2937 116.4deg 126.1deg,
+    #ef4444 126.1deg 135.8deg,
+    #1f2937 135.8deg 145.5deg,
+    #ef4444 145.5deg 155.2deg,
+    #1f2937 155.2deg 164.9deg,
+    #ef4444 164.9deg 174.6deg,
+    #1f2937 174.6deg 184.3deg,
+    #ef4444 184.3deg 194deg,
+    #1f2937 194deg 203.7deg,
+    #ef4444 203.7deg 213.4deg,
+    #1f2937 213.4deg 223.1deg,
+    #ef4444 223.1deg 232.8deg,
+    #1f2937 232.8deg 242.5deg,
+    #ef4444 242.5deg 252.2deg,
+    #1f2937 252.2deg 261.9deg,
+    #ef4444 261.9deg 271.6deg,
+    #1f2937 271.6deg 281.3deg,
+    #ef4444 281.3deg 291deg,
+    #1f2937 291deg 300.7deg,
+    #ef4444 300.7deg 310.4deg,
+    #1f2937 310.4deg 320.1deg,
+    #ef4444 320.1deg 329.8deg,
+    #1f2937 329.8deg 339.5deg,
+    #ef4444 339.5deg 349.2deg,
+    #1f2937 349.2deg 360deg
+  );
+  box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+  transition: transform 3.5s cubic-bezier(0.12, 0.8, 0.2, 1);
+}
+
+.centerWheelBadge {
+  position: absolute;
+  width: clamp(54px, 9vh, 74px);
+  height: clamp(54px, 9vh, 74px);
+  border-radius: 50%;
+  background: radial-gradient(circle, #1c1f2a 0%, #0a0e18 100%);
+  border: 2px solid #ffd700;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 14px rgba(255, 215, 0, 0.4);
+  pointer-events: none;
+}
+
+.centerStatusLabel {
+  font: 800 clamp(7.5px, 1.1vh, 9px) Oswald;
+  color: #d8c3ad;
+  letter-spacing: 0.8px;
+  line-height: 1;
+}
+
+.centerNumberBig {
+  font: 900 clamp(16px, 2.6vh, 22px) Oswald;
+  color: #ffd700;
+  line-height: 1.1;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+}
+
+.rouletteBall {
+  position: absolute;
+  width: clamp(7px, 1.1vh, 9px);
+  height: clamp(7px, 1.1vh, 9px);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffffff, #d1d5db 60%, #4b5563);
+  box-shadow: 0 0 6px rgba(255,255,255,0.9), 0 2px 4px rgba(0,0,0,0.8);
+  transform-origin: center center;
+  pointer-events: none;
+  z-index: 12;
+}
+
+.payoutFeedbackTicker {
+  width: 100%;
+  text-align: center;
+  padding: clamp(3px, 0.5vh, 5px) 8px;
+  background: rgba(15, 19, 29, 0.85);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 10px;
+  font: 800 clamp(9.5px, 1.4vh, 11.5px) Oswald;
+  color: #ffc174;
+  letter-spacing: 0.5px;
+}
+
+/* Betting Table Grid Layout */
+.rouletteGridCard {
+  width: 100%;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #1c1f2a 0%, #12151e 100%);
+  border: 1.5px solid rgba(255, 215, 0, 0.2);
+  padding: clamp(6px, 1vh, 10px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3px, 0.6vh, 6px);
+  flex-shrink: 0;
+}
+
+.tableNumbersGrid {
+  display: grid;
+  grid-template-columns: clamp(28px, 6vw, 36px) repeat(12, 1fr);
+  gap: clamp(2px, 0.5vw, 4px);
+  width: 100%;
+}
+
+.zeroButton {
+  grid-row: span 3;
+  background: linear-gradient(180deg, #10b981 0%, #047857 100%);
+  border: 1px solid #34d399;
+  border-radius: 8px;
+  color: #fff;
+  font: 900 clamp(12px, 2vh, 16px) Oswald;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+  position: relative;
+  transition: transform 0.12s;
+}
+
+.zeroButton:active { transform: scale(0.95); }
+
+.numbersColsArea {
+  grid-column: span 12;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  gap: clamp(2px, 0.5vw, 4px);
+}
+
+.numRow {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: clamp(2px, 0.5vw, 4px);
+}
+
+.rouletteCellBtn {
+  height: clamp(24px, 3.8vh, 32px);
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.15);
+  font: 800 clamp(9.5px, 1.4vh, 12px) Oswald;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+  position: relative;
+  transition: transform 0.12s, filter 0.15s;
+}
+
+.rouletteCellBtn:active { transform: scale(0.92); }
+.rouletteCellBtn.red { background: linear-gradient(180deg, #dc2626 0%, #991b1b 100%); color: #fff; }
+.rouletteCellBtn.black { background: linear-gradient(180deg, #2d3341 0%, #171b26 100%); color: #fff; }
+
+.cellBetChipBadge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #ffd700;
+  color: #3b1e00;
+  font: 900 8px Oswald;
+  padding: 1px 4px;
+  border-radius: 999px;
+  box-shadow: 0 0 6px #ffd700;
+  pointer-events: none;
+}
+
+/* Outside Bets Rows */
+.dozensRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(3px, 0.8vw, 6px);
+  margin-top: 1px;
+}
+
+.outsideRow {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: clamp(3px, 0.8vw, 6px);
+  margin-top: 1px;
+}
+
+.outsideBetBtn {
+  height: clamp(22px, 3.4vh, 28px);
+  border-radius: 6px;
+  background: linear-gradient(180deg, #262a35 0%, #171b26 100%);
+  border: 1px solid #3d4353;
+  color: #dfe2f1;
+  font: 800 clamp(8.5px, 1.3vh, 11px) Oswald;
+  letter-spacing: 0.4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+  position: relative;
+  transition: all 0.12s;
+}
+
+.outsideBetBtn:active { transform: scale(0.94); }
+.outsideBetBtn.redBox { background: linear-gradient(180deg, #dc2626 0%, #991b1b 100%); color: #fff; }
+.outsideBetBtn.blackBox { background: linear-gradient(180deg, #2d3341 0%, #171b26 100%); color: #fff; }
+
+/* Chip Denomination Selector */
+.rouletteChipBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(4px, 1vw, 8px);
+  background: rgba(28, 31, 42, 0.9);
+  border: 1.5px solid rgba(255, 215, 0, 0.25);
+  border-radius: 14px;
+  padding: clamp(6px, 1vh, 8px) clamp(8px, 2vw, 14px);
+  flex-shrink: 0;
+}
+
+.chipSelectBtn {
+  width: clamp(36px, 5.5vh, 46px);
+  height: clamp(36px, 5.5vh, 46px);
+  border-radius: 50%;
+  font: 900 clamp(10px, 1.5vh, 12.5px) Oswald;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.6);
+  border: 2.5px dashed rgba(255,255,255,0.4);
+  transition: transform 0.15s ease, border-color 0.15s;
+}
+
+.chipSelectBtn:active { transform: scale(0.92); }
+.chipSelectBtn.active {
+  transform: translateY(-3px) scale(1.06);
+  border: 2.5px solid #fff2a8;
+  box-shadow: 0 0 14px rgba(255, 215, 0, 0.7), 0 4px 10px rgba(0,0,0,0.8);
+}
+
+/* Action Control Bar (Undo, Clear, Repeat, 2X, Spin) */
+.rouletteControlsGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: clamp(4px, 1vw, 8px);
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.rltActBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(6px, 1vh, 10px) 2px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #262a35 0%, #171b26 100%);
+  border: 1px solid #3d4353;
+  color: #dfe2f1;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.5);
+  transition: all 0.15s ease;
+  min-height: clamp(44px, 6.5vh, 54px);
+}
+
+.rltActBtn:active:not(:disabled) { transform: scale(0.94); }
+.rltActBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.rltActBtn svg {
+  width: clamp(15px, 2.2vh, 18px);
+  height: clamp(15px, 2.2vh, 18px);
+  margin-bottom: 2px;
+}
+
+.rltActBtn span {
+  font: 900 clamp(9.5px, 1.4vh, 11.5px) Oswald;
+  letter-spacing: 0.4px;
+}
+
+.rltActBtn.spinBtnRlt {
+  background: linear-gradient(180deg, #fff29e 0%, #f7b733 45%, #ca7a02 100%);
+  border: 2px solid #ffea79;
+  color: #4c2900;
+  box-shadow: 0 6px 18px rgba(229, 156, 21, 0.5), inset 0 1px 0 #fff;
+}
+.rltActBtn.spinBtnRlt svg { color: #4c2900; }
+.rltActBtn.spinBtnRlt span { font-weight: 1000; letter-spacing: 1px; }

@@ -1,0 +1,471 @@
+/* Poker Screen & Table Layout */
+.pokerScreen {
+  width: 100%;
+  height: 100dvh !important;
+  height: 100svh !important;
+  max-height: 100dvh !important;
+  overflow: hidden !important;
+  position: relative;
+  background: radial-gradient(circle at 50% 20%, #151a26 0%, #0c0f17 50%, #06080d 100%);
+  display: flex;
+  flex-direction: column;
+}
+
+.pokerBody {
+  flex: 1;
+  min-height: 0;
+  width: min(100%, 720px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(4px, 0.8vh, 10px) clamp(8px, 2.5vw, 16px) clamp(8px, 1.5vh, 14px);
+  box-sizing: border-box;
+  overflow: hidden;
+  gap: clamp(4px, 0.8vh, 8px);
+}
+
+/* Header Telemetry */
+.pokerHeaderBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(23, 27, 38, 0.85);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 12px;
+  padding: clamp(4px, 0.6vh, 6px) clamp(10px, 2.5vw, 14px);
+  flex-shrink: 0;
+  backdrop-filter: blur(8px);
+}
+
+.tableInfoTag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 800 clamp(10px, 1.4vh, 12px) Oswald;
+  color: #ffc174;
+  letter-spacing: 0.5px;
+}
+
+.tableInfoTag svg {
+  width: 16px;
+  height: 16px;
+  color: #ffd700;
+}
+
+.liveHandBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #0f131d;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font: 700 clamp(9px, 1.3vh, 11px) Oswald;
+  color: #4edea3;
+  border: 1px solid rgba(78, 222, 163, 0.3);
+}
+
+.livePulseDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4edea3;
+  box-shadow: 0 0 8px #4edea3;
+  animation: pulse 1.5s infinite;
+}
+
+/* 6-Max Oval Poker Table Canvas */
+.pokerTableCanvas {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  border-radius: clamp(60px, 14vw, 100px);
+  background: linear-gradient(180deg, #2b1c10 0%, #171009 50%, #0c0804 100%);
+  border: clamp(5px, 1.2vw, 9px) solid #4a341b;
+  box-shadow: inset 0 0 35px rgba(0,0,0,0.9), 0 0 24px rgba(245, 158, 11, 0.18), 0 12px 30px rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: clamp(6px, 1vh, 12px);
+}
+
+.tableFeltInner {
+  position: absolute;
+  inset: clamp(6px, 1.2vw, 10px);
+  border-radius: clamp(50px, 12vw, 85px);
+  background: radial-gradient(ellipse at 50% 50%, #16402a 0%, #0b2216 55%, #05140c 100%);
+  border: 2px solid rgba(255, 215, 0, 0.35);
+  box-shadow: inset 0 0 50px rgba(0,0,0,0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* Table Pot & Community Cards */
+.tableCenterArea {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(4px, 0.8vh, 8px);
+}
+
+.tablePotBox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(15, 19, 29, 0.92);
+  border: 1.5px solid rgba(255, 193, 116, 0.45);
+  padding: clamp(3px, 0.5vh, 5px) clamp(10px, 2.5vw, 16px);
+  border-radius: 999px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.6), 0 0 12px rgba(255, 193, 116, 0.2);
+}
+
+.potIcon {
+  font-size: clamp(12px, 1.8vh, 16px);
+}
+
+.potText {
+  font: 900 clamp(11px, 1.7vh, 14px) Oswald;
+  color: #ffc174;
+  letter-spacing: 0.8px;
+}
+
+/* Community Cards */
+.communityCardsRow {
+  display: flex;
+  align-items: center;
+  gap: clamp(4px, 1vw, 8px);
+}
+
+.pokerCard {
+  width: clamp(32px, 7.5vw, 46px);
+  height: clamp(46px, 10.5vw, 64px);
+  border-radius: 6px;
+  background: linear-gradient(150deg, #ffffff 0%, #f4eee2 60%, #e2d4be 100%);
+  border: 1px solid #c4b093;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2px 3px;
+  position: relative;
+  transition: transform 0.25s ease;
+  user-select: none;
+}
+
+.pokerCard.lockedSlot {
+  background: rgba(245, 158, 11, 0.08);
+  border: 1.5px dashed rgba(255, 193, 116, 0.4);
+  display: grid;
+  place-items: center;
+  color: rgba(255, 193, 116, 0.5);
+}
+
+.pokerCard.lockedSlot svg {
+  width: clamp(14px, 2vh, 18px);
+  height: clamp(14px, 2vh, 18px);
+}
+
+.cardCornerTop {
+  font: 900 clamp(9px, 1.5vh, 12px) Oswald;
+  line-height: 1;
+  text-align: left;
+}
+
+.cardSuitCenter {
+  font-size: clamp(14px, 2.5vh, 20px);
+  line-height: 1;
+  text-align: center;
+  align-self: center;
+}
+
+.cardCornerBottom {
+  font: 900 clamp(9px, 1.5vh, 12px) Oswald;
+  line-height: 1;
+  text-align: right;
+  transform: rotate(180deg);
+}
+
+/* Seats Layout Around Oval */
+.pokerSeat {
+  position: absolute;
+  z-index: 15;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: auto;
+}
+
+.pokerSeat.seat-0 { top: 4%; left: 14%; }
+.pokerSeat.seat-1 { top: 4%; right: 14%; }
+.pokerSeat.seat-2 { top: 42%; left: 3%; }
+.pokerSeat.seat-3 { top: 42%; right: 3%; }
+.pokerSeat.seat-4 { bottom: 6%; left: 14%; opacity: 0.55; }
+.pokerSeat.seat-5 { bottom: 2%; left: 50%; transform: translateX(-50%); }
+
+.seatAvatarWrap {
+  position: relative;
+  width: clamp(34px, 5.5vh, 44px);
+  height: clamp(34px, 5.5vh, 44px);
+}
+
+.seatAvatarImg {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #a08e7a;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.7);
+}
+
+.pokerSeat.isHero .seatAvatarImg {
+  border-color: #ffd700;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+}
+
+.roleBadge {
+  position: absolute;
+  bottom: -3px;
+  right: -5px;
+  font: 900 9px Oswald;
+  padding: 1px 4px;
+  border-radius: 999px;
+  background: #ffc174;
+  color: #472a00;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.6);
+}
+
+.roleBadge.SB { background: #56e5a9; color: #003824; }
+.roleBadge.BB { background: #d97707; color: #fff; }
+
+.seatName {
+  font: 700 clamp(8.5px, 1.2vh, 10.5px) Oswald;
+  color: #d8c3ad;
+  margin-top: 1px;
+  white-space: nowrap;
+}
+
+.seatChips {
+  font: 900 clamp(9px, 1.3vh, 11px) Oswald;
+  color: #ffc174;
+  white-space: nowrap;
+}
+
+/* Hero Hole Cards (Hand) */
+.heroHandBox {
+  display: flex;
+  margin-top: -6px;
+  gap: -12px;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.8));
+}
+
+.heroHandBox .pokerCard:first-child {
+  transform: rotate(-7deg) translateX(4px);
+  z-index: 1;
+}
+
+.heroHandBox .pokerCard:last-child {
+  transform: rotate(7deg) translateX(-4px);
+  z-index: 2;
+}
+
+/* Timer SVG Ring */
+.seatTimerSvg {
+  position: absolute;
+  inset: -4px;
+  width: calc(100% + 8px);
+  height: calc(100% + 8px);
+  pointer-events: none;
+  animation: timerSpin 12s linear infinite;
+}
+
+/* Bottom Action Bar */
+.pokerControlsSection {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4px, 0.8vh, 8px);
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.actionStatusRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+}
+
+.turnAlert {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font: 700 clamp(10px, 1.4vh, 12px) Oswald;
+  color: #dfe2f1;
+}
+
+.turnAlert svg {
+  width: 15px;
+  height: 15px;
+  color: #ffd700;
+}
+
+.turnAlert strong {
+  color: #ffc174;
+}
+
+.autoCheckBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(28, 31, 42, 0.8);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  color: #d8c3ad;
+  padding: 3px 8px;
+  border-radius: 8px;
+  font: 700 clamp(9px, 1.3vh, 11px) Oswald;
+  cursor: pointer;
+}
+
+.autoCheckBtn.on {
+  background: #10b981;
+  color: #002113;
+  border-color: #4edea3;
+}
+
+/* 5 Action Buttons Tray */
+.actionButtonsGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: clamp(4px, 1vw, 7px);
+}
+
+.pokerActBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(6px, 1vh, 10px) 2px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #262a35 0%, #171b26 100%);
+  border: 1px solid #3d4353;
+  color: #dfe2f1;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.5);
+  transition: all 0.15s ease;
+  min-height: clamp(44px, 6.5vh, 54px);
+}
+
+.pokerActBtn:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.pokerActBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pokerActBtn svg {
+  width: clamp(15px, 2.2vh, 18px);
+  height: clamp(15px, 2.2vh, 18px);
+  margin-bottom: 2px;
+}
+
+.pokerActBtn span {
+  font: 900 clamp(9.5px, 1.4vh, 11.5px) Oswald;
+  letter-spacing: 0.4px;
+}
+
+.pokerActBtn.fold {
+  border-color: rgba(239, 68, 68, 0.3);
+}
+.pokerActBtn.fold svg { color: #ef4444; }
+
+.pokerActBtn.call {
+  border-color: rgba(255, 193, 116, 0.4);
+  color: #ffc174;
+}
+.pokerActBtn.call svg { color: #ffc174; }
+
+.pokerActBtn.raise {
+  background: linear-gradient(180deg, #f59e0b 0%, #b45309 100%);
+  border-color: #ffd54f;
+  color: #472a00;
+}
+.pokerActBtn.raise svg { color: #472a00; }
+
+.pokerActBtn.allin {
+  background: linear-gradient(180deg, #ef4444 0%, #991b1b 100%);
+  border-color: #fca5a5;
+  color: #fff;
+}
+.pokerActBtn.allin svg { color: #fff; }
+
+/* Quick Raises & Chip Bar */
+.pokerBetToolBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(6px, 1.5vw, 10px);
+  background: rgba(28, 31, 42, 0.9);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 12px;
+  padding: clamp(4px, 0.8vh, 7px) clamp(8px, 2vw, 12px);
+}
+
+.chipPillsRow {
+  display: flex;
+  align-items: center;
+  gap: clamp(4px, 1vw, 7px);
+}
+
+.pokerChipBtn {
+  width: clamp(28px, 4.2vh, 34px);
+  height: clamp(28px, 4.2vh, 34px);
+  border-radius: 50%;
+  font: 900 clamp(8.5px, 1.2vh, 10px) Oswald;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.6);
+  border: 2px dashed rgba(255,255,255,0.4);
+  cursor: pointer;
+  transition: transform 0.12s;
+}
+
+.pokerChipBtn:active { transform: scale(0.9); }
+.pokerChipBtn.c500 { background: radial-gradient(circle, #ef4444, #991b1b); color: #fff; }
+.pokerChipBtn.c100 { background: radial-gradient(circle, #f59e0b, #b45309); color: #fff; }
+.pokerChipBtn.c25 { background: radial-gradient(circle, #10b981, #047857); color: #fff; }
+.pokerChipBtn.c5 { background: radial-gradient(circle, #3b82f6, #1d4ed8); color: #fff; }
+
+.quickMultipliersRow {
+  display: flex;
+  align-items: center;
+  gap: clamp(3px, 0.8vw, 6px);
+}
+
+.quickMulBtn {
+  padding: clamp(3px, 0.5vh, 5px) clamp(7px, 1.5vw, 10px);
+  border-radius: 8px;
+  background: #262a35;
+  border: 1px solid #3d4353;
+  color: #dfe2f1;
+  font: 800 clamp(9px, 1.3vh, 11px) Oswald;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+
+.quickMulBtn:hover:not(:disabled) {
+  background: #353944;
+  color: #ffc174;
+}
+
+.quickMulBtn.max {
+  color: #ffd700;
+  border-color: rgba(255, 215, 0, 0.4);
+}

@@ -127,7 +127,7 @@ export function Lobby({setScreen, balance, sound, setSound, openPanel, games}) {
         </div>
 
         <div className="gameGrid">
-          {games.map(game => (
+          {games.filter(game => game.enabled !== false).map(game => (
             <GameCard
               key={game.key}
               type={GAME_SCREEN[game.key]}
@@ -138,7 +138,7 @@ export function Lobby({setScreen, balance, sound, setSound, openPanel, games}) {
           ))}
         </div>
 
-        {!games.length && (
+        {!games.filter(game => game.enabled !== false).length && (
           <p className="lobbyEmpty">Tất cả trò chơi đang tạm bảo trì. Vui lòng quay lại sau.</p>
         )}
       </main>

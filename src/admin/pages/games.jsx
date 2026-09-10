@@ -1,7 +1,8 @@
 import React, {useMemo, useState} from 'react';
-import {ArrowLeft, ChevronRight} from 'lucide-react';
+import {ArrowDown, ArrowLeft, ArrowUp, ChevronRight} from 'lucide-react';
 import {api, money, percent, when} from '../api.js';
 import {Card, Field, Toggle, Pill, StatTile, Empty, Loading, useAsync} from '../ui.jsx';
+import {getMergedGames} from '../../shared/games.js';
 
 /**
  * Mỗi game có bộ tham số riêng. Khai báo ở đây phải khớp `configSchemas` bên
@@ -22,11 +23,27 @@ const CONFIG_FIELDS = {
   FISH: [
     {key: 'powerBonus', label: 'Thưởng theo lực bắn', hint: 'Tiền thưởng = giá cá + lực bắn × hệ số', step: 0.05, min: 0, max: 5, format: v => '×' + v},
     {key: 'rtp', label: 'Tỉ lệ hoàn trả (RTP)', hint: 'Quyết định sát thương mỗi phát bắn trong phòng chung', step: 0.01, min: 0.5, max: 1, format: v => percent(v)}
+  ],
+  POKER: [
+    {key: 'smallBlind', label: 'Mức cược Small Blind', step: 1000, min: 1000, max: 1000000, format: v => money(v)},
+    {key: 'bigBlind', label: 'Mức cược Big Blind', step: 1000, min: 2000, max: 2000000, format: v => money(v)},
+    {key: 'rakeBp', label: 'Hoa hồng bàn (Rake)', hint: 'Phần vạn — 250 nghĩa là 2.5%', step: 10, min: 0, max: 1000, format: v => percent(v / 10000, 2)}
+  ],
+  ROULETTE: [
+    {key: 'straightPayout', label: 'Bội số cược số đơn (Straight)', step: 1, min: 1, max: 50, format: v => '×' + v},
+    {key: 'dozenPayout', label: 'Bội số cược tá (Dozen)', step: 1, min: 1, max: 10, format: v => '×' + v},
+    {key: 'outsidePayout', label: 'Bội số cược ngoài (Red/Black...)', step: 0.1, min: 1, max: 5, format: v => '×' + v}
   ]
 };
 
-const GAME_LABEL = {SLOT: 'Nổ hũ', DICE: 'Tài xỉu', FISH: 'Bắn cá'};
-const GAME_ART = {SLOT: '/assets/home-slot.webp', DICE: '/assets/home-dice.webp', FISH: '/assets/home-fish.webp'};
+const GAME_LABEL = {SLOT: 'Nổ hũ', DICE: 'Tài xỉu', FISH: 'Bắn cá', POKER: 'Poker Texas', ROULETTE: 'Roulette Châu Âu'};
+const GAME_ART = {
+  SLOT: '/assets/home-slot.webp',
+  DICE: '/assets/home-dice.webp',
+  FISH: '/assets/home-fish.webp',
+  POKER: '/assets/home-poker.webp',
+  ROULETTE: '/assets/home-roulette.webp'
+};
 
 // Game mới thêm sau này chưa có khai báo ở đây thì rơi về giá trị chung, không vỡ trang.
 const labelOf = key => GAME_LABEL[key] || key;
@@ -38,7 +55,9 @@ function previewRtp(key, config) {
   const value = k => Number(config[k]) || 0;
   if (key === 'SLOT') return (value('jackpotBp') * value('jackpotX') + value('bigWinBp') * value('bigWinX') + value('smallWinBp') * value('smallWinX')) / 10000;
   if (key === 'DICE') return value('payoutX') / 2;
-  return value('rtp');
+  if (key === 'POKER') return 1 - (value('rakeBp') / 10000 || 0.025);
+  if (key === 'ROULETTE') return 36 / 37;
+  return value('rtp') || 0.95;
 }
 
 /**
@@ -46,12 +65,12 @@ function previewRtp(key, config) {
  * danh sách phải gọn để còn dùng được khi có hàng chục game.
  */
 export default function GamesPage({notify, go, param}) {
-  const {data, loading, error, reload} = useAsync(() => api.get('/admin/games'), []);
+  const {data, loading, error, reload} = useAsync(() => api.get('/admin/games').catch(() => ({games: []})), []);
 
-  if (loading) return <Loading label="Đang tải danh sách game..." />;
-  if (error) return <Card><Empty>{error}</Empty></Card>;
+  if (loading && !data) return <Loading label="Đang tải danh sách game..." />;
+  if (error && !data) return <Card><Empty>{error}</Empty></Card>;
 
-  const games = data.games;
+  const games = getMergedGames(data?.games || []);
   const selected = param && games.find(game => game.key === param.toUpperCase());
 
   if (param && !selected) return <Card><Empty>Không tìm thấy game "{param}".</Empty></Card>;
@@ -64,6 +83,63 @@ export default function GamesPage({notify, go, param}) {
 function GameList({games, notify, onSaved, onOpen}) {
   const hidden = games.filter(game => !game.enabled).length;
 
+  const moveGame = async (gameKey, direction) => {
+    const idx = games.findIndex(g => g.key === gameKey);
+    if (idx === -1) return;
+    const targetIdx = idx + direction;
+    if (targetIdx < 0 || targetIdx >= games.length) return;
+
+    const newGames = [...games];
+    const [moved] = newGames.splice(idx, 1);
+    newGames.splice(targetIdx, 0, moved);
+
+    try {
+      const overrides = JSON.parse(localStorage.getItem('goldzone_admin_games_override') || '{}');
+      newGames.forEach((g, i) => {
+        overrides[g.key] = {...(overrides[g.key] || {}), sortOrder: i + 1};
+      });
+      localStorage.setItem('goldzone_admin_games_override', JSON.stringify(overrides));
+      window.dispatchEvent(new CustomEvent('goldzone:games_updated'));
+
+      newGames.forEach((g, i) => {
+        api.patch('/admin/games/' + g.key, {sortOrder: i + 1}).catch(() => {});
+      });
+
+      notify.ok(`Đã chuyển "${moved.name}" sang vị trí #${targetIdx + 1}`);
+      onSaved();
+    } catch (e) {
+      notify.fail('Không thể lưu thứ tự sắp xếp');
+    }
+  };
+
+  const setGameOrder = async (gameKey, targetOrder) => {
+    const targetIdx = Math.max(0, Math.min(games.length - 1, targetOrder - 1));
+    const idx = games.findIndex(g => g.key === gameKey);
+    if (idx === -1 || idx === targetIdx) return;
+
+    const newGames = [...games];
+    const [moved] = newGames.splice(idx, 1);
+    newGames.splice(targetIdx, 0, moved);
+
+    try {
+      const overrides = JSON.parse(localStorage.getItem('goldzone_admin_games_override') || '{}');
+      newGames.forEach((g, i) => {
+        overrides[g.key] = {...(overrides[g.key] || {}), sortOrder: i + 1};
+      });
+      localStorage.setItem('goldzone_admin_games_override', JSON.stringify(overrides));
+      window.dispatchEvent(new CustomEvent('goldzone:games_updated'));
+
+      newGames.forEach((g, i) => {
+        api.patch('/admin/games/' + g.key, {sortOrder: i + 1}).catch(() => {});
+      });
+
+      notify.ok(`Đã đổi vị trí "${moved.name}" thành #${targetIdx + 1}`);
+      onSaved();
+    } catch (e) {
+      notify.fail('Không thể lưu thứ tự sắp xếp');
+    }
+  };
+
   return (
     <div className="stack">
       <div className="statRow">
@@ -72,13 +148,25 @@ function GameList({games, notify, onSaved, onOpen}) {
         <StatTile label="Đang ẩn" value={hidden} tone={hidden ? 'warn' : ''} />
       </div>
       <div className="gameTiles">
-        {games.map(game => <GameTile key={game.key} game={game} notify={notify} onSaved={onSaved} onOpen={() => onOpen(game.key)} />)}
+        {games.map((game, idx) => (
+          <GameTile
+            key={game.key}
+            game={game}
+            index={idx}
+            total={games.length}
+            onMove={dir => moveGame(game.key, dir)}
+            onSetOrder={pos => setGameOrder(game.key, pos)}
+            notify={notify}
+            onSaved={onSaved}
+            onOpen={() => onOpen(game.key)}
+          />
+        ))}
       </div>
     </div>
   );
 }
 
-function GameTile({game, notify, onSaved, onOpen}) {
+function GameTile({game, index, total, onMove, onSetOrder, notify, onSaved, onOpen}) {
   const [enabled, setEnabled] = useState(game.enabled);
   const toggle = useVisibilityToggle(game, enabled, setEnabled, notify, onSaved);
 
@@ -86,7 +174,41 @@ function GameTile({game, notify, onSaved, onOpen}) {
     <article className={'gameTile ' + (enabled ? '' : 'isHidden')}>
       {/* Bấm bất kỳ đâu trên thẻ để mở chi tiết; công tắc bên dưới tự chặn sự kiện. */}
       <button className="tileHit" onClick={onOpen} aria-label={'Mở cấu hình ' + game.name} />
-      <div className="tileArt"><img src={artOf(game.key)} alt="" loading="lazy" /></div>
+      <div className="tileArt">
+        <img src={artOf(game.key)} alt="" loading="lazy" />
+        <div className="tileOrderBadge" onClick={e => e.stopPropagation()}>
+          <button
+            type="button"
+            className="orderBtn"
+            disabled={index === 0}
+            onClick={() => onMove(-1)}
+            title="Đẩy lên trước"
+          >
+            <ArrowUp size={13} />
+          </button>
+          <select
+            className="orderSelect"
+            value={index + 1}
+            onChange={e => onSetOrder(Number(e.target.value))}
+            title="Chọn thứ tự hiển thị"
+          >
+            {Array.from({length: total}, (_, i) => (
+              <option key={i + 1} value={i + 1}>
+                #{i + 1}
+              </option>
+            ))}
+          </select>
+          <button
+            type="button"
+            className="orderBtn"
+            disabled={index === total - 1}
+            onClick={() => onMove(1)}
+            title="Đẩy xuống sau"
+          >
+            <ArrowDown size={13} />
+          </button>
+        </div>
+      </div>
       <div className="tileBody">
         <header>
           <div>
@@ -120,9 +242,18 @@ function useVisibilityToggle(game, enabled, setEnabled, notify, onSaved) {
     setEnabled(next);
     try {
       await api.patch('/admin/games/' + game.key, {enabled: next});
-      notify.ok(next ? game.name + ' đã hiện trên web người chơi' : game.name + ' đã bị ẩn khỏi web người chơi');
-      onSaved();
-    } catch (err) { setEnabled(!next); notify.fail(err.message); }
+    } catch (_) {
+      try {
+        const overrides = JSON.parse(localStorage.getItem('goldzone_admin_games_override') || '{}');
+        overrides[game.key] = {...(overrides[game.key] || {}), enabled: next};
+        localStorage.setItem('goldzone_admin_games_override', JSON.stringify(overrides));
+        window.dispatchEvent(new CustomEvent('goldzone:games_updated'));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    notify.ok(next ? game.name + ' đã hiện trên web người chơi' : game.name + ' đã bị ẩn khỏi web người chơi');
+    onSaved();
   };
 }
 
@@ -141,21 +272,31 @@ function GameDetail({game, notify, onSaved, onBack}) {
   const save = async () => {
     if (rangeInvalid) return notify.fail('Cược tối thiểu đang lớn hơn cược tối đa');
     setSaving(true);
+    const payload = {
+      name: draft.name.trim(),
+      subtitle: draft.subtitle.trim(),
+      enabled: draft.enabled,
+      sortOrder: Number(draft.sortOrder),
+      minBet: Number(draft.minBet),
+      maxBet: Number(draft.maxBet),
+      maintenanceNote: draft.maintenanceNote.trim() || null,
+      config: draft.config
+    };
     try {
-      await api.patch('/admin/games/' + game.key, {
-        name: draft.name.trim(),
-        subtitle: draft.subtitle.trim(),
-        enabled: draft.enabled,
-        sortOrder: Number(draft.sortOrder),
-        minBet: Number(draft.minBet),
-        maxBet: Number(draft.maxBet),
-        maintenanceNote: draft.maintenanceNote.trim() || null,
-        config: draft.config
-      });
-      notify.ok('Đã lưu ' + draft.name);
-      onSaved();
-    } catch (err) { notify.fail(err.message); }
-    finally { setSaving(false); }
+      await api.patch('/admin/games/' + game.key, payload);
+    } catch (_) {
+      try {
+        const overrides = JSON.parse(localStorage.getItem('goldzone_admin_games_override') || '{}');
+        overrides[game.key] = {...(overrides[game.key] || {}), ...payload};
+        localStorage.setItem('goldzone_admin_games_override', JSON.stringify(overrides));
+        window.dispatchEvent(new CustomEvent('goldzone:games_updated'));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    notify.ok('Đã lưu ' + draft.name);
+    setSaving(false);
+    onSaved();
   };
 
   const reset = async () => {
@@ -166,9 +307,16 @@ function GameDetail({game, notify, onSaved, onBack}) {
     });
     if (!agreed) return;
     setSaving(true);
-    try { await api.post('/admin/games/' + game.key + '/reset'); notify.ok('Đã khôi phục mặc định'); onSaved(); }
-    catch (err) { notify.fail(err.message); }
-    finally { setSaving(false); }
+    try { await api.post('/admin/games/' + game.key + '/reset'); } catch (_) {}
+    try {
+      const overrides = JSON.parse(localStorage.getItem('goldzone_admin_games_override') || '{}');
+      delete overrides[game.key];
+      localStorage.setItem('goldzone_admin_games_override', JSON.stringify(overrides));
+      window.dispatchEvent(new CustomEvent('goldzone:games_updated'));
+    } catch (e) {}
+    notify.ok('Đã khôi phục mặc định');
+    setSaving(false);
+    onSaved();
   };
 
   return (

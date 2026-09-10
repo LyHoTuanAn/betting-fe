@@ -1,15 +1,20 @@
 import React from 'react';
 import {api, money, percent} from '../api.js';
 import {Card, StatTile, Pill, Empty, Loading, useAsync} from '../ui.jsx';
+import {getMergedGames} from '../../shared/games.js';
 
 export default function DashboardPage({go}) {
-  const {data, loading, error} = useAsync(() => Promise.all([api.get('/admin/stats'), api.get('/admin/games')]), []);
+  const {data, loading, error} = useAsync(() => Promise.all([
+    api.get('/admin/stats').catch(() => ({users: 0, suspended: 0, pendingWalletRequests: 0, rounds: 0, bet: 0, houseNet: 0, payout: 0})),
+    api.get('/admin/games').catch(() => ({games: []}))
+  ]), []);
 
-  if (loading) return <Loading label="Đang tải số liệu..." />;
-  if (error) return <Card><Empty>{error}</Empty></Card>;
+  if (loading && !data) return <Loading label="Đang tải số liệu..." />;
+  if (error && !data) return <Card><Empty>{error}</Empty></Card>;
 
-  const [stats, catalog] = data;
-  const hidden = catalog.games.filter(g => !g.enabled);
+  const [stats = {}, rawCatalog = {games: []}] = data || [];
+  const games = getMergedGames(rawCatalog?.games || []);
+  const hidden = games.filter(g => !g.enabled);
 
   return (
     <div className="stack">
@@ -35,7 +40,7 @@ export default function DashboardPage({go}) {
           <table>
             <thead><tr><th>Game</th><th>Trạng thái</th><th className="num">Hạn mức cược</th><th className="num">RTP lý thuyết</th><th className="num">RTP thực tế</th><th className="num">Nhà cái thu về</th></tr></thead>
             <tbody>
-              {catalog.games.map(game => (
+              {games.map(game => (
                 <tr key={game.key}>
                   <td><button className="linkCell" onClick={() => go('games/' + game.key)}>{game.name}</button> <small>{game.key}</small></td>
                   <td>{game.enabled ? <Pill tone="ok">Đang hiển thị</Pill> : <Pill tone="warn">Đang ẩn</Pill>}</td>
