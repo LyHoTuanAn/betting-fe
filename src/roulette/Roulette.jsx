@@ -1,5 +1,6 @@
 import {useEffect, useRef, useState} from 'react';
 import {Dices, Play, Redo, RotateCcw, Trash2, Zap} from 'lucide-react';
+import {api} from '../shared/api.js';
 import {ResultFx} from '../shared/ResultFx.jsx';
 import {Topbar} from '../shared/Topbar.jsx';
 import {playCelebrationAudio} from '../shared/audio.js';
@@ -12,7 +13,6 @@ import {
   ROW_2,
   ROW_3,
   WHEEL_SEQUENCE,
-  calculatePayout,
   getNumberColor
 } from './roulette-data.js';
 import './roulette.css';
@@ -33,16 +33,18 @@ export function Roulette({goHome, balance, setBalance, sound, setSound, token}) 
   useEffect(() => { soundRef.current = sound; }, [sound]);
 
   const totalBetAmount = Object.values(bets).reduce((a, b) => a + b, 0);
+  // Server mới là bên trừ tiền, và chỉ trừ lúc quay. Trước đó phỉnh đặt trên bàn
+  // chỉ được trừ trên màn hình để người chơi thấy mình còn bao nhiêu để đặt tiếp.
+  const availableBalance = balance - totalBetAmount;
 
   // Place bet on a cell / target
   const handlePlaceBet = (target) => {
     if (spinning) return;
-    if (balance < selectedChip) {
+    if (availableBalance < selectedChip) {
       setFeedback('Số dư không đủ để đặt thêm cược!');
       return;
     }
 
-    setBalance(b => b - selectedChip);
     setBets(curr => {
       const next = { ...curr, [target]: (curr[target] || 0) + selectedChip };
       return next;
@@ -55,7 +57,6 @@ export function Roulette({goHome, balance, setBalance, sound, setSound, token}) 
   const handleUndo = () => {
     if (spinning || betHistory.length === 0) return;
     const last = betHistory[betHistory.length - 1];
-    setBalance(b => b + last.amount);
     setBets(curr => {
       const next = { ...curr };
       const rem = (next[last.target] || 0) - last.amount;
@@ -70,7 +71,6 @@ export function Roulette({goHome, balance, setBalance, sound, setSound, token}) 
   // Clear all bets
   const handleClear = () => {
     if (spinning || totalBetAmount === 0) return;
-    setBalance(b => b + totalBetAmount);
     setBets({});
     setBetHistory([]);
     setFeedback('Đã xóa tất cả cược trên bàn.');
@@ -84,19 +84,18 @@ export function Roulette({goHome, balance, setBalance, sound, setSound, token}) 
       setFeedback('Số dư không đủ để lặp lại ván cược trước!');
       return;
     }
-    setBalance(b => b - cost);
     setBets({ ...lastBets });
+    setBetHistory(Object.entries(lastBets).map(([target, amount]) => ({target, amount})));
     setFeedback(`Đã lặp lại cược trước: ${money(cost)}`);
   };
 
   // 2X Double all current bets
   const handleDouble = () => {
     if (spinning || totalBetAmount === 0) return;
-    if (balance < totalBetAmount) {
+    if (availableBalance < totalBetAmount) {
       setFeedback('Số dư không đủ để nhân đôi cược!');
       return;
     }
-    setBalance(b => b - totalBetAmount);
     setBets(curr => {
       const doubled = {};
       for (const [k, v] of Object.entries(curr)) {
@@ -107,8 +106,10 @@ export function Roulette({goHome, balance, setBalance, sound, setSound, token}) 
     setFeedback(`Đã nhân đôi tất cả các ô cược!`);
   };
 
-  // Spin the Roulette wheel
-  const handleSpin = () => {
+  // Quay: server sinh số trúng và tính thưởng, client chỉ trình diễn kết quả đó.
+  // Trước đây số trúng do Math.random() ở máy người chơi và tiền cộng thẳng vào
+  // state — nghĩa là kết quả không kiểm chứng được và số dư không hề được lưu.
+  const handleSpin = async () => {
     if (spinning || totalBetAmount === 0) {
       if (totalBetAmount === 0) setFeedback('Vui lòng đặt cược trước khi quay!');
       return;
@@ -118,8 +119,16 @@ export function Roulette({goHome, balance, setBalance, sound, setSound, token}) 
     setLastBets({ ...bets });
     setFeedback('Vòng quay đang quay... Chúc bạn may mắn!');
 
-    // Random winner from 0 to 36
-    const outcome = Math.floor(Math.random() * 37);
+    let data;
+    try {
+      data = await api('/games/roulette/spin', {token, method: 'POST', body: JSON.stringify({bets})});
+    } catch (err) {
+      setSpinning(false);
+      setFeedback(err.display || err.message);
+      return;
+    }
+
+    const outcome = data.winningNumber;
     const pocketIndex = WHEEL_SEQUENCE.indexOf(outcome);
     const pocketDegrees = pocketIndex * (360 / 37);
     
@@ -132,12 +141,12 @@ export function Roulette({goHome, balance, setBalance, sound, setSound, token}) 
       setSpinning(false);
       setRecentNumbers(r => [outcome, ...r.slice(0, 4)]);
 
-      const winPayout = calculatePayout(bets, outcome);
+      const winPayout = data.payout;
+      setBalance(data.balance);   // số dư quyền lực lấy từ server
       const color = getNumberColor(outcome);
       const colorText = color === 'green' ? 'XANH LÁ' : color === 'red' ? 'ĐỎ' : 'ĐEN';
 
       if (winPayout > 0) {
-        setBalance(b => b + winPayout);
         playCelebrationAudio('jackpot', soundRef.current);
         triggerFx('jackpot', `+${money(winPayout)}`, 4500);
         setFeedback(`🎉 KẾT QUẢ: SỐ ${outcome} (${colorText}) · THẮNG +${money(winPayout)}!`);
@@ -154,7 +163,7 @@ export function Roulette({goHome, balance, setBalance, sound, setSound, token}) 
   return (
     <div className={'screen rouletteScreen ' + (fx.type ? `fx-${fx.type}` : '')}>
       <ResultFx fx={fx} onDismiss={dismissFx} />
-      <Topbar balance={balance} onBack={goHome} sound={sound} setSound={setSound} />
+      <Topbar balance={availableBalance} onBack={goHome} sound={sound} setSound={setSound} />
 
       <main className="rouletteBody">
         {/* Top 3D Wheel Showcase Card */}

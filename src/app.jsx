@@ -12,6 +12,7 @@ import {ProfilePage} from './home/ProfilePage.jsx';
 import {AccountPanel} from './shared/AccountPanel.jsx';
 import {AuthScreen} from './shared/AuthScreen.jsx';
 import {API_URL, api} from './shared/api.js';
+import {Slot} from './slot/Slot.jsx';
 import {FALLBACK_GAMES, GAME_SCREEN, getMergedGames} from './shared/games.js';
 
 const routes = {
