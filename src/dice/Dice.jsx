@@ -20,7 +20,14 @@ export function Dice({goHome,balance,setBalance,sound,setSound,token}){
  const [fx,triggerFx,dismissFx]=useGameFx();
  const [time,setTime]=useState(15);
  const [side,setSide]=useState(null);
- const [chip,setChip]=useState(100000);
+ const [chip,setChip]=useState(() => {
+  const min = BET_LIMITS.dice.min;
+  if (balance <= 0) return min;
+  if (balance < 10000) return balance;
+  return 10000;
+ });
+ const [chipInput,setChipInput]=useState('');
+ const [isEditingChip,setIsEditingChip]=useState(false);
  const [history,setHistory]=useState(['T','X','X','T','T','X','T','X']);
  const [dice,setDice]=useState([2,5,4]);
  const [placed,setPlaced]=useState(0);
@@ -31,6 +38,15 @@ export function Dice({goHome,balance,setBalance,sound,setSound,token}){
  const [reveal,setReveal]=useState(false);
  const [bettingOpen,setBettingOpen]=useState(true);
  const [roundNo,setRoundNo]=useState(()=>Math.floor(Date.now()/15000)%900000+100000);
+
+ const applyChip = (val) => {
+  const clamped = Math.max(0, Math.min(BET_LIMITS.dice.max, Math.floor(val)));
+  setChip(clamped);
+ };
+
+ const addChip = (add) => {
+  applyChip(chip + add);
+ };
 
  const placedRef = useRef(0);
  const placedSideRef = useRef(null);
@@ -191,12 +207,77 @@ export function Dice({goHome,balance,setBalance,sound,setSound,token}){
      </section>
 
      <section className="diceActionCard">
-      <div className="chips">
-       {[1000,10000,100000,1000000].map(x=><button className={chip===x?'active':''} onClick={()=>setChip(x)} key={x}>{x>=1000000?'1M':x/1000+'K'}</button>)}
-       <button className={chip===Math.min(balance,BET_LIMITS.dice.max)?'active':''} onClick={()=>setChip(Math.min(balance,BET_LIMITS.dice.max))}>ALL</button>
+      <div className="diceCustomInputRow">
+       <div className="customInputHeader">
+        <span className="customInputTitle">TIỀN CƯỢC (VÀNG)</span>
+        {chip > balance ? (
+         <span className="betBadge warn">Vượt quá số dư ({money(balance)})</span>
+        ) : chip < BET_LIMITS.dice.min ? (
+         <span className="betBadge info">Tối thiểu {money(BET_LIMITS.dice.min)}</span>
+        ) : (
+         <span className="betBadge ok">Khả dụng: {money(balance)}</span>
+        )}
+       </div>
+       <div className="customInputBox">
+        <Coins className="inputCoinIcon" size={18}/>
+        <input
+         type="text"
+         inputMode="numeric"
+         className="customBetField"
+         value={isEditingChip ? chipInput : money(chip)}
+         onFocus={() => { setChipInput(String(chip)); setIsEditingChip(true); }}
+         onChange={e => {
+          const raw = e.target.value.replace(/\D/g, '');
+          setChipInput(raw);
+          setChip(Number(raw) || 0);
+         }}
+         onBlur={() => {
+          setIsEditingChip(false);
+          const num = Number(chipInput) || 0;
+          applyChip(num < BET_LIMITS.dice.min && num > 0 ? BET_LIMITS.dice.min : num);
+         }}
+         placeholder="Nhập số vàng cược..."
+        />
+        <button
+         type="button"
+         className="clearInputBtn"
+         onClick={() => { applyChip(0); setChipInput('0'); }}
+         title="Xoá cược"
+        >
+         ✕
+        </button>
+       </div>
       </div>
-      <button className="placeBtn" onClick={place} disabled={!side||chip<BET_LIMITS.dice.min||chip>balance||chip>BET_LIMITS.dice.max||time<=2||placed>0||!bettingOpen}>
-       <Coins/> ĐẶT CƯỢC {placed>0&&`(${money(placed)})`}
+
+      <div className="quickMulRow">
+       <button type="button" className="quickMulPill" onClick={() => addChip(1000)}>+1K</button>
+       <button type="button" className="quickMulPill" onClick={() => addChip(5000)}>+5K</button>
+       <button type="button" className="quickMulPill" onClick={() => addChip(10000)}>+10K</button>
+       <button type="button" className="quickMulPill" onClick={() => addChip(50000)}>+50K</button>
+       <button type="button" className="quickMulPill" onClick={() => applyChip(Math.max(BET_LIMITS.dice.min, Math.floor(chip / 2)))}>÷2</button>
+       <button type="button" className="quickMulPill" onClick={() => applyChip(Math.min(BET_LIMITS.dice.max, chip * 2))}>2X</button>
+       <button type="button" className="quickMulPill max" onClick={() => applyChip(Math.min(balance, BET_LIMITS.dice.max))}>ALL</button>
+      </div>
+
+      <div className="chips">
+       {[1000, 2000, 5000, 10000, 50000, 100000, 500000, 1000000].map(x => (
+        <button
+         type="button"
+         className={chip === x ? 'active' : ''}
+         onClick={() => applyChip(x)}
+         key={x}
+        >
+         {x >= 1000000 ? (x / 1000000) + 'M' : (x / 1000) + 'K'}
+        </button>
+       ))}
+      </div>
+
+      <button
+       className="placeBtn"
+       onClick={place}
+       disabled={!side || chip < BET_LIMITS.dice.min || chip > balance || chip > BET_LIMITS.dice.max || time <= 2 || placed > 0 || !bettingOpen}
+      >
+       <Coins/> ĐẶT CƯỢC {chip > 0 ? `(${money(chip)})` : ''} {placed > 0 && `· ĐÃ ĐẶT ${money(placed)}`}
       </button>
      </section>
     </div>

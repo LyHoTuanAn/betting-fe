@@ -347,31 +347,78 @@
 .rouletteChipBar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: clamp(4px, 1vw, 8px);
-  background: rgba(28, 31, 42, 0.9);
+  gap: clamp(6px, 1.2vw, 10px);
+  background: rgba(28, 31, 42, 0.95);
   border: 1.5px solid rgba(255, 215, 0, 0.25);
   border-radius: 14px;
-  padding: clamp(6px, 1vh, 8px) clamp(8px, 2vw, 14px);
+  padding: clamp(4px, 0.8vh, 6px) clamp(8px, 1.5vw, 12px);
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+.rouletteCustomInputWrap {
+  display: flex;
+  align-items: center;
+  background: rgba(10, 12, 18, 0.9);
+  border: 1.5px solid rgba(255, 215, 0, 0.4);
+  border-radius: 10px;
+  padding: 0 8px;
+  height: clamp(34px, 5vh, 42px);
+  min-width: clamp(96px, 20vw, 130px);
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.rouletteCustomInputWrap:focus-within {
+  border-color: #ffd700;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+}
+
+.chipInputPrefix {
+  font-size: clamp(12px, 1.8vh, 16px);
+  margin-right: 4px;
+}
+
+.rouletteCustomChipInput {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffd700;
+  font: 900 clamp(12px, 1.8vh, 15px) Oswald;
+  width: 100%;
+  letter-spacing: 0.5px;
+}
+
+.rouletteChipsScroll {
+  display: flex;
+  align-items: center;
+  gap: clamp(4px, 0.8vw, 8px);
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex: 1;
+}
+
+.rouletteChipsScroll::-webkit-scrollbar {
+  display: none;
 }
 
 .chipSelectBtn {
-  width: clamp(36px, 5.5vh, 46px);
-  height: clamp(36px, 5.5vh, 46px);
+  width: clamp(32px, 5vh, 42px);
+  height: clamp(32px, 5vh, 42px);
+  min-width: clamp(32px, 5vh, 42px);
   border-radius: 50%;
-  font: 900 clamp(10px, 1.5vh, 12.5px) Oswald;
+  font: 900 clamp(9.5px, 1.4vh, 12px) Oswald;
   display: grid;
   place-items: center;
   cursor: pointer;
   box-shadow: 0 3px 8px rgba(0,0,0,0.6);
-  border: 2.5px dashed rgba(255,255,255,0.4);
+  border: 2px dashed rgba(255,255,255,0.4);
   transition: transform 0.15s ease, border-color 0.15s;
 }
 
 .chipSelectBtn:active { transform: scale(0.92); }
 .chipSelectBtn.active {
-  transform: translateY(-3px) scale(1.06);
+  transform: translateY(-2px) scale(1.06);
   border: 2.5px solid #fff2a8;
   box-shadow: 0 0 14px rgba(255, 215, 0, 0.7), 0 4px 10px rgba(0,0,0,0.8);
 }

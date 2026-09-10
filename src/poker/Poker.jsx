@@ -17,6 +17,11 @@ export function Poker({goHome, balance, setBalance, sound, setSound, token}) {
   const [pot, setPot] = useState(0);
   const [currentBet, setCurrentBet] = useState(10000);
   const [raiseAmount, setRaiseAmount] = useState(20000);
+  const [raiseInput, setRaiseInput] = useState('');
+  const [isEditingRaise, setIsEditingRaise] = useState(false);
+  const [anteAmount, setAnteAmount] = useState(() => (balance > 0 && balance < 10000 ? Math.max(5000, balance) : 10000));
+  const [anteInput, setAnteInput] = useState('');
+  const [isEditingAnte, setIsEditingAnte] = useState(false);
   const [timer, setTimer] = useState(12);
   const [autoCheck, setAutoCheck] = useState(false);
   const [handNo, setHandNo] = useState(1);
@@ -343,15 +348,75 @@ export function Poker({goHome, balance, setBalance, sound, setSound, token}) {
 
           {/* Action Buttons: Show Start Hand when ended, otherwise Show Poker Actions */}
           {handEnded ? (
-            <div className="startHandWrap" style={{display: 'flex', gap: '12px', width: '100%', justifyContent: 'center', padding: '8px 0'}}>
+            <div className="pokerStartHandCard">
+              <div className="pokerAnteInputRow">
+                <span className="pokerAnteLabel">Mức Ante:</span>
+                <div className="pokerAnteInputBox" title="Nhập mức Ante tùy ý">
+                  <span className="antePrefix">🪙</span>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    className="pokerAnteInput"
+                    value={isEditingAnte ? anteInput : money(anteAmount)}
+                    onFocus={() => {
+                      setIsEditingAnte(true);
+                      setAnteInput(String(anteAmount));
+                    }}
+                    onChange={(e) => {
+                      const raw = e.target.value.replace(/\D/g, '');
+                      setAnteInput(raw);
+                      const val = parseInt(raw, 10);
+                      if (!isNaN(val) && val > 0) setAnteAmount(val);
+                    }}
+                    onBlur={() => {
+                      setIsEditingAnte(false);
+                      const val = parseInt(anteInput, 10);
+                      if (!isNaN(val) && val >= 5000) {
+                        setAnteAmount(Math.min(val, Math.max(balance, 5000)));
+                      } else {
+                        setAnteAmount(5000);
+                      }
+                    }}
+                    disabled={loading}
+                  />
+                </div>
+                <div className="pokerAntePills">
+                  {[5000, 10000, 25000, 50000, 100000].map(v => (
+                    <button
+                      key={v}
+                      type="button"
+                      className={`antePillBtn ${anteAmount === v ? 'active' : ''}`}
+                      onClick={() => {
+                        setAnteAmount(v);
+                        setAnteInput(String(v));
+                      }}
+                      disabled={loading}
+                    >
+                      {money(v)}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    className="antePillBtn max"
+                    onClick={() => {
+                      const maxA = Math.max(5000, Math.min(balance, 50000000));
+                      setAnteAmount(maxA);
+                      setAnteInput(String(maxA));
+                    }}
+                    disabled={loading}
+                  >
+                    ALL
+                  </button>
+                </div>
+              </div>
+
               <button
-                className="pokerActBtn call"
-                style={{minWidth: '260px', height: '50px', fontSize: '15px', fontWeight: 'bold'}}
-                onClick={() => startNewHand(10000)}
-                disabled={loading || balance < 10000}
+                className="pokerActBtn call startDealBtn"
+                onClick={() => startNewHand(anteAmount)}
+                disabled={loading || balance < anteAmount}
               >
                 <Play size={18} />
-                <span>{loading ? 'ĐANG CHIA BÀI...' : 'VÀO BÀN MỚI (10.000 VÀNG)'}</span>
+                <span>{loading ? 'ĐANG CHIA BÀI...' : `VÀO BÀN MỚI (ANTE: ${money(anteAmount)} VÀNG)`}</span>
               </button>
             </div>
           ) : (
@@ -405,18 +470,48 @@ export function Poker({goHome, balance, setBalance, sound, setSound, token}) {
 
           {/* Quick Denominations & Multipliers Bar */}
           <div className="pokerBetToolBar">
+            <div className="pokerCustomRaiseWrap" title="Nhập số tiền muốn tố tùy ý">
+              <span className="pokerRaiseLabel">Tố:</span>
+              <input
+                type="text"
+                inputMode="numeric"
+                className="pokerCustomRaiseInput"
+                value={isEditingRaise ? raiseInput : money(raiseAmount)}
+                onFocus={() => {
+                  setIsEditingRaise(true);
+                  setRaiseInput(String(raiseAmount));
+                }}
+                onChange={(e) => {
+                  const raw = e.target.value.replace(/\D/g, '');
+                  setRaiseInput(raw);
+                  const val = parseInt(raw, 10);
+                  if (!isNaN(val) && val > 0) setRaiseAmount(val);
+                }}
+                onBlur={() => {
+                  setIsEditingRaise(false);
+                  const val = parseInt(raiseInput, 10);
+                  if (!isNaN(val) && val >= currentBet) {
+                    setRaiseAmount(Math.min(val, balance));
+                  } else {
+                    setRaiseAmount(Math.min(currentBet * 2, balance));
+                  }
+                }}
+                disabled={loading || handEnded}
+              />
+            </div>
+
             <div className="chipPillsRow">
-              <button className="pokerChipBtn c500" onClick={() => setRaiseAmount(500000)}>500K</button>
-              <button className="pokerChipBtn c100" onClick={() => setRaiseAmount(100000)}>100K</button>
-              <button className="pokerChipBtn c25" onClick={() => setRaiseAmount(25000)}>25K</button>
-              <button className="pokerChipBtn c5" onClick={() => setRaiseAmount(5000)}>5K</button>
+              <button className="pokerChipBtn c500" onClick={() => { setRaiseAmount(500000); setRaiseInput('500000'); }}>500K</button>
+              <button className="pokerChipBtn c100" onClick={() => { setRaiseAmount(100000); setRaiseInput('100000'); }}>100K</button>
+              <button className="pokerChipBtn c25" onClick={() => { setRaiseAmount(25000); setRaiseInput('25000'); }}>25K</button>
+              <button className="pokerChipBtn c5" onClick={() => { setRaiseAmount(5000); setRaiseInput('5000'); }}>5K</button>
             </div>
 
             <div className="quickMultipliersRow">
               <button className="quickMulBtn" onClick={() => setRaiseAmount(r => r * 2)}>2x</button>
               <button className="quickMulBtn" onClick={() => setRaiseAmount(r => r * 3)}>3x</button>
               <button className="quickMulBtn" onClick={() => setRaiseAmount(pot)}>Pot</button>
-              <button className="quickMulBtn max" onClick={() => setRaiseAmount(Math.min(balance, 1000000))}>Max</button>
+              <button className="quickMulBtn max" onClick={() => setRaiseAmount(Math.min(balance, 50000000))}>Max</button>
             </div>
           </div>
         </div>

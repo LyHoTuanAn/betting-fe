@@ -258,6 +258,15 @@ button{font:inherit;color:inherit;border:0;cursor:pointer;-webkit-tap-highlight-
  color:#fff;
  box-shadow:inset 0 1px 0 #ff8a65,0 2px 6px #0006;
 }
+.betDisplayInput{
+ outline:none;
+ cursor:text;
+ transition:border-color .15s,box-shadow .15s;
+}
+.betDisplayInput:focus{
+ border-color:#ffd700;
+ box-shadow:inset 0 1px 0 #ff8a65,0 0 12px #ffd700aa;
+}
 .betPresetsRow{display:flex;gap:clamp(4px,1vw,7px);overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
 .betPresetsRow::-webkit-scrollbar{display:none}
 .betPresetChip{
@@ -451,6 +460,51 @@ button{font:inherit;color:inherit;border:0;cursor:pointer;-webkit-tap-highlight-
  flex-direction:column;
  gap:clamp(7px,1.1vh,11px);
 }
+.diceCustomInputRow{display:flex;flex-direction:column;gap:5px;width:100%}
+.customInputHeader{display:flex;justify-content:space-between;align-items:center}
+.customInputTitle{font:800 clamp(10px,1.5vh,11.5px) Oswald;color:#caa969;letter-spacing:.8px}
+.betBadge{font:700 10.5px Oswald;border-radius:6px;padding:2px 6px;letter-spacing:.4px}
+.betBadge.ok{background:#003816;color:#52e08a;border:1px solid #166534}
+.betBadge.warn{background:#451000;color:#ff8060;border:1px solid #992b00}
+.betBadge.info{background:#2a1f0a;color:#ffd875;border:1px solid #7c5d2c}
+.customInputBox{
+ display:flex;align-items:center;gap:8px;
+ background:#0a0704;border:1.5px solid #6b4e20;border-radius:10px;
+ padding:clamp(4px,0.8vh,8px) 12px;
+ box-shadow:inset 0 2px 6px #000a, 0 0 10px #f5a6231a;
+ transition:border-color .15s, box-shadow .15s;
+}
+.customInputBox:focus-within{
+ border-color:#ffd700;
+ box-shadow:inset 0 2px 6px #000a, 0 0 14px #ffd70044;
+}
+.inputCoinIcon{color:#ffd700;flex-shrink:0}
+.customBetField{
+ flex:1;background:transparent;border:none;outline:none;
+ font:900 clamp(16px,2.4vh,20px) Oswald;
+ color:#fff;letter-spacing:1px;
+}
+.customBetField::placeholder{color:#6b5a40;font-weight:600;font-size:13px}
+.clearInputBtn{
+ background:#261d11;border:1px solid #573e18;color:#a89060;
+ width:24px;height:24px;border-radius:50%;
+ font-size:12px;display:grid;place-items:center;cursor:pointer;
+ transition:background .15s,color .15s;
+}
+.clearInputBtn:hover{background:#423521;color:#fff}
+.quickMulRow{display:flex;gap:5px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.quickMulRow::-webkit-scrollbar{display:none}
+.quickMulPill{
+ flex:1;min-width:34px;height:26px;border-radius:6px;
+ background:linear-gradient(180deg,#302619 0%,#18120b 100%);
+ border:1px solid #573e18;color:#e6c987;
+ font:800 clamp(10px,1.4vh,11.5px) Oswald;
+ display:grid;place-items:center;cursor:pointer;
+ transition:all .12s ease;
+}
+.quickMulPill:hover{background:#4a3b26;color:#fff;border-color:#caa969}
+.quickMulPill:active{transform:scale(0.94)}
+.quickMulPill.max{color:#ff9800;border-color:#ff980088;font-weight:900}
 .chips{display:flex;justify-content:space-between;gap:clamp(6px,1.5vw,12px);margin:0}
 .chips button{
  width:clamp(40px,6.2vh,52px);
@@ -510,8 +564,8 @@ button{font:inherit;color:inherit;border:0;cursor:pointer;-webkit-tap-highlight-
 .cannon{position:absolute;z-index:12;left:50%;bottom:-8px;transform:translateX(-50%);width:clamp(120px,18vh,170px);height:clamp(90px,14vh,126px);border-radius:60px 60px 0 0;background:linear-gradient(100deg,#302513,#d9a72c,#33230b);border:2px solid #ffe373;text-align:center;padding-top:clamp(20px,3.5vh,35px);box-shadow:0 -5px 18px #0008}
 .power{height:clamp(24px,3.6vh,36px);display:flex;align-items:center;justify-content:center;gap:6px;background:#17140fcc;margin:0 10px;border-radius:10px}
 .power button{width:clamp(20px,3vh,28px);height:clamp(20px,3vh,28px);border-radius:50%;background:#3a3326;display:grid;place-items:center}
-.power svg{width:clamp(11px,1.6vh,14px)}
-.power strong{font:700 clamp(10px,1.5vh,13px) Oswald;min-width:clamp(46px,7vh,65px)}
+.power strong, .power .powerInput{font:700 clamp(10px,1.5vh,13px) Oswald;min-width:clamp(46px,7vh,65px);color:#ffdc69;background:transparent;border:none;outline:none;text-align:center}
+.power .powerInput:focus{background:#00000088;border-radius:6px;box-shadow:0 0 8px #ffd70066}
 .cannon small{font-size:8.5px;color:#ffdc69}
 @keyframes pulse{50%{transform:scale(1.05);filter:brightness(1.15)}}
 @keyframes reel{to{transform:translateY(35px)}}
