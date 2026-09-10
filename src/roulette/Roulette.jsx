@@ -321,60 +321,94 @@ export function Roulette({goHome, balance, setBalance, sound, setSound, token}) 
           </div>
         </div>
 
-        {/* Chip Denomination Selector */}
+        {/* Luxury Chip Denomination Selector */}
         <div className="rouletteChipBar">
-          <div className="rouletteCustomInputWrap" title="Nhập số tiền phỉnh cược tùy ý">
-            <span className="chipInputPrefix">🪙</span>
-            <input
-              type="text"
-              inputMode="numeric"
-              className="rouletteCustomChipInput"
-              value={isEditingChip ? chipInput : money(selectedChip)}
-              onFocus={() => {
-                setIsEditingChip(true);
+          <div className="rouletteChipBarHeader">
+            <div className="rouletteActiveChipPill">
+              <span className="pillLabel">MỨC PHỈNH:</span>
+              <strong className="pillValue">{money(selectedChip)}</strong>
+            </div>
+
+            {totalBetAmount > 0 && (
+              <div className="rouletteTotalBetPill">
+                <span className="pillLabel">TỔNG CƯỢC:</span>
+                <strong className="pillValue gold">{money(totalBetAmount)}</strong>
+              </div>
+            )}
+
+            <button
+              className={`rouletteCustomTriggerBtn ${isEditingChip ? 'active' : ''}`}
+              onClick={() => {
+                if (spinning) return;
+                setIsEditingChip(!isEditingChip);
                 setChipInput(String(selectedChip));
               }}
-              onChange={(e) => {
-                const raw = e.target.value.replace(/\D/g, '');
-                setChipInput(raw);
-                const val = parseInt(raw, 10);
-                if (!isNaN(val) && val > 0) {
-                  setSelectedChip(val);
-                }
-              }}
-              onBlur={() => {
-                setIsEditingChip(false);
-                const val = parseInt(chipInput, 10);
-                if (!isNaN(val) && val >= 1000) {
-                  setSelectedChip(Math.min(val, 50000000));
-                } else if (!isNaN(val) && val > 0) {
-                  setSelectedChip(val);
-                } else {
-                  setSelectedChip(1000);
-                }
-              }}
               disabled={spinning}
-              title="Nhập phỉnh cược tùy ý"
-            />
+              title="Nhập số tiền phỉnh tùy chỉnh"
+            >
+              <span>{isEditingChip ? '✕ Đóng' : '✏️ Tùy chỉnh'}</span>
+            </button>
           </div>
 
-          <div className="rouletteChipsScroll">
+          {isEditingChip && (
+            <div className="rouletteCustomInputRow">
+              <span className="customInputLabel">Nhập số vàng:</span>
+              <div className="customInputBox">
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  autoFocus
+                  placeholder="Từ 1.000 đến 50.000.000"
+                  value={chipInput}
+                  onChange={(e) => {
+                    const raw = e.target.value.replace(/\D/g, '');
+                    setChipInput(raw);
+                    const val = parseInt(raw, 10);
+                    if (!isNaN(val) && val > 0) {
+                      setSelectedChip(Math.min(val, 50000000));
+                    }
+                  }}
+                  onBlur={() => {
+                    const val = parseInt(chipInput, 10);
+                    if (!isNaN(val) && val >= 1000) {
+                      setSelectedChip(Math.min(val, 50000000));
+                    } else {
+                      setSelectedChip(1000);
+                      setChipInput('1000');
+                    }
+                  }}
+                  disabled={spinning}
+                />
+                <button
+                  className="customApplyBtn"
+                  onClick={() => setIsEditingChip(false)}
+                >
+                  Xong
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="rouletteChipsRow">
             {CHIP_PRESETS.map(chip => (
               <button
                 key={chip.value}
                 className={`chipSelectBtn ${selectedChip === chip.value ? 'active' : ''}`}
                 style={{
-                  background: `radial-gradient(circle, ${chip.color}, #111)`,
-                  borderColor: chip.border,
-                  color: '#fff'
+                  background: `radial-gradient(circle at 40% 30%, ${chip.color}, #0a0e17)`,
+                  borderColor: chip.border
                 }}
                 onClick={() => {
                   setSelectedChip(chip.value);
                   setChipInput(String(chip.value));
+                  setIsEditingChip(false);
                 }}
                 disabled={spinning}
+                title={`Chọn phỉnh ${chip.label} (${money(chip.value)})`}
               >
-                {chip.label}
+                <div className="chipInnerDisc">
+                  <span className="chipLabel">{chip.label}</span>
+                </div>
               </button>
             ))}
           </div>
