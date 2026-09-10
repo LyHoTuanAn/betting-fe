@@ -5,7 +5,8 @@ export const GAME_SCREEN = {
   POKER: 'poker',
   ROULETTE: 'roulette',
   BLACKJACK: 'blackjack',
-  TIENLEN: 'tienlen'
+  TIENLEN: 'tienlen',
+  CANGUA: 'cangua'
 };
 
 export const FALLBACK_GAMES = [
@@ -22,11 +23,23 @@ export const FALLBACK_GAMES = [
     stats: { rounds: 53, bet: 53000000, payout: 42224000, houseNet: 10776000, actualRtp: 0.0622 }
   },
   {
+    key: 'CANGUA',
+    name: 'CỜ CÁ NGỰA VIP',
+    subtitle: 'Đá ngựa ăn tiền • Hũ hoàng gia',
+    enabled: true,
+    sortOrder: 2,
+    minBet: 50,
+    maxBet: 50000,
+    theoreticalRtp: 0.985,
+    config: { kickBounty: 200, winMultiplier: 5 },
+    stats: { rounds: 128, bet: 12800000, payout: 12500000, houseNet: 300000, actualRtp: 0.985 }
+  },
+  {
     key: 'DICE',
     name: 'ĐẠI CHIẾN TÀI XỈU',
     subtitle: 'Thử vận may ngay',
     enabled: true,
-    sortOrder: 2,
+    sortOrder: 3,
     minBet: 1000,
     maxBet: 10000000,
     theoreticalRtp: 0.99,
@@ -38,7 +51,7 @@ export const FALLBACK_GAMES = [
     name: 'BẮN CÁ ĐẠI DƯƠNG',
     subtitle: 'Chinh phục thủy cung',
     enabled: true,
-    sortOrder: 3,
+    sortOrder: 4,
     minBet: 100,
     maxBet: 10000,
     theoreticalRtp: 0.98,
@@ -50,7 +63,7 @@ export const FALLBACK_GAMES = [
     name: 'POKER TEXAS HOLD\'EM',
     subtitle: 'Đấu trí đỉnh cao',
     enabled: true,
-    sortOrder: 4,
+    sortOrder: 5,
     minBet: 5000,
     maxBet: 50000000,
     theoreticalRtp: 0.975,
@@ -62,7 +75,7 @@ export const FALLBACK_GAMES = [
     name: 'ROULETTE CHÂU ÂU',
     subtitle: 'Vòng quay hoàng gia',
     enabled: true,
-    sortOrder: 5,
+    sortOrder: 6,
     minBet: 1000,
     maxBet: 10000000,
     theoreticalRtp: 0.973,
@@ -74,7 +87,7 @@ export const FALLBACK_GAMES = [
     name: 'VIP BLACKJACK',
     subtitle: 'Xì Dách hoàng gia 3:2',
     enabled: true,
-    sortOrder: 6,
+    sortOrder: 7,
     minBet: 1000,
     maxBet: 2500000,
     theoreticalRtp: 0.995,
@@ -91,7 +104,7 @@ export const FALLBACK_GAMES = [
     name: 'TIẾN LÊN MIỀN NAM',
     subtitle: 'Phòng Đại Gia 4 người',
     enabled: true,
-    sortOrder: 7,
+    sortOrder: 8,
     minBet: 10000,
     maxBet: 10000000,
     theoreticalRtp: 0.98,
@@ -107,7 +120,8 @@ export const GAME_CATEGORY = {
   DICE: 'casino',
   POKER: 'card',
   BLACKJACK: 'card',
-  TIENLEN: 'card'
+  TIENLEN: 'card',
+  CANGUA: 'casino'
 };
 
 export function getMergedGames(remoteGames = []) {

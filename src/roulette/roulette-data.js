@@ -18,13 +18,13 @@ export function getNumberColor(num) {
 }
 
 export const CHIP_PRESETS = [
-  { value: 1000, label: '1K', color: '#3b82f6', border: '#60a5fa' },
-  { value: 2000, label: '2K', color: '#06b6d4', border: '#22d3ee' },
-  { value: 5000, label: '5K', color: '#10b981', border: '#34d399' },
-  { value: 10000, label: '10K', color: '#f59e0b', border: '#fbbf24' },
-  { value: 25000, label: '25K', color: '#ef4444', border: '#f87171' },
-  { value: 100000, label: '100K', color: '#8b5cf6', border: '#a78bfa' },
-  { value: 500000, label: '500K', color: '#ec4899', border: '#f472b6' }
+  { value: 1000, label: '1K', color: '#2563eb', border: '#60a5fa' },
+  { value: 5000, label: '5K', color: '#059669', border: '#34d399' },
+  { value: 10000, label: '10K', color: '#0891b2', border: '#22d3ee' },
+  { value: 25000, label: '25K', color: '#d97706', border: '#fbbf24' },
+  { value: 100000, label: '100K', color: '#dc2626', border: '#f87171' },
+  { value: 500000, label: '500K', color: '#7c3aed', border: '#a78bfa' },
+  { value: 1000000, label: '1M', color: '#ca8a04', border: '#fde047' }
 ];
 
 export function calculatePayout(bets, winningNumber) {

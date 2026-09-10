@@ -7,6 +7,7 @@ import {Roulette} from './roulette/Roulette.jsx';
 import {Slot} from './slot/Slot.jsx';
 import {Blackjack} from './blackjack/Blackjack.jsx';
 import {TienLen} from './tienlen/TienLen.jsx';
+import {CaNgua} from './cangua/CaNgua.jsx';
 import {EventsPage} from './home/EventsPage.jsx';
 import {HistoryPage} from './home/HistoryPage.jsx';
 import {Lobby} from './home/Lobby.jsx';
@@ -27,6 +28,7 @@ const routes = {
   roulette: 'roulette',
   blackjack: 'blackjack',
   tienlen: 'tien-len',
+  cangua: 'co-ca-ngua-vip',
   events: 'su-kien',
   history: 'lich-su',
   profile: 'ca-nhan'
@@ -48,6 +50,10 @@ const routeAliases = {
   'xi-dach': 'blackjack',
   'tien-len': 'tienlen',
   tienlen: 'tienlen',
+  'co-ca-ngua': 'cangua',
+  'co-ca-ngua-vip': 'cangua',
+  cangua: 'cangua',
+  ludo: 'cangua',
   'su-kien': 'events',
   events: 'events',
   event: 'events',
@@ -221,6 +227,7 @@ export function App() {
       : open === 'roulette' ? <Roulette {...common} />
       : open === 'blackjack' ? <Blackjack {...common} />
       : open === 'tienlen' ? <TienLen {...common} />
+      : open === 'cangua' ? <CaNgua {...common} />
       : <Lobby setScreen={setScreen} openPanel={setPanel} games={games} {...common} />;
   }
 
