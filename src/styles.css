@@ -3854,3 +3854,82 @@ button,.spinBtn,.cardHit,.playBtn{
 .walletBalanceRow{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;margin-bottom:10px;border-radius:12px;background:rgba(255,199,89,.1);border:1px solid rgba(255,199,89,.25)}
 .walletBalanceRow span{font-size:12px;opacity:.7}
 .walletBalanceRow b{font-size:18px;color:#ffd479;font-variant-numeric:tabular-nums}
+
+/* ========================================================================== */
+/* KHÓA CHẾ ĐỘ DỌC (PORTRAIT ONLY) CHO NỔ HŨ & TÀI XỈU                        */
+/* ========================================================================== */
+.slotScreen,
+.diceScreen {
+  max-width: 480px;
+  margin: 0 auto;
+  height: 100svh !important;
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  overflow: hidden !important;
+  position: relative;
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.85);
+}
+
+body:has(.slotScreen),
+body:has(.diceScreen) {
+  height: 100svh !important;
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+  background: #080705 !important;
+}
+
+/* Lớp phủ cảnh báo xoay ngang trên thiết bị di động */
+.portraitLockOverlay {
+  display: none;
+}
+
+@media (orientation: landscape) and (max-height: 600px) {
+  .portraitLockOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: radial-gradient(circle at 50% 40%, #1c150c 0%, #080604 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 20px;
+    text-align: center;
+    box-sizing: border-box;
+  }
+  .portraitLockIcon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(245, 166, 35, 0.2), rgba(0, 0, 0, 0.6));
+    border: 2px solid #ffd464;
+    display: grid;
+    place-items: center;
+    color: #ffd464;
+    box-shadow: 0 0 24px rgba(245, 166, 35, 0.4);
+    animation: rotatePhonePrompt 2s ease-in-out infinite;
+  }
+  .portraitLockTitle {
+    font: 900 clamp(16px, 4.5vh, 22px) Oswald;
+    color: #fff2a8;
+    letter-spacing: 1.5px;
+    margin: 0;
+    text-shadow: 0 0 10px rgba(245, 166, 35, 0.6);
+  }
+  .portraitLockSub {
+    font-size: clamp(12px, 2.8vh, 14.5px);
+    color: #caa969;
+    margin: 0;
+    max-width: 360px;
+    line-height: 1.4;
+  }
+}
+
+@keyframes rotatePhonePrompt {
+  0% { transform: rotate(-90deg) scale(0.95); opacity: 0.7; }
+  50% { transform: rotate(0deg) scale(1.08); opacity: 1; filter: drop-shadow(0 0 12px #ffd700); }
+  100% { transform: rotate(-90deg) scale(0.95); opacity: 0.7; }
+}

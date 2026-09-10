@@ -4,6 +4,7 @@ import {Dice} from './dice/Dice.jsx';
 import {FishGame} from './fish/FishGame.jsx';
 import {Poker} from './poker/Poker.jsx';
 import {Roulette} from './roulette/Roulette.jsx';
+import {Slot} from './slot/Slot.jsx';
 import {EventsPage} from './home/EventsPage.jsx';
 import {HistoryPage} from './home/HistoryPage.jsx';
 import {Lobby} from './home/Lobby.jsx';
@@ -53,6 +54,7 @@ export function App() {
   const [token, setToken] = useState(() => localStorage.getItem('goldzone_token'));
   const [loading, setLoading] = useState(!!token);
   const [panel, setPanel] = useState(null);
+  const [sound, setSound] = useState(true);
   const [games, setGames] = useState(() => getMergedGames([]));
   // Lỗi khi khôi phục phiên: giữ lại để hiện thành câu cụ thể, thay vì im lặng
   // đá người chơi về màn đăng nhập như thể họ chưa từng đăng nhập.

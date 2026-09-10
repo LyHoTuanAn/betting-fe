@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from 'react';
-import {Minus, Plus, RotateCcw, Zap} from 'lucide-react';
+import {Minus, Plus, RotateCcw, Smartphone, Zap} from 'lucide-react';
 import {GoldAmbient} from '../shared/GoldAmbient.jsx';
 import {ResultFx} from '../shared/ResultFx.jsx';
 import {Topbar} from '../shared/Topbar.jsx';
@@ -60,7 +60,7 @@ export function Slot({goHome,balance,setBalance,sound,setSound,token}){
    setSpinning(false);
    setSpinningCols(Array(5).fill(false));
    setSlotStage('idle');
-   triggerFx('lose',error.display || error.message,2000);
+   triggerFx('lose',error.message,2000);
    return;
   }
   const result=ensure25Grid(response.grid);
@@ -117,6 +117,11 @@ export function Slot({goHome,balance,setBalance,sound,setSound,token}){
 
  return (
   <div className={'screen slotScreen '+(fx.type?`fx-${fx.type}`:'')+' slot-'+slotStage}>
+   <div className="portraitLockOverlay" aria-hidden="true">
+    <div className="portraitLockIcon"><Smartphone size={32}/></div>
+    <h3 className="portraitLockTitle">VUI LÒNG XOAY DỌC MÀN HÌNH</h3>
+    <p className="portraitLockSub">Nổ Hũ Hoàng Kim được thiết kế chuyên biệt và tối ưu cho chế độ dọc (Portrait).</p>
+   </div>
    <GoldAmbient/>
    <ResultFx fx={fx} onDismiss={dismissFx}/>
    <Topbar balance={balance} onBack={goHome} sound={sound} setSound={setSound}/>

@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from 'react';
-import {Coins} from 'lucide-react';
+import {Coins, Smartphone} from 'lucide-react';
 import {ResultFx} from '../shared/ResultFx.jsx';
 import {Topbar} from '../shared/Topbar.jsx';
 import {api} from '../shared/api.js';
@@ -141,12 +141,17 @@ export function Dice({goHome,balance,setBalance,sound,setSound,token}){
    setBalance(v => v + currentChip);
    setPlaced(0);
    setPlacedSide(null);
-   setNote(error.display || error.message);
+   setNote(error.message);
   }
  };
 
  return (
   <div className={'screen diceScreen '+(fx.type?`fx-${fx.type}`:'')}>
+   <div className="portraitLockOverlay" aria-hidden="true">
+    <div className="portraitLockIcon"><Smartphone size={32}/></div>
+    <h3 className="portraitLockTitle">VUI LÒNG XOAY DỌC MÀN HÌNH</h3>
+    <p className="portraitLockSub">Đại Chiến Tài Xỉu được thiết kế chuyên biệt và tối ưu cho chế độ dọc (Portrait).</p>
+   </div>
    <ResultFx fx={fx} onDismiss={dismissFx}/>
    <Topbar balance={balance} onBack={goHome} sound={sound} setSound={setSound}/>
    <main className="diceBody">
