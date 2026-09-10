@@ -103,6 +103,26 @@ export function App() {
       .finally(() => setLoading(false));
   }, [token, retry]);
 
+  // Tự động đồng bộ số dư mỗi 8s hoặc khi người chơi quay lại tab (sau khi chuyển khoản xong)
+  useEffect(() => {
+    if (!token) return;
+    const syncBalance = () => {
+      api('/me', {token})
+        .then(data => {
+          if (data?.user) {
+            setUser(current => current ? ({...current, balance: data.user.balance}) : data.user);
+          }
+        })
+        .catch(() => {});
+    };
+    const interval = setInterval(syncBalance, 8000);
+    window.addEventListener('focus', syncBalance);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('focus', syncBalance);
+    };
+  }, [token]);
+
   // Danh sách game do admin quản lý, tự động merge fallback và đồng bộ
   useEffect(() => {
     const refreshCatalog = () => {
