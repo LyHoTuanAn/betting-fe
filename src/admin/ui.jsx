@@ -107,7 +107,7 @@ export function useAsync(loader, deps) {
     setState(current => ({...current, loading: true, error: null}));
     loader()
       .then(data => alive && setState({loading: false, error: null, data}))
-      .catch(error => alive && setState({loading: false, error: error.message, data: null}));
+      .catch(error => alive && setState({loading: false, error: error.display || error.message, data: null}));
     return () => { alive = false; };
   }, [...deps, nonce]);
   return {...state, reload: () => setNonce(n => n + 1)};

@@ -122,7 +122,7 @@ function useVisibilityToggle(game, enabled, setEnabled, notify, onSaved) {
       await api.patch('/admin/games/' + game.key, {enabled: next});
       notify.ok(next ? game.name + ' đã hiện trên web người chơi' : game.name + ' đã bị ẩn khỏi web người chơi');
       onSaved();
-    } catch (err) { setEnabled(!next); notify.fail(err.message); }
+    } catch (err) { setEnabled(!next); notify.fail(err.display || err.message); }
   };
 }
 
@@ -154,7 +154,7 @@ function GameDetail({game, notify, onSaved, onBack}) {
       });
       notify.ok('Đã lưu ' + draft.name);
       onSaved();
-    } catch (err) { notify.fail(err.message); }
+    } catch (err) { notify.fail(err.display || err.message); }
     finally { setSaving(false); }
   };
 
@@ -167,7 +167,7 @@ function GameDetail({game, notify, onSaved, onBack}) {
     if (!agreed) return;
     setSaving(true);
     try { await api.post('/admin/games/' + game.key + '/reset'); notify.ok('Đã khôi phục mặc định'); onSaved(); }
-    catch (err) { notify.fail(err.message); }
+    catch (err) { notify.fail(err.display || err.message); }
     finally { setSaving(false); }
   };
 

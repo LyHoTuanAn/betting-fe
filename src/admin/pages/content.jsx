@@ -88,23 +88,13 @@ function BannerManager({banners, notify, reload}) {
     const agreed = await notify.confirm({title: `Xóa banner "${title}"?`, message: 'Banner sẽ bị gỡ khỏi web người chơi và không khôi phục được.', confirmLabel: 'Xóa banner', danger: true});
     if (!agreed) return;
     try {
-      await api.delete ? api.delete(`/admin/banners/${id}`) : api.post(`/admin/banners/${id}`, {_method: 'DELETE'});
+      await api.delete(`/admin/banners/${id}`);
       notify.show(`Đã xóa banner "${title}"`, 'ok');
       reload();
     } catch (err) {
-      // Fallback direct fetch if api.delete not declared
-      try {
-        const token = localStorage.getItem('goldzone_admin_token');
-        const res = await fetch(`/api/admin/banners/${id}`, {
-          method: 'DELETE',
-          headers: {'Content-Type': 'application/json', ...(token ? {Authorization: `Bearer ${token}`} : {})}
-        });
-        if (!res.ok) throw new Error('Không thể xóa banner');
-        notify.show(`Đã xóa banner "${title}"`, 'ok');
-        reload();
-      } catch (e) {
-        notify.show(e.message, 'fail');
-      }
+      // Đi qua api client để giữ nguyên lý do server trả về (hết quyền, hết
+      // phiên, bản ghi không còn…) thay vì nuốt thành một câu "không thể xóa".
+      notify.show(err.display || err.message, 'fail');
     }
   };
 
@@ -114,7 +104,7 @@ function BannerManager({banners, notify, reload}) {
       notify.show(`Đã ${!banner.enabled ? 'bật' : 'tắt'} banner`, 'ok');
       reload();
     } catch (err) {
-      notify.show(err.message, 'fail');
+      notify.show(err.display || err.message, 'fail');
     }
   };
 
@@ -236,7 +226,7 @@ function BannerEditModal({banner, isCreating, onClose, onSaved, notify}) {
       }
       onSaved();
     } catch (err) {
-      notify.show(err.message, 'fail');
+      notify.show(err.display || err.message, 'fail');
     } finally {
       setBusy(false);
     }
@@ -409,16 +399,11 @@ function EventManager({events, notify, reload}) {
     const agreed = await notify.confirm({title: `Xóa sự kiện "${title}"?`, message: 'Sự kiện sẽ bị gỡ khỏi web người chơi và không khôi phục được.', confirmLabel: 'Xóa sự kiện', danger: true});
     if (!agreed) return;
     try {
-      const token = localStorage.getItem('goldzone_admin_token');
-      const res = await fetch(`/api/admin/events/${id}`, {
-        method: 'DELETE',
-        headers: {'Content-Type': 'application/json', ...(token ? {Authorization: `Bearer ${token}`} : {})}
-      });
-      if (!res.ok) throw new Error('Không thể xóa sự kiện');
+      await api.delete(`/admin/events/${id}`);
       notify.show(`Đã xóa sự kiện "${title}"`, 'ok');
       reload();
-    } catch (e) {
-      notify.show(e.message, 'fail');
+    } catch (err) {
+      notify.show(err.display || err.message, 'fail');
     }
   };
 
@@ -428,7 +413,7 @@ function EventManager({events, notify, reload}) {
       notify.show(`Đã ${!ev.enabled ? 'bật' : 'tắt'} sự kiện`, 'ok');
       reload();
     } catch (err) {
-      notify.show(err.message, 'fail');
+      notify.show(err.display || err.message, 'fail');
     }
   };
 
@@ -565,7 +550,7 @@ function EventEditModal({event, isCreating, onClose, onSaved, notify}) {
       }
       onSaved();
     } catch (err) {
-      notify.show(err.message, 'fail');
+      notify.show(err.display || err.message, 'fail');
     } finally {
       setBusy(false);
     }
