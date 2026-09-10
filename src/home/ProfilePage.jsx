@@ -31,9 +31,12 @@ export function ProfilePage({
   openPanel,
   goHome
 }) {
+  const initialAvatar = user?.avatar || (user?.id ? localStorage.getItem('goldzone_avatar_' + user.id) : null) || localStorage.getItem('goldzone_avatar') || AVATARS[0];
   const [name, setName] = useState(user?.displayName || '');
-  const [avatar, setAvatar] = useState(AVATARS[0]);
+  const [avatar, setAvatar] = useState(initialAvatar);
+  const [selectedAvatar, setSelectedAvatar] = useState(initialAvatar);
   const [showAvatarPicker, setShowAvatarPicker] = useState(false);
+  const [savingAvatar, setSavingAvatar] = useState(false);
   const notice = usePopup();
   const [copied, setCopied] = useState(false);
 
@@ -49,17 +52,85 @@ export function ProfilePage({
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleFileUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      return showMsg('Vui lòng chọn tệp hình ảnh (jpg, png, webp,...)', 'warn');
+    }
+    const reader = new FileReader();
+    reader.onload = (readerEvent) => {
+      const img = new Image();
+      img.onload = () => {
+        const maxDim = 256;
+        let width = img.width;
+        let height = img.height;
+        if (width > height) {
+          if (width > maxDim) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          }
+        } else {
+          if (height > maxDim) {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        setSelectedAvatar(dataUrl);
+      };
+      img.src = readerEvent.target.result;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleSaveAvatar = async (target) => {
+    const targetAvatar = target || selectedAvatar;
+    if (!targetAvatar) return;
+    setSavingAvatar(true);
+    try {
+      if (user?.id) localStorage.setItem('goldzone_avatar_' + user.id, targetAvatar);
+      localStorage.setItem('goldzone_avatar', targetAvatar);
+      setAvatar(targetAvatar);
+      if (setUser) {
+        setUser(prev => prev ? {...prev, avatar: targetAvatar} : prev);
+      }
+      try {
+        await api('/me', {
+          token,
+          method: 'PATCH',
+          body: JSON.stringify({avatar: targetAvatar, displayName: name.trim() || user?.displayName})
+        });
+      } catch {}
+
+      setShowAvatarPicker(false);
+      showMsg('Đã cập nhật ảnh đại diện thành công!', 'ok');
+    } catch (err) {
+      showMsg(err.display || err.message || 'Lỗi khi cập nhật ảnh', 'warn');
+    } finally {
+      setSavingAvatar(false);
+    }
+  };
+
   const saveProfile = async () => {
     if (!name.trim()) return showMsg('Tên hiển thị không được để trống', 'warn');
     try {
-      const data = await api('/me', {token, method: 'PATCH', body: JSON.stringify({displayName: name.trim()})});
-      if (setUser) setUser(data.user);
+      const data = await api('/me', {
+        token,
+        method: 'PATCH',
+        body: JSON.stringify({displayName: name.trim(), avatar})
+      });
+      if (setUser) setUser(prev => ({...prev, ...(data.user || {}), avatar}));
       showMsg('Đã cập nhật tên hiển thị thành công!', 'ok');
     } catch (err) {
       showMsg(err.display || err.message || 'Lỗi khi cập nhật tên', 'warn');
     }
   };
-
 
   return (
     <div className="screen profileScreen">
@@ -69,6 +140,8 @@ export function ProfilePage({
         onBack={goHome || (() => setScreen('lobby'))}
         sound={sound}
         setSound={setSound}
+        user={user}
+        avatar={avatar}
         onProfile={() => {}}
         onWallet={() => {}}
       />
@@ -89,9 +162,16 @@ export function ProfilePage({
             </div>
 
             <div className="vipCardMiddle">
-              <div className="vipAvatarWrap" onClick={() => setShowAvatarPicker(true)} title="Đổi ảnh đại diện">
-                <img src={avatar} alt={user?.displayName} />
-                <div className="vipAvatarEdit"><Edit3 size={12} /></div>
+              <div
+                className="vipAvatarWrap"
+                onClick={() => {
+                  setSelectedAvatar(avatar);
+                  setShowAvatarPicker(true);
+                }}
+                title="Bấm để đổi ảnh đại diện"
+              >
+                <img src={avatar} alt={user?.displayName || 'Avatar'} />
+                <div className="vipAvatarEdit"><Edit3 size={13} /></div>
               </div>
 
               <div className="vipUserInfo">
@@ -109,7 +189,7 @@ export function ProfilePage({
                 <small>SỐ DƯ HIỆN TẠI</small>
                 <strong><Coins size={18} /> {money(balance)}</strong>
               </div>
-              <button className="vipCheckinBtn" onClick={() => openPanel ? openPanel('wallet') : setWalletType('deposit')}>
+              <button className="vipCheckinBtn" onClick={() => openPanel ? openPanel('wallet') : setScreen('profile')}>
                 <Plus size={16} /> <span>Nạp vàng</span>
               </button>
             </div>
@@ -118,24 +198,67 @@ export function ProfilePage({
 
         <Popup popup={notice.popup} onClose={notice.close} />
 
-        {/* ĐỔI ẢNH ĐẠI DIỆN DRAWER */}
+        {/* ĐỔI ẢNH ĐẠI DIỆN MODAL */}
         {showAvatarPicker && (
           <div className="avatarPickerModal" onClick={() => setShowAvatarPicker(false)}>
             <div className="avatarPickerCard" onClick={e => e.stopPropagation()}>
-              <h3>Chọn ảnh đại diện</h3>
+              <div className="avatarPickerHead">
+                <h3>Đổi Ảnh Đại Diện</h3>
+                <p>Chọn ảnh có sẵn hoặc tải ảnh mới từ thiết bị của bạn</p>
+              </div>
+
+              {/* Preview ảnh hiện tại / đang chọn */}
+              <div className="avatarCurrentPreview">
+                <img src={selectedAvatar} alt="Xem trước avatar" />
+                <span>Ảnh xem trước</span>
+              </div>
+
+              {/* Grid ảnh mẫu */}
               <div className="avatarGrid">
                 {AVATARS.map((img, idx) => (
                   <button
                     key={idx}
-                    className={'avatarOpt ' + (avatar === img ? 'selected' : '')}
-                    onClick={() => { setAvatar(img); setShowAvatarPicker(false); showMsg('Đã đổi ảnh đại diện!', 'ok'); }}
+                    type="button"
+                    className={'avatarOpt ' + (selectedAvatar === img ? 'selected' : '')}
+                    onClick={() => setSelectedAvatar(img)}
                   >
-                    <img src={img} alt="Avatar" />
-                    {avatar === img && <div className="avatarCheck"><Check size={14} /></div>}
+                    <img src={img} alt={`Avatar mẫu ${idx + 1}`} />
+                    {selectedAvatar === img && <div className="avatarCheck"><Check size={14} /></div>}
                   </button>
                 ))}
               </div>
-              <button className="ghost sm" onClick={() => setShowAvatarPicker(false)}>Đóng</button>
+
+              {/* Nút Upload ảnh từ thiết bị */}
+              <div className="avatarUploadRow">
+                <label className="avatarUploadBtn">
+                  <span>📷 Tải ảnh từ thiết bị</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    style={{display: 'none'}}
+                  />
+                </label>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="avatarModalActions">
+                <button
+                  type="button"
+                  className="avatarSaveBtn"
+                  disabled={savingAvatar}
+                  onClick={() => handleSaveAvatar()}
+                >
+                  <Check size={16} /> {savingAvatar ? 'Đang lưu...' : 'Lưu ảnh đại diện'}
+                </button>
+                <button
+                  type="button"
+                  className="avatarCancelBtn"
+                  onClick={() => setShowAvatarPicker(false)}
+                >
+                  Hủy bỏ
+                </button>
+              </div>
             </div>
           </div>
         )}

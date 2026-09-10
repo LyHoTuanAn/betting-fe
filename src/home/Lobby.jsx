@@ -6,7 +6,7 @@ import {Topbar} from '../shared/Topbar.jsx';
 import {GameCard} from './GameCard.jsx';
 import {Nav} from './Nav.jsx';
 
-export function Lobby({setScreen, balance, sound, setSound, openPanel, games}) {
+export function Lobby({setScreen, balance, sound, setSound, openPanel, games, user}) {
   const [banners, setBanners] = useState([]);
   const [activeIdx, setActiveIdx] = useState(0);
 
@@ -27,24 +27,20 @@ export function Lobby({setScreen, balance, sound, setSound, openPanel, games}) {
   }, [banners.length]);
 
   const currentBanner = banners[activeIdx] || {
-    title: 'KHO BÁU HOÀNG KIM',
-    subtitle: 'Nổ Hũ Jackpot Cực Khủng',
-    image: '/assets/home-banner.webp',
-    tag: 'HOT',
-    actionScreen: 'slot',
-    actionLabel: 'Chơi Ngay'
+    title: 'SIÊU NỔ HŨ HOÀNG KIM',
+    subtitle: 'Nạp rút tức thì • Bảo mật tuyệt đối • Thưởng x5000',
+    link: '#slot',
+    image: '/assets/home-banner.webp'
   };
 
   const handleBannerClick = () => {
-    if (currentBanner.actionUrl) {
-      window.open(currentBanner.actionUrl, '_blank', 'noopener,noreferrer');
-      return;
+    if (!currentBanner.link) return;
+    if (currentBanner.link.startsWith('#')) {
+      const targetScreen = currentBanner.link.slice(1);
+      if (targetScreen) setScreen(targetScreen);
+    } else if (currentBanner.link.startsWith('http')) {
+      window.open(currentBanner.link, '_blank', 'noreferrer');
     }
-    if (currentBanner.actionScreen) {
-      setScreen(currentBanner.actionScreen);
-      return;
-    }
-    setScreen('slot');
   };
 
   const prevBanner = (e) => {
@@ -65,6 +61,7 @@ export function Lobby({setScreen, balance, sound, setSound, openPanel, games}) {
         onBack={() => {}}
         sound={sound}
         setSound={setSound}
+        user={user}
         onProfile={() => setScreen('profile')}
         onWallet={() => openPanel ? openPanel('wallet') : setScreen('profile')}
       />

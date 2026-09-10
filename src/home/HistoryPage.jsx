@@ -109,6 +109,7 @@ export function HistoryPage({
         onBack={goHome || (() => setScreen('lobby'))}
         sound={sound}
         setSound={setSound}
+        user={user}
         onProfile={() => setScreen('profile')}
         onWallet={() => openPanel ? openPanel('wallet') : setScreen('profile')}
       />

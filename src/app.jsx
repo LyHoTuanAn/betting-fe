@@ -162,7 +162,7 @@ export function App() {
   );
   if (!user) return <AuthScreen onAuthenticated={authenticated} />;
 
-  const common = {balance: user.balance, setBalance, sound, setSound, token, goHome: () => setScreen('lobby')};
+  const common = {user, setUser, balance: user.balance, setBalance, sound, setSound, token, goHome: () => setScreen('lobby')};
 
   // Trang chuyên biệt: Events, History, Profile
   let page;
