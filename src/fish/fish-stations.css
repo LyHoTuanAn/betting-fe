@@ -1,0 +1,506 @@
+/* High-Visibility Floating Reward for Normal Fish */
+.fishRewardNormal {
+  position: absolute !important;
+  z-index: 200 !important;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: luxuryRewardFloat 1.5s cubic-bezier(0.18, 0.9, 0.25, 1) forwards;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.fishRewardBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, rgba(28, 18, 5, 0.95), rgba(12, 8, 2, 0.98));
+  border: 2px solid #ffd700;
+  box-shadow: 0 0 24px rgba(255, 215, 0, 0.85), 0 8px 24px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  padding: 4px 14px 4px 10px;
+  border-radius: 9999px;
+  backdrop-filter: blur(8px);
+}
+
+.rewardCoinIcon {
+  font-size: 20px;
+  filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.8));
+  animation: coinBounce 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes coinBounce {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-2px) scale(1.15); }
+}
+
+.fishRewardBadge strong {
+  display: inline-block;
+  font-family: 'Oswald', 'Plus Jakarta Sans', sans-serif;
+  font-size: 22px;
+  font-weight: 900;
+  color: #fff677;
+  text-shadow: 0 0 14px rgba(255, 215, 0, 0.9), 0 2px 4px #000, 0 0 2px #000;
+  letter-spacing: 0.8px;
+  line-height: 1;
+}
+
+.rewardComboBadge {
+  background: linear-gradient(135deg, #ff416c, #ff4b2b);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 900;
+  padding: 2px 6px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 0 10px rgba(255, 75, 43, 0.7);
+}
+
+@keyframes luxuryRewardFloat {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -10%) scale(0.4);
+  }
+  15% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+  25% {
+    opacity: 1;
+    transform: translate(-50%, -65%) scale(1);
+  }
+  75% {
+    opacity: 1;
+    transform: translate(-50%, -110%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -150%) scale(0.9);
+  }
+}
+
+/* Cannon Stations Layer */
+.cannonStationsLayer {
+  position: absolute !important;
+  inset: 0 !important;
+  pointer-events: none !important;
+  z-index: 25 !important;
+  overflow: hidden;
+}
+
+.cannonStation {
+  position: absolute !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  transform: translateX(-50%) !important;
+  pointer-events: auto !important;
+  gap: 3px;
+  z-index: 25 !important;
+}
+
+/* 6 Seats Distributed Around The Table */
+.cannonStation.seat-0 { left: 14%; bottom: 12px; }
+.cannonStation.seat-1 { left: 50%; bottom: 84px; }
+.cannonStation.seat-2 { left: 86%; bottom: 12px; }
+.cannonStation.seat-3 { left: 86%; top: 58px; }
+.cannonStation.seat-4 { left: 50%; top: 58px; }
+.cannonStation.seat-5 { left: 14%; top: 58px; }
+
+/* Top Seats & Bottom Seats Layout */
+.cannonStation.isTopSeat {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 2px !important;
+}
+
+.cannonStation.isBottomSeat {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 2px !important;
+}
+
+/* Arena Room Players Header Badge */
+.roomPlayersArena {
+  position: absolute;
+  top: 10px;
+  left: 64px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: rgba(10, 24, 38, 0.9);
+  border: 1px solid rgba(47, 127, 154, 0.6);
+  color: #bfe9ff;
+  font: 700 11.5px Oswald, sans-serif;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(4px);
+  pointer-events: none;
+}
+
+/* Compact Turret Visual */
+.compactTurretWrap {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.compactTurretBase {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #2a4153, #101c26 70%);
+  border: 2px solid rgba(255, 215, 0, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+  z-index: 1;
+}
+
+.cannonStation.isHero .compactTurretBase {
+  border-color: #ffd700;
+  box-shadow: 0 0 16px rgba(255, 215, 0, 0.6), 0 4px 14px rgba(0, 0, 0, 0.8), inset 0 0 10px rgba(255, 215, 0, 0.3);
+  animation: heroBasePulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes heroBasePulse {
+  0% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.4), inset 0 0 6px rgba(255, 215, 0, 0.2); }
+  100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), inset 0 0 12px rgba(255, 215, 0, 0.5); }
+}
+
+.compactTurretBarrel {
+  position: absolute;
+  width: 52px;
+  height: 52px;
+  transform-origin: 50% 50%;
+  z-index: 2;
+  transition: transform 0.05s linear;
+}
+
+.compactTurretBarrel img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(37, 234, 255, 0.7));
+}
+
+.compactTurretMuzzle {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff, #ffe36d 35%, #2eeaff 70%, transparent);
+  opacity: 0;
+  box-shadow: 0 0 16px #fff, 0 0 24px #23eaff;
+}
+
+.compactTurretWrap.firing .compactTurretMuzzle {
+  animation: muzzleFlashMini 0.18s ease-out forwards;
+}
+
+@keyframes muzzleFlashMini {
+  0% { opacity: 1; transform: translateX(-50%) scale(1.3); }
+  100% { opacity: 0; transform: translateX(-50%) scale(0.6); }
+}
+
+/* Station Player Badges */
+.playerStationBadge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(12, 20, 28, 0.94);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 215, 0, 0.35);
+  padding: 3px 8px 3px 4px;
+  border-radius: 9999px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+  user-select: none;
+  white-space: nowrap;
+}
+
+.cannonStation.isHero .playerStationBadge {
+  border-color: #ffd700;
+  box-shadow: 0 0 14px rgba(255, 215, 0, 0.5), 0 4px 14px rgba(0, 0, 0, 0.8);
+  background: rgba(22, 34, 48, 0.96);
+}
+
+.stationAvatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1.5px solid #ffd700;
+  background: #262a35;
+  flex-shrink: 0;
+}
+
+.stationAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.stationInfo {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  max-width: 90px;
+}
+
+.stationNameRow {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.stationName {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #dfe2f1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stationHeroTag {
+  background: linear-gradient(135deg, #f59e0b, #ffd700);
+  color: #3e1f00;
+  font-size: 8px;
+  font-weight: 800;
+  padding: 1px 4px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.stationPower {
+  font-size: 9px;
+  font-weight: 700;
+  color: #ffd700;
+}
+
+/* Empty Seat Badge */
+.emptyStationBadge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(12, 20, 28, 0.45);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  padding: 2px 7px;
+  border-radius: 9999px;
+  color: rgba(223, 226, 241, 0.45);
+  font-size: 8.5px;
+  font-weight: 600;
+  user-select: none;
+}
+
+.emptyTurretDisc {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(16, 28, 38, 0.45);
+  border: 1.5px dashed rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.25);
+}
+
+/* Hero Controls (Fixed at Bottom Center of Screen) */
+.fishScreen .heroControlsOverlay,
+.heroControlsOverlay {
+  position: absolute !important;
+  bottom: 4px !important;
+  top: auto !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 3px !important;
+  z-index: 100 !important;
+  pointer-events: auto !important;
+}
+
+.heroQuickPowerPills {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(10, 18, 26, 0.94);
+  padding: 3px 8px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+}
+
+.heroConsoleIdentity {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.heroMiniAvatar {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid #ffd700;
+  object-fit: cover;
+}
+
+.heroConsoleTag {
+  font: 800 9px Oswald, sans-serif;
+  color: #ffd700;
+  letter-spacing: 0.5px;
+}
+
+.heroPillDivider {
+  width: 1px;
+  height: 14px;
+  background: rgba(255, 215, 0, 0.3);
+  margin: 0 2px;
+}
+
+.heroQuickPowerPills button {
+  background: none;
+  border: none;
+  color: #dfe2f1;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.heroQuickPowerPills button.active {
+  background: #f59e0b;
+  color: #3e1f00;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+}
+
+.heroQuickPowerPills button.active {
+  background: #f59e0b;
+  color: #3e1f00;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+}
+
+/* Sảnh Chờ (Waiting Room) Enhanced Styling */
+.waitRoomLuxuryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+.waitSeatCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 8px;
+  border-radius: 14px;
+  background: rgba(24, 35, 48, 0.9);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.waitSeatCard.isHero {
+  border-color: #ffd700;
+  background: linear-gradient(180deg, rgba(38, 54, 72, 0.95), rgba(20, 32, 44, 0.95));
+  box-shadow: 0 0 16px rgba(255, 215, 0, 0.3), 0 6px 16px rgba(0, 0, 0, 0.6);
+}
+
+.waitSeatCard.isReady {
+  border-color: #37d39a;
+  box-shadow: 0 0 16px rgba(55, 211, 154, 0.3);
+}
+
+.waitSeatCard.isEmpty {
+  opacity: 0.45;
+  border-style: dashed;
+  background: rgba(16, 24, 34, 0.5);
+}
+
+.waitSeatAvatarWrap {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #ffd700;
+  margin-bottom: 6px;
+  background: #171b26;
+}
+
+.waitSeatAvatarWrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.waitSeatEmptyAvatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.3);
+  margin-bottom: 6px;
+}
+
+.waitSeatName {
+  font-size: 11px;
+  font-weight: 700;
+  color: #dfe2f1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+  text-align: center;
+}
+
+.waitSeatUser {
+  font-size: 9px;
+  color: #a08e7a;
+  margin-bottom: 4px;
+}
+
+.waitSeatStatusBadge {
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.waitSeatStatusBadge.ready {
+  background: rgba(55, 211, 154, 0.2);
+  color: #56e5a9;
+  border: 1px solid #56e5a9;
+}
+
+.waitSeatStatusBadge.waiting {
+  background: rgba(245, 158, 11, 0.2);
+  color: #ffc174;
+  border: 1px solid #ffc174;
+}
+
+.waitSeatStatusBadge.empty {
+  color: rgba(255, 255, 255, 0.3);
+}

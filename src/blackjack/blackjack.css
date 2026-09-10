@@ -1,0 +1,837 @@
+/* VIP BLACKJACK LUXURY CASINO STYLING */
+
+.bjScreen {
+  min-height: 100dvh;
+  background-color: #0f131d;
+  color: #dfe2f1;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.bjMain {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  max-width: 540px;
+  margin: 0 auto;
+  padding: 12px 14px 90px;
+  flex-grow: 1;
+}
+
+/* Table Metadata Banner */
+.bjMetaStrip {
+  width: 100%;
+  background: #262a35;
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 193, 116, 0.15);
+}
+
+.bjMetaTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.bjTitleWrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.bjTitleText {
+  font-family: 'Bodoni Moda', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffc174;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bjShoePill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #1c1f2a;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #d8c3ad;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.bjDotPulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #56e5a9;
+  box-shadow: 0 0 8px #56e5a9;
+  animation: bjPulse 1.8s infinite;
+}
+
+@keyframes bjPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.bjMetaGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 6px;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.bjMetaBox {
+  background: rgba(10, 14, 24, 0.6);
+  border-radius: 8px;
+  padding: 4px 6px;
+}
+
+.bjMetaBox small {
+  display: block;
+  font-size: 9px;
+  font-weight: 700;
+  color: #a08e7a;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.bjMetaBox strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffc174;
+  margin-top: 1px;
+}
+
+.bjMetaBox strong.green {
+  color: #56e5a9;
+}
+
+/* Luxury Felt Canvas Area */
+.bjFeltCanvas {
+  position: relative;
+  width: 100%;
+  background: #0a0e18;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7), inset 0 0 40px rgba(0, 0, 0, 0.9);
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid rgba(255, 193, 116, 0.2);
+}
+
+.bjSvgOverlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  width: 100%;
+  height: 100%;
+}
+
+/* Dealer Area */
+.bjDealerArea {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 4px;
+}
+
+.bjDealerHeaderPill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(38, 42, 53, 0.92);
+  padding: 4px 14px;
+  border-radius: 9999px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  margin-bottom: 10px;
+  border: 1px solid rgba(255, 193, 116, 0.2);
+}
+
+.bjDealerTitle {
+  font-size: 11px;
+  font-weight: 700;
+  color: #dfe2f1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.bjScorePill {
+  background: #f59e0b;
+  color: #472a00;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.bjDealerSubtext {
+  font-size: 10px;
+  font-weight: 600;
+  color: #a08e7a;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+
+/* Card Styles */
+.bjCardsRow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 4px 0;
+}
+
+.bjCard {
+  width: 76px;
+  height: 108px;
+  background: #353944;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 6px 8px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  user-select: none;
+}
+
+.bjCard.overlap {
+  margin-left: -32px;
+}
+
+.bjCard.overlap:first-child {
+  margin-left: 0;
+}
+
+.bjCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(255, 193, 116, 0.3);
+}
+
+.bjCardCornerTop {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1;
+}
+
+.bjCardCornerBottom {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1;
+  transform: rotate(180deg);
+}
+
+.bjCardRank {
+  font-family: 'Bodoni Moda', serif;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.bjCardSuit {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.bjCardCenterBg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0.12;
+  font-size: 40px;
+  font-family: 'Bodoni Moda', serif;
+}
+
+/* Face down card */
+.bjCardBack {
+  width: 76px;
+  height: 108px;
+  background: linear-gradient(135deg, #262a35, #1c1f2a, #0a0e18);
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+  padding: 4px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 193, 116, 0.3);
+}
+
+.bjCardBackInner {
+  width: 100%;
+  height: 100%;
+  background: #0a0e18;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border: 1px dashed rgba(255, 193, 116, 0.3);
+}
+
+.bjCardBackEmblem {
+  position: absolute;
+  inset: 4px;
+  background: linear-gradient(135deg, rgba(255, 193, 116, 0.2), transparent, rgba(255, 193, 116, 0.1));
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffc174;
+}
+
+/* Side Bets Grid */
+.bjSideBetsRow {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 10px 0;
+  padding: 0 6px;
+}
+
+.bjSideBetCard {
+  background: rgba(28, 31, 42, 0.8);
+  border-radius: 12px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.bjSideBetCard:hover {
+  background: rgba(38, 42, 53, 0.95);
+  border-color: rgba(255, 193, 116, 0.4);
+  transform: translateY(-2px);
+}
+
+.bjSideBetCard.active {
+  border-color: #56e5a9;
+  box-shadow: 0 0 15px rgba(86, 229, 169, 0.25);
+}
+
+.bjSideBetTitle {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.bjSideBetTitle.orange {
+  color: #ffb77d;
+}
+
+.bjSideBetTitle.green {
+  color: #56e5a9;
+}
+
+.bjSideBetOdds {
+  font-size: 10px;
+  color: #a08e7a;
+  margin-top: 1px;
+}
+
+.bjSideChipSpot {
+  margin-top: 6px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+}
+
+.bjSideChipBadge {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 800;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.bjSideChipBadge.orange {
+  background: #ffb77d;
+  color: #4d2600;
+}
+
+.bjSideChipBadge.green {
+  background: #56e5a9;
+  color: #003824;
+}
+
+/* Player Spot */
+.bjPlayerSpot {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.bjChipStackArea {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+
+.bjMainBetDisc {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: rgba(38, 42, 53, 0.65);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6);
+  border: 1px dashed rgba(255, 193, 116, 0.4);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.bjMainBetDisc:hover {
+  transform: scale(1.04);
+  border-color: #ffc174;
+}
+
+.bjMainChipDisplay {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bjMainChipPill {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f59e0b, #ffc174);
+  color: #613b00;
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.bjChipStackDecor {
+  position: absolute;
+  top: -3px;
+  width: 36px;
+  height: 6px;
+  background: #ffddb8;
+  border-radius: 9999px;
+  opacity: 0.6;
+}
+
+.bjMainBetLabel {
+  font-size: 9px;
+  color: #ffc174;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+/* Player Hand Value & Timer */
+.bjScoreTimerRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.bjPlayerScoreTag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #313540;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.bjPlayerScoreTag strong {
+  font-family: 'Bodoni Moda', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffc174;
+}
+
+.bjTurnTag {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(48, 200, 143, 0.18);
+  color: #56e5a9;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.bjTurnTimerBar {
+  width: 200px;
+  height: 5px;
+  background: #262a35;
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-bottom: 8px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.bjTurnTimerProgress {
+  height: 100%;
+  background: linear-gradient(90deg, #ffc174, #56e5a9);
+  border-radius: 9999px;
+  transition: width 1s linear;
+}
+
+/* Player Cards */
+.bjPlayerCard {
+  width: 86px;
+  height: 124px;
+  background: #353944;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px 10px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  user-select: none;
+}
+
+.bjPlayerCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(255, 193, 116, 0.4);
+}
+
+/* Streak & Past Results */
+.bjStreakRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+  margin-top: 10px;
+  margin-bottom: 6px;
+}
+
+.bjStreakPill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #1c1f2a;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  color: #ffc174;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border: 1px solid rgba(255, 193, 116, 0.15);
+}
+
+.bjPastPill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #a08e7a;
+  font-size: 11px;
+}
+
+/* Action Controls Grid */
+.bjActionsGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.bjActionBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 4px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  outline: none;
+}
+
+.bjActionBtn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.bjActionBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.bjActionBtn.hit {
+  background: #56e5a9;
+  color: #003824;
+}
+
+.bjActionBtn.stand {
+  background: #ffc174;
+  color: #472a00;
+}
+
+.bjActionBtn.double {
+  background: #313540;
+  color: #dfe2f1;
+}
+
+.bjActionBtn.split {
+  background: #171b26;
+  color: rgba(216, 195, 173, 0.5);
+}
+
+.bjActionBtn.fold {
+  background: #1c1f2a;
+  color: #ffb4ab;
+}
+
+.bjActionName {
+  font-size: 11px;
+  font-weight: 800;
+  margin-top: 2px;
+  letter-spacing: 0.05em;
+}
+
+.bjActionSub {
+  font-size: 9px;
+  opacity: 0.8;
+  line-height: 1;
+}
+
+/* Chip Selector Carousel */
+.bjChipTrayBox {
+  background: #262a35;
+  border-radius: 12px;
+  padding: 8px 10px;
+  margin-top: 6px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.bjChipTrayTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  padding: 0 4px;
+}
+
+.bjChipTrayLabel {
+  font-size: 10px;
+  font-weight: 700;
+  color: #a08e7a;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.bjChipTrayBalance {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffc174;
+}
+
+.bjChipsScroll {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 4px 2px;
+}
+
+.bjChipBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.2s ease;
+  padding: 0;
+}
+
+.bjChipBtn:hover {
+  transform: scale(1.08);
+}
+
+.bjChipBtn.selected {
+  transform: scale(1.15);
+}
+
+.bjChipOuter {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.bjChipOuter.c10 { background: #353944; }
+.bjChipOuter.c25 { background: #30c88f; }
+.bjChipOuter.c50 { background: #d97707; }
+.bjChipOuter.c100 { background: #f59e0b; box-shadow: 0 0 12px rgba(245, 158, 11, 0.6); }
+.bjChipOuter.c500 { background: linear-gradient(135deg, #93000a, #ffc174); }
+
+.bjChipInner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #0a0e18;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.bjChipOuter.c10 .bjChipInner { color: #dfe2f1; }
+.bjChipOuter.c25 .bjChipInner { color: #56e5a9; }
+.bjChipOuter.c50 .bjChipInner { color: #ffb77d; }
+.bjChipOuter.c100 .bjChipInner { color: #ffc174; }
+.bjChipOuter.c500 .bjChipInner { color: #ffddb8; }
+
+/* Quick Utilities */
+.bjQuickUtilsRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.bjUtilBtn {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #1c1f2a;
+  color: #a08e7a;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.bjUtilBtn:hover {
+  color: #dfe2f1;
+  background: #262a35;
+}
+
+.bjDealStartBtn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #f59e0b, #ffc174);
+  color: #472a00;
+  font-size: 13px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: transform 0.15s ease;
+  margin-top: 8px;
+}
+
+.bjDealStartBtn:active {
+  transform: scale(0.98);
+}
+
+/* Toast Message */
+.bjToast {
+  position: fixed;
+  bottom: 86px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(53, 57, 68, 0.95);
+  color: #dfe2f1;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 100;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid rgba(255, 193, 116, 0.3);
+  animation: bjFadeIn 0.25s ease;
+  pointer-events: none;
+}
+
+@keyframes bjFadeIn {
+  from { opacity: 0; transform: translate(-50%, 10px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}

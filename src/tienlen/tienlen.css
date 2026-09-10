@@ -1,0 +1,693 @@
+/* TIẾN LÊN MIỀN NAM • PHÒNG ĐẠI GIA CASINO STYLING */
+
+.tlScreen {
+  min-height: 100dvh;
+  background-color: #0f131d;
+  color: #dfe2f1;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.tlMain {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  max-width: 540px;
+  margin: 0 auto;
+  padding: 10px 14px 90px;
+  flex-grow: 1;
+}
+
+/* Header Status Bar */
+.tlHeaderStatus {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+  background: rgba(38, 42, 53, 0.9);
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  padding: 10px 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 193, 116, 0.15);
+}
+
+.tlStatusTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tlLiveRoomTag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tlLiveDotWrap {
+  position: relative;
+  display: flex;
+  width: 10px;
+  height: 10px;
+}
+
+.tlPingDot {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #ffc174;
+  opacity: 0.75;
+  animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.tlStaticDot {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #f59e0b;
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.tlRoomTitle {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffc174;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tlTablePill {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #0a0e18;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  font-size: 10px;
+  color: #d8c3ad;
+  font-weight: 600;
+}
+
+.tlStatusBottomRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #d8c3ad;
+  padding-top: 2px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tlBetPerCard {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tlRuleTags {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tlRuleTag {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  background: rgba(49, 53, 64, 0.8);
+}
+
+.tlRuleTag.green {
+  color: #56e5a9;
+}
+
+.tlRuleTag.gold {
+  color: #ffc174;
+}
+
+/* Arena Felt */
+.tlArenaFelt {
+  position: relative;
+  width: 100%;
+  border-radius: 16px;
+  background: #0a0e18;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), inset 0 0 45px rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 12px 10px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(255, 193, 116, 0.2);
+}
+
+.tlAmbientGlow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(23, 27, 38, 0.8), #0a0e18 50%, rgba(38, 42, 53, 0.4));
+  pointer-events: none;
+}
+
+.tlCenterBloom {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  top: 40px;
+  bottom: 40px;
+  border-radius: 9999px;
+  background: rgba(48, 200, 143, 0.05);
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+/* Top Opponent (ĐạiGia_SàiGòn) */
+.tlTopOpponent {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tlOpponentCard {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(28, 31, 42, 0.92);
+  backdrop-filter: blur(8px);
+  padding: 4px 12px 4px 6px;
+  border-radius: 9999px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tlOpponentAvatar {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #313540;
+  border: 1px solid #ffc174;
+}
+
+.tlOpponentAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tlOpponentInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.tlOpponentNameRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tlOpponentName {
+  font-size: 11px;
+  font-weight: 700;
+  color: #dfe2f1;
+}
+
+.tlVipBadge {
+  background: rgba(255, 193, 116, 0.2);
+  color: #ffc174;
+  font-size: 8px;
+  font-weight: 800;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.tlOpponentChips {
+  font-size: 10px;
+  font-weight: 700;
+  color: #ffc174;
+}
+
+.tlCardsCountBadge {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: rgba(10, 14, 24, 0.9);
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #dfe2f1;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Middle Row: Left Opponent + Center Table Discard + Right Opponent */
+.tlMiddleRow {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin: auto 0;
+  padding: 4px 2px;
+}
+
+.tlSidePlayer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.tlSidePlayer.right {
+  align-items: flex-end;
+}
+
+.tlFoldedTag {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: rgba(147, 0, 10, 0.85);
+  color: #ffdad6;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* Center Table Pot & Discard Pile */
+.tlCenterArena {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.tlPotSummaryBadge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(38, 42, 53, 0.8);
+  backdrop-filter: blur(6px);
+  padding: 2px 10px;
+  border-radius: 9999px;
+  margin-bottom: 6px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+  font-size: 10px;
+  color: #d8c3ad;
+  text-transform: uppercase;
+}
+
+.tlPotAmount {
+  font-size: 12px;
+  font-weight: 800;
+  color: #ffc174;
+}
+
+.tlPlayedCardsStage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+}
+
+.tlPlayedCardsGlow {
+  position: absolute;
+  width: 120px;
+  height: 90px;
+  background: rgba(245, 158, 11, 0.25);
+  border-radius: 9999px;
+  filter: blur(18px);
+  pointer-events: none;
+}
+
+/* Played Table Card */
+.tlTableCard {
+  width: 58px;
+  height: 82px;
+  border-radius: 8px;
+  background: #0a0e18;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.7);
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 193, 116, 0.3);
+  user-select: none;
+}
+
+.tlTableCard.overlap {
+  margin-left: -18px;
+}
+
+.tlTableCardBg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(53, 57, 68, 0.4), rgba(38, 42, 53, 0.9));
+}
+
+.tlPlayedByTag {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  background: rgba(10, 14, 24, 0.85);
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 10px;
+  color: #d8c3ad;
+}
+
+/* Active Turn Notification Banner */
+.tlTurnBanner {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(28, 31, 42, 0.85);
+  backdrop-filter: blur(8px);
+  padding: 6px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 193, 116, 0.2);
+}
+
+.tlTurnLabelGroup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tlTurnTitle {
+  font-size: 11px;
+  font-weight: 800;
+  color: #ffc174;
+}
+
+.tlTurnRuleHint {
+  font-size: 10px;
+  color: #d8c3ad;
+}
+
+.tlTimerRingWidget {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #0a0e18;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tlTimerCircleBox {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tlTimerNum {
+  position: absolute;
+  font-size: 9px;
+  font-weight: 800;
+  color: #ffc174;
+}
+
+.tlTimerSec {
+  font-size: 10px;
+  font-weight: 600;
+  color: #dfe2f1;
+}
+
+/* Player Hand Console */
+.tlPlayerHandConsole {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: #171b26;
+  border-radius: 16px;
+  padding: 10px 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.tlHandHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 6px;
+}
+
+.tlHandCountText {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: #d8c3ad;
+}
+
+.tlHandSortGroup {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #0a0e18;
+  padding: 2px;
+  border-radius: 8px;
+}
+
+.tlSortBtn {
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  background: transparent;
+  color: #d8c3ad;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tlSortBtn.active {
+  background: #262a35;
+  color: #ffc174;
+}
+
+/* Fanned Cards in Hand */
+.tlHandScrollContainer {
+  position: relative;
+  width: 100%;
+  min-height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: auto;
+  overflow-y: visible;
+  padding: 20px 6px 10px;
+}
+
+.tlHandCard {
+  cursor: pointer;
+  flex-shrink: 0;
+  width: 56px;
+  height: 94px;
+  border-radius: 8px;
+  background: #313540;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  padding: 4px 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  user-select: none;
+  margin-right: -24px;
+}
+
+.tlHandCard:last-child {
+  margin-right: 0;
+}
+
+.tlHandCard:hover {
+  transform: translateY(-8px);
+}
+
+.tlHandCard.selected {
+  transform: translateY(-20px);
+  background: #353944;
+  box-shadow: 0 0 20px rgba(255, 193, 116, 0.6), 0 8px 25px rgba(0, 0, 0, 0.7);
+  border-color: #ffc174;
+}
+
+/* VIP Heo Rô Styling */
+.tlHandCard.heoVip {
+  background: linear-gradient(180deg, #353944, #313540, #262a35);
+  box-shadow: 0 6px 16px rgba(255, 183, 125, 0.3);
+  border: 1px solid rgba(255, 183, 125, 0.4);
+}
+
+.tlCardCornerTop {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1;
+}
+
+.tlCardCornerBottom {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1;
+  transform: rotate(180deg);
+}
+
+.tlCardRank {
+  font-family: 'Bodoni Moda', serif;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.tlCardSuit {
+  font-size: 11px;
+}
+
+.tlCardCenterSuit {
+  font-size: 18px;
+  line-height: 1;
+  text-align: center;
+}
+
+/* Main Action Controls */
+.tlActionControlsRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 8px;
+}
+
+.tlPassBtn {
+  flex: 1;
+  height: 44px;
+  border-radius: 12px;
+  background: #262a35;
+  color: #d8c3ad;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tlPassBtn:hover:not(:disabled) {
+  color: #dfe2f1;
+  background: #313540;
+}
+
+.tlHintBtn {
+  flex: 1;
+  height: 44px;
+  border-radius: 12px;
+  background: #262a35;
+  color: #ffc174;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border: 1px solid rgba(255, 193, 116, 0.2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tlPlayBtn {
+  flex: 1.6;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #f59e0b, #ffc174, #f59e0b);
+  color: #472a00;
+  font-size: 13px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: none;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.45);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tlPlayBtn:active:not(:disabled),
+.tlPassBtn:active:not(:disabled),
+.tlHintBtn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.tlSocialBtnGroup {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tlEmojiBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #262a35;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.tlEmojiBtn:hover {
+  transform: scale(1.1);
+}
+
+.tlEmojiBtn:active {
+  transform: scale(0.9);
+}
+
+/* Flying Floating Emojis */
+.tlFloatingEmoji {
+  position: absolute;
+  font-size: 28px;
+  z-index: 50;
+  pointer-events: none;
+  animation: tlFloatUp 1.8s ease-out forwards;
+}
+
+@keyframes tlFloatUp {
+  0% { opacity: 1; transform: translate(0, 0) scale(0.8); }
+  50% { opacity: 0.9; transform: translate(-10px, -60px) scale(1.2); }
+  100% { opacity: 0; transform: translate(10px, -120px) scale(1.4); }
+}
