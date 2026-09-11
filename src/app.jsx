@@ -8,6 +8,7 @@ import {Slot} from './slot/Slot.jsx';
 import {Blackjack} from './blackjack/Blackjack.jsx';
 import {TienLen} from './tienlen/TienLen.jsx';
 import {CaNgua} from './cangua/CaNgua.jsx';
+import {BauCua} from './baucua/BauCua.jsx';
 import {EventsPage} from './home/EventsPage.jsx';
 import {HistoryPage} from './home/HistoryPage.jsx';
 import {Lobby} from './home/Lobby.jsx';
@@ -29,6 +30,7 @@ const routes = {
   blackjack: 'blackjack',
   tienlen: 'tien-len',
   cangua: 'co-ca-ngua-vip',
+  baucua: 'bau-cua',
   events: 'su-kien',
   history: 'lich-su',
   profile: 'ca-nhan'
@@ -54,6 +56,9 @@ const routeAliases = {
   'co-ca-ngua-vip': 'cangua',
   cangua: 'cangua',
   ludo: 'cangua',
+  'bau-cua': 'baucua',
+  'bau-cua-vip': 'baucua',
+  baucua: 'baucua',
   'su-kien': 'events',
   events: 'events',
   event: 'events',
@@ -123,6 +128,10 @@ export function App() {
   useEffect(() => {
     if (!token) return;
     const syncBalance = () => {
+      // Tránh ghi đè số dư giữa chừng khi người chơi đang lắc xúc xắc / quay game
+      const activeGames = ['dice', 'baucua', 'slot', 'roulette', 'fish', 'poker', 'blackjack', 'tienlen'];
+      if (activeGames.includes(screen)) return;
+
       api('/me', {token})
         .then(data => {
           if (data?.user) {
@@ -137,7 +146,7 @@ export function App() {
       clearInterval(interval);
       window.removeEventListener('focus', syncBalance);
     };
-  }, [token]);
+  }, [token, screen]);
 
   // Danh sách game do admin quản lý, tự động merge fallback và đồng bộ
   useEffect(() => {
@@ -222,6 +231,7 @@ export function App() {
     const open = games.some(game => GAME_SCREEN[game.key] === screen && game.enabled !== false) ? screen : 'lobby';
     page = open === 'slot' ? <Slot {...common} />
       : open === 'dice' ? <Dice {...common} />
+      : open === 'baucua' ? <BauCua {...common} />
       : open === 'fish' ? <FishGame {...common} />
       : open === 'poker' ? <Poker {...common} />
       : open === 'roulette' ? <Roulette {...common} />

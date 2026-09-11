@@ -1,15 +1,16 @@
 import {fxAshEmbers, fxCoinRainDoF, fxConfettiAll, fxFireworks, fxFountainCoins, fxSparkles, fxVoidShards} from './fx-data.js';
 
-export function ResultFx({fx,onDismiss}){
- if(!fx.type)return null;
- const win=['win','smallWin','bigWin','jackpot','diceWin','fishWin','combo','bossWin'].includes(fx.type);
- const isJackpot=fx.type==='jackpot';
- const isBigWin=fx.type==='bigWin';
- const isBossWin=fx.type==='bossWin';
- const isCombo=fx.type==='combo';
- const isDiceWin=fx.type==='diceWin';
- const isFishWin=fx.type==='fishWin';
- const lose=['lose','diceLose'].includes(fx.type);
+export function ResultFx({fx,onDismiss,...rest}){
+ const fxData = fx || rest;
+ if(!fxData?.type)return null;
+ const win=['win','smallWin','bigWin','jackpot','diceWin','fishWin','combo','bossWin'].includes(fxData.type);
+ const isJackpot=fxData.type==='jackpot';
+ const isBigWin=fxData.type==='bigWin';
+ const isBossWin=fxData.type==='bossWin';
+ const isCombo=fxData.type==='combo';
+ const isDiceWin=fxData.type==='diceWin';
+ const isFishWin=fxData.type==='fishWin';
+ const lose=['lose','diceLose'].includes(fxData.type);
 
  let mainTitle = 'VICTORY';
  let subTitle = 'CHIẾN THẮNG RỰC RỠ';

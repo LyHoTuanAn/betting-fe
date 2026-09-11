@@ -91,10 +91,10 @@ export function Dice({goHome,balance,setBalance,sound,setSound,token}){
    setRolling(true);
    setNote('Đang lắc xúc xắc...');
 
-   await new Promise(r => { timerId = setTimeout(r, 1400); });
+   await new Promise(r => { timerId = setTimeout(r, 1600); });
    if(!active) return;
 
-   // 3. Reveal dice result on the table first
+   // 3. Open cup & reveal 3 dice
    const pRes = pendingResultRef.current;
    const betAmt = placedRef.current;
    const bSide = placedSideRef.current;
@@ -109,18 +109,19 @@ export function Dice({goHome,balance,setBalance,sound,setSound,token}){
    setHistory(h => [result, ...h].slice(0, 10));
    setNote(`🎲 ${d.join(' - ')} = ${total} điểm · ${result==='T'?'TÀI (11-17)':'XỈU (3-10)'}`);
 
-   // Allow user to clearly see the 3 dice and sum on table before victory/defeat popup
-   await new Promise(r => { timerId = setTimeout(r, 2200); });
+   // Wait for cup to lift up and reveal dice before triggering victory & balance credit
+   await new Promise(r => { timerId = setTimeout(r, 700); });
    if(!active) return;
 
    if(betAmt > 0){
     if(bSide === result){
      const profit = pRes ? (pRes.payout - betAmt) : Math.floor(betAmt * 0.98);
+     // Cộng tiền và kích hoạt hiệu ứng thắng cùng một lúc
      if(pRes) setBalanceRef.current?.(pRes.balance);
      else setBalanceRef.current?.(v => v + betAmt + profit);
      setNote(`🎉 Thắng +${money(profit)} (${result==='T'?'TÀI':'XỈU'} ${total} điểm)`);
      playCelebrationAudio('diceWin', soundRef.current);
-     triggerFxRef.current?.('diceWin', `+${money(profit)}`, 3800);
+     triggerFxRef.current?.('diceWin', `+${money(profit)}`, 3500);
     } else {
      if(pRes) setBalanceRef.current?.(pRes.balance);
      setNote(`💔 Thua -${money(betAmt)} (${result==='T'?'TÀI':'XỈU'} ${total} điểm)`);
@@ -129,7 +130,7 @@ export function Dice({goHome,balance,setBalance,sound,setSound,token}){
    }
 
    // 4. Wait for player to enjoy the round result, then restart next round
-   await new Promise(r => { timerId = setTimeout(r, 3600); });
+   await new Promise(r => { timerId = setTimeout(r, 3200); });
    if(!active) return;
    runRound();
   };

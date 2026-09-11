@@ -1,0 +1,752 @@
+/* ==========================================================================
+   BẦU CUA VIP - ROYAL LUXURY CASINO STYLESHEET
+   Responsive 100dvh Mobile Fit & 3D Web Audio Experience
+   ========================================================================== */
+
+.bauCuaScreen {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  height: 100dvh;
+  background-color: #0a0d16;
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.15) 0%, transparent 60%),
+    radial-gradient(circle at 50% 100%, rgba(15, 23, 42, 0.98) 0%, #05070c 100%);
+  color: #dfe2f1;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  user-select: none;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  scrollbar-width: none;
+}
+.bauCuaScreen::-webkit-scrollbar { display: none; }
+
+/* App Main Container (Max 520px width for taller, larger presentation) */
+.bauCuaContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 520px;
+  min-height: calc(100dvh - 54px);
+  margin: 0 auto;
+  padding: clamp(6px, 1.2vh, 12px) clamp(10px, 3vw, 16px) clamp(8px, 1.5vh, 14px);
+  box-sizing: border-box;
+  gap: clamp(6px, 1.2vh, 10px);
+}
+
+/* ==========================================================================
+   1. STREAMLINED HEADER CARD (ROW 1: TITLE + TIMER, ROW 2: HISTORY)
+   ========================================================================== */
+.bcHeaderCard {
+  background: linear-gradient(135deg, rgba(28, 31, 42, 0.95) 0%, rgba(18, 22, 32, 0.98) 100%);
+  border: 1px solid rgba(255, 193, 116, 0.25);
+  border-radius: 12px;
+  padding: clamp(3px, 0.6vh, 5px) clamp(8px, 2vw, 10px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.bcHeaderTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+}
+
+.bcRoomInfo {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.bcRoomTitle {
+  font-family: 'Bodoni Moda', serif, sans-serif;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #ffc174;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* History Strip on Row 2 */
+.bcHistoryBar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(10, 14, 24, 0.8);
+  border-radius: 8px;
+  padding: 2.5px 7px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.bcHistoryLabel {
+  font-size: 9px;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+}
+
+.bcHistoryList {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex: 1;
+}
+.bcHistoryList::-webkit-scrollbar { display: none; }
+
+.bcHistoryRound {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: rgba(38, 42, 53, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 1.5px 6px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  font-size: 11px;
+}
+
+/* Countdown Timer Badge in Header Right */
+.bcTimerPill {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 9px;
+  border-radius: 14px;
+  font-size: 11.5px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.bcTimerPill.normal {
+  background: rgba(48, 200, 143, 0.2);
+  color: #56e5a9;
+  border: 1px solid rgba(86, 229, 169, 0.45);
+  box-shadow: 0 0 10px rgba(86, 229, 169, 0.25);
+}
+.bcTimerPill.danger {
+  background: rgba(239, 68, 68, 0.25);
+  color: #ffb4ab;
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+  animation: bcPulseFast 0.5s infinite alternate;
+}
+
+@keyframes bcPulseFast {
+  from { transform: scale(1); }
+  to { transform: scale(1.06); }
+}
+
+/* ==========================================================================
+   2. SHAKER BOWL & 3D DICE STAGE (TALLER, WIDER, STATIONARY TRAY WITH FREE DICE TUMBLE)
+   ========================================================================== */
+.bcStageContainer {
+  position: relative;
+  background: radial-gradient(circle at 50% 50%, rgba(32, 38, 54, 0.98), rgba(12, 16, 25, 0.98));
+  border: 1.5px solid rgba(255, 193, 116, 0.35);
+  border-radius: 14px;
+  padding: clamp(10px, 1.8vh, 16px) 12px clamp(6px, 1vh, 10px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+  flex: 1;
+  min-height: clamp(180px, 28vh, 240px);
+}
+
+.bcStageGlow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(245, 158, 11, 0.2) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Taller & Wider Royal Lacquer Plate */
+.bcPlateStageWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 380px;
+  margin: auto 0;
+  perspective: 1000px;
+}
+
+.bcLacquerTray {
+  width: clamp(280px, 86vw, 360px);
+  height: clamp(120px, 18.5vh, 155px);
+  background: linear-gradient(145deg, #3c2918 0%, #1a110a 50%, #4a2e14 100%);
+  border-radius: 9999px;
+  padding: 7px;
+  box-shadow: 
+    0 18px 38px rgba(0, 0, 0, 0.95),
+    inset 0 4px 10px rgba(255, 215, 0, 0.55),
+    inset 0 -4px 10px rgba(0, 0, 0, 0.95);
+  border: 2.5px solid rgba(255, 215, 0, 0.7);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bcTrayInnerMat {
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse at center, #252e42 0%, #0c101a 85%);
+  border-radius: 9999px;
+  border: 1.5px dashed rgba(255, 215, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: inset 0 6px 18px rgba(0, 0, 0, 0.9);
+}
+
+/* 3D Dice Row */
+.bcDiceRow3D {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 4vw, 24px);
+  z-index: 5;
+}
+
+.bcDiceWrapper {
+  position: relative;
+  width: clamp(46px, 7.2vh, 54px);
+  height: clamp(46px, 7.2vh, 54px);
+  perspective: 800px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Smooth 3D Spinning Animation for Dice Cubes (No Vertical Bouncing) */
+.bcDiceCube3D {
+  width: clamp(44px, 6.8vh, 50px);
+  height: clamp(44px, 6.8vh, 50px);
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.bcDiceCube3D.isSpinning-0 {
+  animation: bcDiceSpinLoop0 0.52s infinite linear;
+}
+.bcDiceCube3D.isSpinning-1 {
+  animation: bcDiceSpinLoop1 0.44s infinite linear;
+}
+.bcDiceCube3D.isSpinning-2 {
+  animation: bcDiceSpinLoop2 0.48s infinite linear;
+}
+
+@keyframes bcDiceSpinLoop0 {
+  0%   { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+  100% { transform: rotateX(720deg) rotateY(1080deg) rotateZ(360deg); }
+}
+
+@keyframes bcDiceSpinLoop1 {
+  0%   { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+  100% { transform: rotateX(-1080deg) rotateY(720deg) rotateZ(-360deg); }
+}
+
+@keyframes bcDiceSpinLoop2 {
+  0%   { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+  100% { transform: rotateX(720deg) rotateY(-1080deg) rotateZ(720deg); }
+}
+
+.bcDiceFace {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(145deg, #2b3243 0%, #171b26 100%);
+  border: 2px solid #ffd700;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.4), 0 6px 16px rgba(0, 0, 0, 0.8);
+  backface-visibility: hidden;
+  box-sizing: border-box;
+  padding: 2px;
+}
+
+.bcDiceFace .faceText {
+  font-size: 9px;
+  font-weight: 900;
+  line-height: 1;
+  margin-top: 1px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+}
+
+/* 3D Cube Face Transforms for 48px cube */
+.faceFront  { transform: rotateY(0deg) translateZ(clamp(21px, 3.2vh, 24px)); }
+.faceBack   { transform: rotateY(180deg) translateZ(clamp(21px, 3.2vh, 24px)); }
+.faceRight  { transform: rotateY(90deg) translateZ(clamp(21px, 3.2vh, 24px)); }
+.faceLeft   { transform: rotateY(-90deg) translateZ(clamp(21px, 3.2vh, 24px)); }
+.faceTop    { transform: rotateX(90deg) translateZ(clamp(21px, 3.2vh, 24px)); }
+.faceBottom { transform: rotateX(-90deg) translateZ(clamp(21px, 3.2vh, 24px)); }
+
+.bcDiceShadow {
+  position: absolute;
+  bottom: -6px;
+  width: 85%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 50%;
+  filter: blur(3px);
+  pointer-events: none;
+}
+
+.bcWinRevealLight {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.5) 0%, transparent 75%);
+  animation: bcGlowPulse 1s infinite alternate;
+}
+@keyframes bcGlowPulse {
+  from { opacity: 0.5; }
+  to { opacity: 1; }
+}
+
+.bcStatusRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+/* ==========================================================================
+   3. CƯỢC BÃO 3 CON (TRIPLE POT ZONE)
+   ========================================================================== */
+.bcTripleBetBanner {
+  background: linear-gradient(90deg, rgba(42, 47, 60, 0.95) 0%, rgba(28, 31, 42, 0.98) 50%, rgba(42, 47, 60, 0.95) 100%);
+  border: 1.5px solid rgba(255, 193, 116, 0.35);
+  border-radius: 10px;
+  padding: clamp(3px, 0.5vh, 5px) clamp(8px, 2vw, 12px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.bcTripleBetBanner:hover {
+  border-color: #ffd700;
+  background: linear-gradient(90deg, rgba(52, 59, 75, 0.98), rgba(38, 43, 56, 0.98));
+}
+.bcTripleBetBanner:active {
+  transform: scale(0.98);
+}
+.bcTripleBetBanner.isWinning {
+  border-color: #ffd700 !important;
+  box-shadow: 0 0 24px rgba(255, 215, 0, 0.9);
+  animation: bcWinFlash 0.5s infinite alternate;
+}
+
+.bcTripleLeft {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.bcCycloneIconBox {
+  width: clamp(24px, 3.2vh, 28px);
+  height: clamp(24px, 3.2vh, 28px);
+  border-radius: 7px;
+  background: rgba(10, 14, 24, 0.9);
+  border: 1px solid rgba(255, 193, 116, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffc174;
+}
+
+.bcTripleTitle {
+  font-family: 'Bodoni Moda', serif;
+  font-size: clamp(11px, 1.5vh, 12.5px);
+  font-weight: 800;
+  color: #ffc174;
+  line-height: 1.1;
+}
+
+.bcTripleSub {
+  font-size: 8.5px;
+  color: #94a3b8;
+}
+
+.bcRateBadge {
+  background: rgba(245, 158, 11, 0.25);
+  color: #ffc174;
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-size: 8.5px;
+  font-weight: 800;
+}
+
+/* ==========================================================================
+   4. 6 CLASSIC BETTING BOXES (COMPACT FIXED HEIGHT, NO EXCESSIVE VERTICAL STRETCH)
+   ========================================================================== */
+.bcBetGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(4px, 0.8vw, 8px);
+  width: 100%;
+  flex: none;
+  height: auto;
+}
+
+.bcMascotBox {
+  background: linear-gradient(165deg, rgba(38, 43, 56, 0.98) 0%, rgba(20, 24, 34, 0.98) 100%);
+  border: 1.5px solid rgba(255, 193, 116, 0.22);
+  border-radius: 12px;
+  padding: clamp(4px, 0.8vh, 8px);
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  height: auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.65);
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.2, 0.8, 0.4, 1);
+  text-align: left;
+}
+
+/* Diagonal Light Sweep effect across the box */
+.bcMascotBox::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(30deg);
+  pointer-events: none;
+  transition: transform 0.6s ease;
+}
+
+.bcMascotBox:hover::after {
+  transform: rotate(30deg) translate(300%, 0);
+}
+
+.bcMascotBox:hover {
+  background: linear-gradient(165deg, rgba(50, 56, 72, 0.98), rgba(26, 31, 44, 0.98));
+  border-color: rgba(255, 215, 0, 0.7);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8), 0 0 16px rgba(255, 193, 116, 0.3);
+}
+
+.bcMascotBox:active {
+  transform: scale(0.95);
+}
+
+/* Winning State with Golden Victory Glow */
+.bcMascotBox.isWinning {
+  border-color: #ffd700 !important;
+  box-shadow: 0 0 24px rgba(255, 215, 0, 0.9), inset 0 0 18px rgba(255, 215, 0, 0.4);
+  animation: bcWinFlash 0.5s infinite alternate;
+}
+
+.bcBoxHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  position: relative;
+  z-index: 3;
+}
+
+.bcBoxTitle {
+  font-family: 'Bodoni Moda', serif;
+  font-size: clamp(12px, 1.7vh, 14.5px);
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+
+.bcBoxRate {
+  font-size: 9px;
+  font-weight: 800;
+  color: #94a3b8;
+  background: rgba(10, 14, 24, 0.85);
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  line-height: 1;
+}
+
+.bcBoxCenter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: auto 0;
+  width: 100%;
+  height: 60%;
+}
+
+/* Pulsing Aura Behind Mascot */
+.bcMascotAura {
+  position: absolute;
+  width: 75%;
+  height: 75%;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  animation: bcAuraPulse 3s infinite alternate ease-in-out;
+  filter: blur(8px);
+}
+
+@keyframes bcAuraPulse {
+  0% { transform: scale(0.85); opacity: 0.45; }
+  100% { transform: scale(1.2); opacity: 0.95; }
+}
+
+/* Large, High-Def 3D Mascot SVG */
+.bcMascotSvg {
+  width: clamp(52px, 8.5vh, 76px);
+  height: clamp(52px, 8.5vh, 76px);
+  max-width: 84%;
+  max-height: 84%;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 10px rgba(255, 215, 0, 0.25));
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.25s ease;
+  animation: bcMascotFloat 3.2s ease-in-out infinite;
+}
+
+@keyframes bcMascotFloat {
+  0%, 100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.06) rotate(1.8deg);
+  }
+}
+
+.bcMascotBox:hover .bcMascotSvg {
+  transform: scale(1.18) translateY(-5px) rotate(-2deg);
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 18px rgba(255, 215, 0, 0.65));
+  animation: none;
+}
+
+.bcMascotBox.isWinning .bcMascotSvg {
+  animation: bcWinnerJump 0.55s infinite ease-in-out alternate;
+  filter: drop-shadow(0 0 18px #ffd700) drop-shadow(0 0 30px rgba(255, 215, 0, 0.85));
+}
+
+@keyframes bcWinnerJump {
+  0% { transform: translateY(0) scale(1) rotate(0deg); }
+  100% { transform: translateY(-8px) scale(1.22) rotate(4deg); }
+}
+
+/* Floating User Bet Chip on Box */
+.bcFloatingChip {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: clamp(16px, 2.2vh, 20px);
+  height: clamp(16px, 2.2vh, 20px);
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  border: 1.5px solid #ffd700;
+  color: #0f131d;
+  font-size: 8px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.8);
+  animation: bcChipDrop 0.22s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+@keyframes bcChipDrop {
+  from { transform: scale(0.3) translateY(-10px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.bcMatchCountBadge {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  color: #ffffff;
+  font-size: 8.5px;
+  font-weight: 900;
+  padding: 1px 4px;
+  border-radius: 5px;
+  border: 1px solid #fecaca;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.9);
+}
+
+.bcBoxFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: rgba(10, 14, 24, 0.8);
+  border-radius: 4px;
+  padding: 1px 4px;
+  font-size: 8.5px;
+}
+
+.bcBoxTotal {
+  color: #94a3b8;
+}
+
+.bcBoxUserBet {
+  font-weight: 800;
+  color: #ffc174;
+}
+
+/* ==========================================================================
+   5. CHIP RACK & QUICK ACTION CONTROLS (BALANCED & PROPORTIONAL)
+   ========================================================================== */
+.bcControlsCard {
+  background: linear-gradient(135deg, rgba(24, 27, 36, 0.94), rgba(15, 18, 26, 0.98));
+  border: 1px solid rgba(255, 193, 116, 0.22);
+  border-radius: 11px;
+  padding: clamp(5px, 0.9vh, 8px) clamp(8px, 2vw, 12px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4px, 0.7vh, 6px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7);
+  flex-shrink: 0;
+}
+
+/* Chip Selector Rack */
+.bcChipRack {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  padding: 1px 0;
+}
+
+.bcChipBtn {
+  width: clamp(28px, 4vh, 34px);
+  height: clamp(28px, 4vh, 34px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  position: relative;
+  flex-shrink: 0;
+  padding: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  border: 1.5px dashed rgba(255, 255, 255, 0.35);
+}
+
+.bcChipBtn:active {
+  transform: scale(0.92);
+}
+
+.bcChipBtn.active {
+  transform: translateY(-2px) scale(1.08);
+  border: 1.8px solid #ffd700;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.85), 0 3px 8px rgba(0, 0, 0, 0.85);
+}
+
+.bcChipInner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bodoni Moda', serif;
+  font-size: clamp(9px, 1.35vh, 11px);
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+/* Chip Color Variations */
+.chip-10 { background: #475569; }
+.chip-25 { background: #059669; }
+.chip-50 { background: #d97706; }
+.chip-100 { background: #f59e0b; }
+.chip-500 { background: #dc2626; }
+.chip-all { background: linear-gradient(135deg, #ffd700, #ea580c); }
+
+/* Quick Action Row */
+.bcActionGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+}
+
+.bcActionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  background: rgba(34, 38, 49, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 7px;
+  padding: 4px 3px;
+  height: clamp(28px, 3.8vh, 34px);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.bcActionBtn:hover {
+  background: rgba(48, 54, 70, 0.98);
+  border-color: rgba(255, 193, 116, 0.35);
+}
+.bcActionBtn:active {
+  transform: scale(0.96);
+}
+
+.bcActionBtn.confirmBtn {
+  background: linear-gradient(135deg, #ffc174 0%, #f59e0b 50%, #d97706 100%);
+  border: 1px solid #ffd700;
+  color: #2a1700;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.35);
+}
+.bcActionBtn.confirmBtn:hover {
+  opacity: 0.92;
+}
+
+.bcBtnMainText {
+  font-family: 'Bodoni Moda', serif;
+  font-size: clamp(9.5px, 1.35vh, 11px);
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+}
