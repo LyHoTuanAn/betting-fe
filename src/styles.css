@@ -76,6 +76,7 @@ button{font:inherit;color:inherit;border:0;cursor:pointer;-webkit-tap-highlight-
 .gameCard.blackjack{border-color:#f59e0b}
 .gameCard.tienlen{border-color:#e11d48}
 .gameCard.cangua{border-color:#ffc174}
+.gameCard.baucua{border-color:#f59e0b}
 .cardHit{
   width:100%;
   height:100%;
@@ -393,11 +394,52 @@ button{font:inherit;color:inherit;border:0;cursor:pointer;-webkit-tap-highlight-
  text-align:center;
  gap:clamp(6px,1.1vh,12px);
 }
-.diceHeader{display:flex;flex-direction:column;align-items:center;gap:clamp(2px,0.4vh,5px);flex-shrink:0}
-.roundNo{font:800 clamp(10px,1.4vh,12px) Oswald;background:rgba(72,58,29,0.85);border:1px solid #7c612e;padding:clamp(3px,0.4vh,5px) clamp(10px,2.5vw,16px);border-radius:999px;color:#f5dc9e;letter-spacing:1px;box-shadow:0 2px 8px #0006}
-.timer{font:900 clamp(26px,4.4vh,38px) Oswald;color:#ffe68d;text-shadow:0 0 16px #ffb300,0 2px 4px #000;margin:0;line-height:1;position:relative;letter-spacing:2px}
-.timer.danger{color:#ff493f;animation:pulse .5s infinite;text-shadow:0 0 16px #ff3424}
-.timer:after{content:'';position:absolute;left:50%;top:50%;width:clamp(52px,8vh,72px);height:clamp(52px,8vh,72px);border-radius:50%;border:2px solid #ffd35c55;border-top-color:#fff4b0;transform:translate(-50%,-50%);animation:timerCircle 18s linear infinite;pointer-events:none}
+.diceHeader{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ width:100%;
+ background:linear-gradient(180deg,#241a10 0%,#130d07 100%);
+ border:1.5px solid #6b4d1f;
+ border-radius:12px;
+ padding:clamp(5px,0.8vh,8px) clamp(12px,2.5vw,16px);
+ box-shadow:0 4px 12px #0008,inset 0 1px 0 #ffffff14;
+ position:relative;
+ z-index:10;
+ flex-shrink:0;
+ box-sizing:border-box;
+}
+.roundNo{
+ font:800 clamp(11px,1.5vh,13px) Oswald;
+ background:rgba(72,58,29,0.85);
+ border:1px solid #7c612e;
+ padding:clamp(3px,0.4vh,5px) clamp(10px,2vw,14px);
+ border-radius:999px;
+ color:#f5dc9e;
+ letter-spacing:1px;
+ box-shadow:0 2px 6px #0006;
+}
+.timer{
+ font:900 clamp(15px,2.2vh,20px) Oswald;
+ color:#ffe68d;
+ text-shadow:0 0 12px #ffb300,0 2px 4px #000;
+ margin:0;
+ line-height:1;
+ position:relative;
+ letter-spacing:1.5px;
+ background:rgba(255,215,0,0.12);
+ border:1px solid rgba(255,215,0,0.35);
+ padding:3px 12px;
+ border-radius:20px;
+}
+.timer.danger{
+ color:#ff493f;
+ animation:pulse .5s infinite;
+ text-shadow:0 0 14px #ff3424;
+ background:rgba(255,73,63,0.18);
+ border-color:rgba(255,73,63,0.5);
+}
+.timer:after{display:none}
 .bowl{width:min(100%,clamp(230px,38vh,330px));height:clamp(120px,19vh,175px);margin:0 auto;padding-inline:12px;background:none;position:relative;display:grid;place-items:center;filter:drop-shadow(0 8px 10px #000);border-radius:45%;flex:1;min-height:0}
 .bowl>img{position:absolute;width:100%;height:100%;object-fit:contain;transition:transform .35s ease,filter .35s ease}
 .bowl.rolling>img{transform:translateY(-3px) scale(1.03);filter:brightness(1.12) drop-shadow(0 0 10px #ffdc78)}
@@ -514,26 +556,36 @@ button{font:inherit;color:inherit;border:0;cursor:pointer;-webkit-tap-highlight-
 .quickMulPill:hover{background:#4a3b26;color:#fff;border-color:#caa969}
 .quickMulPill:active{transform:scale(0.94)}
 .quickMulPill.max{color:#ff9800;border-color:#ff980088;font-weight:900}
-.chips{display:flex;justify-content:space-between;gap:clamp(6px,1.5vw,12px);margin:0}
+.chips{
+ display:grid;
+ grid-template-columns:repeat(8, 1fr);
+ gap:clamp(4px, 1vw, 8px);
+ margin:0;
+ width:100%;
+}
 .chips button{
- width:clamp(40px,6.2vh,52px);
- height:clamp(40px,6.2vh,52px);
+ width:100%;
+ aspect-ratio:1 / 1;
+ height:auto;
+ max-width:48px;
+ margin:0 auto;
  border-radius:50%;
  background:radial-gradient(circle at 35% 30%,#3d2f19,#1a1309);
- border:2.5px dashed #8a6c35;
- font:900 clamp(10.5px,1.6vh,12.5px) Oswald;
+ border:2px dashed #8a6c35;
+ font:900 clamp(9.5px,1.4vh,11.5px) Oswald;
  color:#ffd875;
- box-shadow:0 4px 12px #000a;
+ box-shadow:0 3px 8px #000a;
  display:grid;
  place-items:center;
- transition:transform .12s,border-color .12s;
+ padding:0;
+ transition:transform .12s,border-color .12s,box-shadow .12s;
 }
 .chips button.active{
  background:radial-gradient(circle at 35% 30%,#fff099,#f5a623 50%,#b86e00);
- border:2.5px solid #fff5b8;
+ border:2px solid #fff5b8;
  color:#3b1e00;
- transform:translateY(-3px);
- box-shadow:0 0 16px #f5a623aa,0 6px 14px #000c;
+ transform:translateY(-2px) scale(1.06);
+ box-shadow:0 0 14px #f5a623cc,0 4px 10px #000c;
 }
 .placeBtn{
  width:100%;
@@ -1476,26 +1528,26 @@ button{font:inherit;color:inherit;border:0;cursor:pointer;-webkit-tap-highlight-
 .diceScreen{background:radial-gradient(ellipse at 50% 8%,#8d1e18 0,#3d0708 30%,#130607 68%,#050303 100%)!important}
 .diceScreen:before{inset:62px 0 0;background:radial-gradient(ellipse at 50% 20%,#ffd66a1f,#0000 42%),linear-gradient(90deg,#0000,#ffffff08,#0000);opacity:1}
 .diceBody{position:relative;overflow:hidden}
-.diceBody:before{content:'';position:absolute;left:50%;top:94px;width:min(94vw,820px);height:440px;transform:translateX(-50%) perspective(900px) rotateX(62deg);border-radius:50%;background:radial-gradient(ellipse at 50% 38%,#1e7c5a,#0e412f 52%,#092019 78%,#0000 80%);box-shadow:inset 0 0 70px #000b,0 35px 60px #0008;pointer-events:none}
-.diceBody:after{content:'';position:absolute;left:50%;top:110px;width:min(86vw,720px);height:330px;transform:translateX(-50%) perspective(900px) rotateX(62deg);border-radius:50%;background:repeating-radial-gradient(ellipse at 50% 50%,#ffffff0b 0 1px,#0000 1px 9px);opacity:.6;pointer-events:none}
+.diceBody:before{content:'';position:absolute;left:50%;top:115px;width:min(94vw,820px);height:440px;transform:translateX(-50%) perspective(900px) rotateX(62deg);border-radius:50%;background:radial-gradient(ellipse at 50% 38%,#1e7c5a,#0e412f 52%,#092019 78%,#0000 80%);box-shadow:inset 0 0 70px #000b,0 35px 60px #0008;pointer-events:none}
+.diceBody:after{content:'';position:absolute;left:50%;top:130px;width:min(86vw,720px);height:330px;transform:translateX(-50%) perspective(900px) rotateX(62deg);border-radius:50%;background:repeating-radial-gradient(ellipse at 50% 50%,#ffffff0b 0 1px,#0000 1px 9px);opacity:.6;pointer-events:none}
 .roundNo,.timer,.bowl,.sides,.betNote,.history,.chips,.placeBtn{position:relative;z-index:2}
-.diceTable{width:min(100%,430px)!important;height:300px!important;margin:0 auto 16px!important;padding:0!important;background:none!important;border-radius:0!important;filter:none!important;display:grid!important;place-items:center!important;perspective:1000px;perspective-origin:50% 36%}
-.diceScene{position:relative;width:360px;height:260px;max-width:96vw;transform-style:preserve-3d;transform:rotateX(57deg) rotateZ(0deg);animation:sceneBreath 3s ease-in-out infinite}
-.dicePlate{position:absolute;left:50%;top:128px;width:290px;height:178px;transform:translate(-50%,-50%) translateZ(0);border-radius:50%;background:radial-gradient(ellipse at 50% 38%,#fffdf2 0,#f3dba7 37%,#ba751e 59%,#4a2206 82%);box-shadow:inset 0 0 0 9px #fff4c9,inset 0 -18px 32px #6b3309,0 26px 34px #000a}
+.diceTable{width:min(100%,430px)!important;height:clamp(200px,28vh,245px)!important;margin:12px auto 0!important;padding:0!important;background:none!important;border-radius:0!important;filter:none!important;display:grid!important;place-items:center!important;perspective:1000px;perspective-origin:50% 42%}
+.diceScene{position:relative;width:340px;height:240px;max-width:96vw;transform-style:preserve-3d;transform:rotateX(54deg) rotateZ(0deg);animation:sceneBreath 3s ease-in-out infinite}
+.dicePlate{position:absolute;left:50%;top:156px;width:280px;height:170px;transform:translate(-50%,-50%) translateZ(0);border-radius:50%;background:radial-gradient(ellipse at 50% 38%,#fffdf2 0,#f3dba7 37%,#ba751e 59%,#4a2206 82%);box-shadow:inset 0 0 0 9px #fff4c9,inset 0 -18px 32px #6b3309,0 26px 34px #000a}
 .dicePlate:before{content:'';position:absolute;inset:22px 32px;border-radius:50%;background:radial-gradient(ellipse at 50% 44%,#3c1b07,#160803 72%);box-shadow:inset 0 8px 18px #000d,inset 0 -4px 10px #ffd36a44}
 .dicePlate i{position:absolute;left:50%;top:49%;width:170px;height:86px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(ellipse,#0009,#0000 66%);filter:blur(8px)}
 .dicePlate span{position:absolute;left:50%;top:12px;width:210px;height:34px;transform:translateX(-50%);border-radius:50%;background:linear-gradient(#fff8,#fff0)}
-.diceTable .diceTray{position:absolute;z-index:3;left:50%;top:126px;display:flex;gap:15px;margin:0!important;padding:0!important;transform:translate(-50%,-50%) translateZ(36px) rotateX(-57deg);perspective:900px;opacity:.18;filter:blur(.6px);transition:opacity .25s ease,filter .25s ease}
+.diceTable .diceTray{position:absolute;z-index:3;left:50%;top:154px;display:flex;gap:14px;margin:0!important;padding:0!important;transform:translate(-50%,-50%) translateZ(36px) rotateX(-54deg);perspective:900px;opacity:.18;filter:blur(.6px);transition:opacity .25s ease,filter .25s ease}
 .diceTable.reveal .diceTray{opacity:1;filter:none;animation:diceTraySettle .48s ease-out}
 .diceTable.rolling .diceTray{opacity:.08}
-.diceTable .diceCube{width:58px;height:58px;transform-style:preserve-3d;filter:drop-shadow(0 13px 12px #0008)}
+.diceTable .diceCube{width:56px;height:56px;transform-style:preserve-3d;filter:drop-shadow(0 13px 12px #0008)}
 .diceTable .diceCube:nth-child(1){transform:translateY(3px) rotateZ(-11deg)}
 .diceTable .diceCube:nth-child(2){transform:translateY(-5px) rotateZ(7deg)}
 .diceTable .diceCube:nth-child(3){transform:translateY(5px) rotateZ(15deg)}
 .diceTable .diceCube.rolling{animation:dice3dTumble .52s cubic-bezier(.2,.72,.23,1.05) infinite}
 .diceTable .diceInner{border-radius:12px;background:linear-gradient(145deg,#ffffff,#eadfc8 54%,#9d6b29);border:1px solid #fff4d1;box-shadow:inset -8px -9px 0 #8d5c1d55,inset 5px 5px 0 #fff9,0 10px 12px #0008;transform:rotateX(4deg) rotateY(-5deg)}
 .diceTable .pip{background:radial-gradient(circle at 35% 35%,#3b2210,#050200 78%);box-shadow:inset 0 1px 1px #fff5}
-.diceCup{position:absolute;z-index:5;left:50%;top:102px;width:220px;height:156px;transform-style:preserve-3d;transform:translate(-50%,-50%) translateZ(76px) rotateX(-57deg);filter:drop-shadow(0 28px 22px #000b);transition:transform .72s cubic-bezier(.16,.86,.22,1),filter .72s ease}
+.diceCup{position:absolute;z-index:5;left:50%;top:134px;width:210px;height:148px;transform-style:preserve-3d;transform:translate(-50%,-50%) translateZ(76px) rotateX(-54deg);filter:drop-shadow(0 28px 22px #000b);transition:transform .72s cubic-bezier(.16,.86,.22,1),filter .72s ease}
 .diceCup i{position:absolute;display:block;left:50%;transform:translateX(-50%)}
 .cupBody{top:26px;width:190px;height:118px;border-radius:30px 30px 78px 78px/24px 24px 54px 54px;background:linear-gradient(100deg,#330707 0,#7b1411 18%,#e53c28 42%,#7d100d 68%,#250403 100%);box-shadow:inset 18px 0 24px #fff2,inset -24px -10px 26px #210202,0 0 0 2px #f4b36d}
 .cupBody:before{content:'';position:absolute;left:50%;bottom:-12px;width:164px;height:42px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse at 50% 38%,#260303 0,#69100d 42%,#f3aa5c 68%,#2a0403 72%);box-shadow:inset 0 -8px 14px #170101}
@@ -1505,7 +1557,7 @@ button{font:inherit;color:inherit;border:0;cursor:pointer;-webkit-tap-highlight-
 .diceTable.rolling .diceScene{animation:cupTableShake .56s linear infinite}
 .diceTable.rolling .diceCup{animation:cupShake3d .56s linear infinite}
 .diceTable.reveal .diceCup{transform:translate(-112%,-104%) translateZ(110px) rotateX(-12deg) rotateY(-24deg) rotateZ(-18deg);filter:drop-shadow(30px 48px 26px #0009)}
-.diceTable .diceSmoke{left:50%;top:138px;width:170px;height:58px;transform:translate(-50%,-50%) translateZ(52px);background:radial-gradient(ellipse,#fff9,#ffdf8a44 36%,#fff0 72%);filter:blur(12px);opacity:0;z-index:4}
+.diceTable .diceSmoke{left:50%;top:154px;width:170px;height:58px;transform:translate(-50%,-50%) translateZ(52px);background:radial-gradient(ellipse,#fff9,#ffdf8a44 36%,#fff0 72%);filter:blur(12px);opacity:0;z-index:4}
 .diceTable.reveal .diceSmoke{animation:realCupSteam .9s ease-out}
 .diceTable.reveal .dicePlate{animation:plateGlow .86s ease-out}
 .diceTable.reveal .diceCube{animation:diceReveal3d .56s cubic-bezier(.18,1.4,.32,1) forwards}
