@@ -12,37 +12,27 @@ import { MASCOT_LIST } from './BauCuaIcons.jsx';
 
 export const BAUCUA_KEYS = ['NAI', 'BAU', 'GA', 'CA', 'CUA', 'TOM', 'TRIPLE_ANY'];
 
-export const TRIPLE_MULTIPLIER = 30; // 1 ăn 30
-
 /**
- * Generate a fair 3-dice roll result
+ * Hệ số là TỔNG tiền nhận lại (đã gồm vốn), khớp từng đồng với configSchemas.BAUCUA
+ * bên server. Đây chỉ là bộ mặc định để vẽ bảng tỉ lệ trước khi sảnh trả về
+ * paytable thật — tiền thắng thua luôn do server chốt, không lấy từ đây.
  */
-export function rollBauCuaDice() {
-  const d1 = Math.floor(Math.random() * 6);
-  const d2 = Math.floor(Math.random() * 6);
-  const d3 = Math.floor(Math.random() * 6);
-  return [d1, d2, d3];
-}
+export const DEFAULT_PAYTABLE = { oneX: 2, twoX: 3, threeX: 4, tripleX: 31 };
+
+/** "1 ăn N": phần lãi ròng, tức tổng nhận lại trừ đi vốn. */
+export const netOdds = multiplier => Math.max(0, Math.round((multiplier - 1) * 100) / 100);
 
 /**
- * Evaluate winnings based on bets and rolled dice
+ * Dựng lại chi tiết thắng thua để hiển thị, từ ba mặt xúc xắc server đã chốt.
+ * Không có hàm lắc nào ở client: phòng lắc một lần cho cả bàn, client chỉ vẽ lại.
  * @param {Record<string, number>} bets - e.g. { BAU: 100, CUA: 200, TRIPLE_ANY: 50 }
  * @param {number[]} dice - Array of 3 mascot IDs [0..5]
- * @returns {{
- *   totalBet: number,
- *   totalPayout: number,
- *   netWin: number,
- *   isWin: number,
- *   isJackpot: boolean,
- *   isTriple: boolean,
- *   mascotCounts: Record<string, number>,
- *   winningKeys: string[],
- *   details: Record<string, { bet: number, count: number, payout: number, win: number }>
- * }}
+ * @param {{oneX:number,twoX:number,threeX:number,tripleX:number}} [paytable]
  */
-export function evaluateBauCuaWinnings(bets, dice) {
+export function evaluateBauCuaWinnings(bets, dice, paytable = DEFAULT_PAYTABLE) {
   const mascotCounts = { NAI: 0, BAU: 0, GA: 0, CA: 0, CUA: 0, TOM: 0 };
-  
+  const stepX = [0, paytable.oneX, paytable.twoX, paytable.threeX];
+
   dice.forEach(id => {
     const mascot = MASCOT_LIST[id];
     if (mascot && mascotCounts[mascot.key] !== undefined) {
@@ -52,7 +42,7 @@ export function evaluateBauCuaWinnings(bets, dice) {
 
   const isTriple = dice[0] === dice[1] && dice[1] === dice[2];
   const winningKeys = [];
-  
+
   Object.keys(mascotCounts).forEach(key => {
     if (mascotCounts[key] > 0) {
       winningKeys.push(key);
@@ -73,8 +63,7 @@ export function evaluateBauCuaWinnings(bets, dice) {
 
     if (key === 'TRIPLE_ANY') {
       if (isTriple) {
-        // 1 ăn 30: Trả vốn + 30 lần tiền cược = 31 * amount
-        const payout = amount * (TRIPLE_MULTIPLIER + 1);
+        const payout = Math.floor(amount * paytable.tripleX);
         totalPayout += payout;
         details[key] = { bet: amount, count: 3, payout, win: payout - amount };
       } else {
@@ -83,10 +72,8 @@ export function evaluateBauCuaWinnings(bets, dice) {
     } else if (mascotCounts[key] !== undefined) {
       const matchCount = mascotCounts[key];
       if (matchCount > 0) {
-        // 1 con trúng: ăn 1:1 (trả vốn + 1x = 2x)
-        // 2 con trúng: ăn 1:2 (trả vốn + 2x = 3x)
-        // 3 con trúng: ăn 1:3 (trả vốn + 3x = 4x)
-        const payout = amount * (matchCount + 1);
+        // Ăn theo SỐ MẶT trùng: ra hai con cua thì cửa cua nhận bậc twoX.
+        const payout = Math.floor(amount * stepX[matchCount]);
         totalPayout += payout;
         details[key] = { bet: amount, count: matchCount, payout, win: payout - amount };
       } else {
@@ -110,18 +97,3 @@ export function evaluateBauCuaWinnings(bets, dice) {
   };
 }
 
-/**
- * Generate simulated table bets to make the room feel alive
- */
-export function generateRandomTableBets() {
-  const baseTable = {
-    NAI: 1200 + Math.floor(Math.random() * 3500),
-    BAU: 3500 + Math.floor(Math.random() * 8000),
-    GA: 800 + Math.floor(Math.random() * 2500),
-    CA: 2100 + Math.floor(Math.random() * 4500),
-    CUA: 4500 + Math.floor(Math.random() * 9000),
-    TOM: 1800 + Math.floor(Math.random() * 4000),
-    TRIPLE_ANY: 500 + Math.floor(Math.random() * 1500),
-  };
-  return baseTable;
-}

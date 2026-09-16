@@ -99,11 +99,17 @@
   border-color: rgba(245, 158, 11, 0.4);
 }
 
+.tableStatusBadge.paused {
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.5);
+  background: rgba(239, 68, 68, 0.12);
+}
+
 /* 3D Wheel Animation Container */
 .wheelVisualStage {
   position: relative;
-  width: clamp(120px, 20vh, 160px);
-  height: clamp(120px, 20vh, 160px);
+  width: clamp(140px, 22vh, 180px);
+  height: clamp(140px, 22vh, 180px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -123,51 +129,35 @@
 }
 
 .rotatingWheelDisc {
-  width: clamp(100px, 17vh, 136px);
-  height: clamp(100px, 17vh, 136px);
+  width: 96%;
+  height: 96%;
   border-radius: 50%;
-  border: 4px solid #353944;
-  background: conic-gradient(
-    #10b981 0deg 9.7deg,
-    #ef4444 9.7deg 19.4deg,
-    #1f2937 19.4deg 29.1deg,
-    #ef4444 29.1deg 38.8deg,
-    #1f2937 38.8deg 48.5deg,
-    #ef4444 48.5deg 58.2deg,
-    #1f2937 58.2deg 67.9deg,
-    #ef4444 67.9deg 77.6deg,
-    #1f2937 77.6deg 87.3deg,
-    #ef4444 87.3deg 97deg,
-    #1f2937 97deg 106.7deg,
-    #ef4444 106.7deg 116.4deg,
-    #1f2937 116.4deg 126.1deg,
-    #ef4444 126.1deg 135.8deg,
-    #1f2937 135.8deg 145.5deg,
-    #ef4444 145.5deg 155.2deg,
-    #1f2937 155.2deg 164.9deg,
-    #ef4444 164.9deg 174.6deg,
-    #1f2937 174.6deg 184.3deg,
-    #ef4444 184.3deg 194deg,
-    #1f2937 194deg 203.7deg,
-    #ef4444 203.7deg 213.4deg,
-    #1f2937 213.4deg 223.1deg,
-    #ef4444 223.1deg 232.8deg,
-    #1f2937 232.8deg 242.5deg,
-    #ef4444 242.5deg 252.2deg,
-    #1f2937 252.2deg 261.9deg,
-    #ef4444 261.9deg 271.6deg,
-    #1f2937 271.6deg 281.3deg,
-    #ef4444 281.3deg 291deg,
-    #1f2937 291deg 300.7deg,
-    #ef4444 300.7deg 310.4deg,
-    #1f2937 310.4deg 320.1deg,
-    #ef4444 320.1deg 329.8deg,
-    #1f2937 329.8deg 339.5deg,
-    #ef4444 339.5deg 349.2deg,
-    #1f2937 349.2deg 360deg
-  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
   box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
-  transition: transform 3.5s cubic-bezier(0.12, 0.8, 0.2, 1);
+  will-change: transform;
+}
+
+.rouletteWheelSvg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  user-select: none;
+}
+
+.wheelPointerMarker {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 13px solid #ffd700;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.9));
+  z-index: 20;
 }
 
 .centerWheelBadge {
@@ -183,6 +173,7 @@
   justify-content: center;
   box-shadow: 0 0 14px rgba(255, 215, 0, 0.4);
   pointer-events: none;
+  z-index: 10;
 }
 
 .centerStatusLabel {
@@ -568,3 +559,951 @@
 }
 .rltActBtn.spinBtnRlt svg { color: #4c2900; }
 .rltActBtn.spinBtnRlt span { font-weight: 1000; letter-spacing: 1px; }
+
+/* ==========================================================================
+   MULTIPLAYER SUITE: LOBBY, WAITING ROOM, PLAYER DRAWER & WINNERS PODIUM
+   ========================================================================== */
+
+/* 1. LOBBY VIEW */
+.rltLobbyView {
+  flex: 1;
+  width: min(100%, 720px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(10px, 2vh, 18px) clamp(10px, 3vw, 18px);
+  gap: clamp(10px, 2vh, 16px);
+  box-sizing: border-box;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.rltLobbyView::-webkit-scrollbar { display: none; }
+
+.rltLobbyBanner {
+  background: linear-gradient(135deg, rgba(38, 43, 56, 0.98), rgba(20, 24, 34, 0.98));
+  border: 1.5px solid rgba(255, 215, 0, 0.35);
+  border-radius: 14px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+.rltLobbyBannerTitle {
+  font-family: 'Bodoni Moda', serif;
+  font-size: clamp(16px, 2.4vh, 20px);
+  font-weight: 800;
+  color: #ffd700;
+  line-height: 1.2;
+}
+
+.rltLobbyBannerSub {
+  font-size: 11.5px;
+  color: #94a3b8;
+}
+
+.rltQuickJoinBtn {
+  background: linear-gradient(135deg, #ffd700, #f59e0b);
+  border: none;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: #2a1700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.5);
+  transition: transform 0.15s ease, filter 0.15s ease;
+  white-space: nowrap;
+}
+.rltQuickJoinBtn:hover { transform: translateY(-2px); filter: brightness(1.08); }
+.rltQuickJoinBtn:active { transform: scale(0.96); }
+
+.rltRoomsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.rltRoomCard {
+  background: linear-gradient(180deg, rgba(28, 33, 46, 0.95), rgba(15, 19, 28, 0.98));
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.rltRoomCard:hover {
+  border-color: rgba(255, 215, 0, 0.6);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.7), 0 0 16px rgba(255, 215, 0, 0.2);
+}
+
+.rltRoomCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rltRoomName {
+  font-family: 'Bodoni Moda', serif;
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.rltRoomBadge {
+  font-size: 10px;
+  font-weight: 900;
+  padding: 2px 7px;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+.rltRoomBadge.hot { background: rgba(239, 68, 68, 0.25); color: #f87171; border: 1px solid #ef4444; }
+.rltRoomBadge.vip { background: rgba(245, 158, 11, 0.25); color: #fbbf24; border: 1px solid #f59e0b; }
+.rltRoomBadge.pro { background: rgba(139, 92, 246, 0.25); color: #c084fc; border: 1px solid #8b5cf6; }
+.rltRoomBadge.wait { background: rgba(59, 130, 246, 0.25); color: #60a5fa; border: 1px solid #3b82f6; }
+
+.rltRoomMeta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11.5px;
+  color: #94a3b8;
+  background: rgba(10, 14, 22, 0.6);
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.rltCapacityBarContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rltCapacityBarLabel {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #cbd5e1;
+}
+
+.rltCapacityBar {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.rltCapacityFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #10b981, #f59e0b);
+  transition: width 0.3s ease;
+}
+
+.rltJoinRoomBtn {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 8px;
+  padding: 8px 0;
+  color: #ffd700;
+  font-family: 'Oswald', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.rltRoomCard:hover .rltJoinRoomBtn {
+  background: linear-gradient(135deg, #ffd700, #f59e0b);
+  color: #1a0f00;
+  border-color: #ffd700;
+}
+
+/* 2. MATCHMAKING & WAITING ROOM VIEW */
+.rltWaitingView {
+  flex: 1;
+  width: min(100%, 720px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(12px, 2vh, 20px) clamp(12px, 3vw, 20px);
+  gap: 14px;
+  box-sizing: border-box;
+}
+
+.rltWaitingHeader {
+  background: linear-gradient(135deg, rgba(38, 43, 56, 0.96), rgba(20, 24, 34, 0.98));
+  border: 1.5px solid rgba(255, 215, 0, 0.3);
+  border-radius: 14px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rltWaitingTitle {
+  font-family: 'Bodoni Moda', serif;
+  font-size: 17px;
+  font-weight: 800;
+  color: #ffd700;
+}
+
+.rltSeatsGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin: auto 0;
+  padding: 10px 0;
+}
+
+.rltSeatSlot {
+  background: rgba(28, 33, 46, 0.8);
+  border: 1.5px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 8px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 80px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.rltSeatSlot.occupied {
+  border-style: solid;
+  border-color: rgba(255, 215, 0, 0.4);
+  background: linear-gradient(180deg, rgba(42, 49, 68, 0.95), rgba(24, 28, 38, 0.95));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  animation: rltSlotPop 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+@keyframes rltSlotPop {
+  from { transform: scale(0.6); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.rltSeatSlot.hero {
+  border-color: #ffd700;
+  box-shadow: 0 0 16px rgba(255, 215, 0, 0.4);
+}
+
+.rltSeatAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid #ffd700;
+}
+
+.rltSeatEmptyCircle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.rltSeatName {
+  font-size: 10px;
+  font-weight: 700;
+  color: #e2e8f0;
+  max-width: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rltSeatVip {
+  font-size: 8px;
+  font-weight: 800;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.2);
+  padding: 0.5px 4px;
+  border-radius: 4px;
+}
+
+.rltWaitingActions {
+  display: flex;
+  gap: 10px;
+}
+
+.rltLeaveWaitingBtn {
+  flex: 1;
+  background: rgba(38, 43, 56, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 10px;
+  color: #cbd5e1;
+  font-family: 'Oswald', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.rltStartGameBtn {
+  flex: 2;
+  background: linear-gradient(135deg, #ffd700, #f59e0b);
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  color: #2a1700;
+  font-family: 'Oswald', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+}
+.rltStartGameBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(0.5);
+}
+
+/* 3. MULTIPLAYER ROOM TABLE HUD BAR */
+.rltMultiplayerBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: rgba(24, 28, 40, 0.92);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  border-radius: 10px;
+  padding: 4px 10px;
+  margin-bottom: 2px;
+  flex-shrink: 0;
+  z-index: 15;
+}
+
+.rltRoomTagBadge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #ffd700;
+}
+
+.rltPlayersTriggerBtn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 999px;
+  padding: 2.5px 10px;
+  color: #56e5a9;
+  font-size: 10.5px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.rltPlayersTriggerBtn:hover {
+  background: rgba(86, 229, 169, 0.2);
+  border-color: #56e5a9;
+}
+
+.rltChangeRoomBtn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  padding: 2px 8px;
+  color: #94a3b8;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.rltChangeRoomBtn:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+/* 4. PLAYERS LIST MODAL (DRAWER) */
+.rltPlayersModalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.rltPlayersModal {
+  width: min(100%, 420px);
+  background: linear-gradient(180deg, #1e2434 0%, #111520 100%);
+  border: 1.5px solid rgba(255, 215, 0, 0.35);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: rltModalIn 0.2s ease-out;
+}
+@keyframes rltModalIn {
+  from { transform: scale(0.92); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.rltPlayersModalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 8px;
+}
+
+.rltPlayersModalTitle {
+  font-family: 'Bodoni Moda', serif;
+  font-size: 16px;
+  font-weight: 800;
+  color: #ffd700;
+}
+
+.rltPlayersListScroll {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.rltPlayerRowItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(10, 14, 24, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 6px 10px;
+}
+.rltPlayerRowItem.hero {
+  border-color: #ffd700;
+  background: rgba(245, 158, 11, 0.15);
+}
+
+.rltPlayerLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rltPlayerRowAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid #ffd700;
+  object-fit: cover;
+}
+
+.rltPlayerRowName {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.rltPlayerRowBalance {
+  font-family: 'Bodoni Moda', serif;
+  font-size: 12px;
+  font-weight: 800;
+  color: #ffd700;
+}
+
+/* 5. ROOM WINNERS CELEBRATION PODIUM MODAL */
+.rltWinnersPodiumBackdrop,
+.rltWinnersOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: rltFadeIn 0.25s ease;
+}
+
+.rltWinnersPodiumCard {
+  width: min(100%, 380px);
+  background: radial-gradient(circle at 50% 0%, #301f3b 0%, #171020 60%, #0a070e 100%);
+  border: 2px solid #ffd700;
+  border-radius: 20px;
+  padding: 18px 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.95), 0 0 30px rgba(255, 215, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  animation: rltPodiumPop 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  box-sizing: border-box;
+}
+
+.podiumHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.goldCupIcon {
+  color: #ffd700;
+  filter: drop-shadow(0 0 10px #ffd700);
+  margin-bottom: 2px;
+}
+
+.podiumHeader h3 {
+  font: 900 18px Oswald;
+  color: #ffd700;
+  margin: 0;
+  letter-spacing: 0.8px;
+}
+
+.podiumHeader p {
+  font: 700 12.5px Oswald;
+  color: #e2e8f0;
+  margin: 0;
+}
+
+.numBadge {
+  padding: 2px 8px;
+  border-radius: 6px;
+  color: #fff;
+  font-weight: 900;
+  margin-left: 4px;
+}
+.numBadge.red { background: #dc2626; }
+.numBadge.black { background: #1f2937; border: 1px solid #4b5563; }
+.numBadge.green { background: #059669; }
+
+.winnersListScroll,
+.rltWinnersListScroll {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 180px;
+  overflow-y: auto;
+  margin: 4px 0;
+  padding: 2px;
+  box-sizing: border-box;
+}
+
+.winnerRow,
+.rltWinnerRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(30, 22, 38, 0.9);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  border-radius: 12px;
+  padding: 6px 10px;
+  box-sizing: border-box;
+}
+
+.winnerRow.heroWinner,
+.rltWinnerRow.hero {
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.22), rgba(217, 119, 6, 0.3));
+  border-color: #ffd700;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.35);
+}
+
+.winnerRank {
+  font: 900 13px Oswald;
+  color: #ffd700;
+  min-width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.winnerAvatar {
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  max-width: 38px !important;
+  max-height: 38px !important;
+  border-radius: 50% !important;
+  border: 1.5px solid #ffd700 !important;
+  object-fit: cover !important;
+  flex-shrink: 0;
+  display: block;
+}
+
+.winnerMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
+.wName {
+  font: 700 11.5px Oswald;
+  color: #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+  line-height: 1.2;
+}
+
+.wBet {
+  font: 600 9.5px Oswald;
+  color: #d8c3ad;
+  line-height: 1.2;
+}
+
+.winnerAmount,
+.rltWinnerPayout {
+  font-family: 'Bodoni Moda', serif;
+  font-size: 13.5px;
+  font-weight: 900;
+  color: #56e5a9;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.noWinnersText {
+  color: #94a3b8;
+  font: 600 12px Oswald;
+  padding: 12px 0;
+}
+
+.rltClosePodiumBtn,
+.rltDismissWinnersBtn {
+  background: linear-gradient(135deg, #ffd700, #f59e0b);
+  border: none;
+  border-radius: 10px;
+  padding: 10px 28px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  color: #1a0f00;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+  transition: transform 0.15s;
+}
+.rltDismissWinnersBtn:hover {
+  transform: scale(1.04);
+}
+
+/* 6. SẢNH CHỜ ROULETTE (IDENTICAL UX/STRUCTURE TO FISH GAME WAITING ROOM) */
+.rltWaitingScreen {
+  background: radial-gradient(circle at 50% 20%, #281822 0%, #130a16 55%, #08040b 100%) !important;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.rltWaitingScreen .topbar {
+  position: relative;
+}
+
+.rltTitle {
+  top: 0;
+  height: auto;
+  margin: clamp(6px, 1.2vh, 14px) 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.rltTitle b {
+  font: 800 clamp(16px, 2.4vh, 20px) Oswald;
+  color: #ffd700;
+  letter-spacing: 1px;
+}
+
+.rltTitle span {
+  font: 700 clamp(11px, 1.5vh, 13px) Oswald;
+  color: #e2a855;
+  letter-spacing: 0.8px;
+}
+
+.rltWaitRoom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: clamp(6px, 1.2vh, 12px);
+  padding: clamp(6px, 1.2vh, 16px) 14px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.rltWaitLead {
+  color: #ffd980;
+  font: 700 clamp(11px, 1.6vh, 13.5px) Oswald;
+  letter-spacing: 0.6px;
+  text-align: center;
+  margin: 0;
+}
+
+/* 10-Player Luxury Grid (2 rows of 5 cards) */
+.rltWaitRoomLuxuryGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: clamp(6px, 1vh, 10px);
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+@media (max-width: 420px) {
+  .rltWaitRoomLuxuryGrid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+  }
+}
+
+.rltWaitSeatCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(6px, 1vh, 10px) 4px;
+  border-radius: 12px;
+  background: rgba(30, 20, 38, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 215, 0, 0.15);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.rltWaitSeatCard.isHero {
+  border-color: #ffd700;
+  background: linear-gradient(180deg, rgba(62, 38, 76, 0.96), rgba(30, 18, 40, 0.96));
+  box-shadow: 0 0 16px rgba(255, 215, 0, 0.35), 0 4px 14px rgba(0, 0, 0, 0.7);
+}
+
+.rltWaitSeatCard.isReady {
+  border-color: #37d39a;
+  box-shadow: 0 0 14px rgba(55, 211, 154, 0.3);
+}
+
+.rltWaitSeatCard.isEmpty {
+  opacity: 0.45;
+  border-style: dashed;
+  background: rgba(20, 14, 26, 0.5);
+}
+
+.rltWaitSeatAvatarWrap {
+  position: relative;
+  width: clamp(34px, 4.8vh, 42px);
+  height: clamp(34px, 4.8vh, 42px);
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #ffd700;
+  margin-bottom: 4px;
+  background: #171b26;
+}
+
+.rltWaitSeatAvatarWrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rltWaitSeatEmptyAvatar {
+  width: clamp(34px, 4.8vh, 42px);
+  height: clamp(34px, 4.8vh, 42px);
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 215, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 215, 0, 0.4);
+  margin-bottom: 4px;
+}
+
+.rltWaitSeatName {
+  font: 700 clamp(9.5px, 1.3vh, 11px) Oswald;
+  color: #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 76px;
+  text-align: center;
+}
+
+.rltWaitSeatUser {
+  font: 600 clamp(8px, 1.1vh, 9.5px) Oswald;
+  color: #d8c3ad;
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 76px;
+}
+
+.rltWaitSeatStatusBadge {
+  font: 800 clamp(7.5px, 1vh, 8.5px) Oswald;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rltWaitSeatStatusBadge.ready {
+  background: rgba(55, 211, 154, 0.2);
+  color: #56e5a9;
+  border: 1px solid #56e5a9;
+}
+
+.rltWaitSeatStatusBadge.waiting {
+  background: rgba(245, 158, 11, 0.2);
+  color: #ffc174;
+  border: 1px solid #ffc174;
+}
+
+.rltWaitSeatStatusBadge.empty {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.rltWaitCount {
+  color: #d8c3ad;
+  font: 600 clamp(10px, 1.5vh, 12px) Oswald;
+  margin: 0;
+  text-align: center;
+}
+
+.rltWaitActions {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+.rltWaitReady {
+  flex: 2;
+  height: clamp(38px, 5.2vh, 46px);
+  border: 0;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #ffd257, #c8860c);
+  color: #3a2200;
+  font: 800 clamp(12px, 1.8vh, 14px) Oswald;
+  letter-spacing: 0.8px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s ease;
+}
+
+.rltWaitReady.on {
+  background: linear-gradient(180deg, #37d39a, #12805c);
+  color: #04241a;
+  box-shadow: 0 0 16px rgba(55, 211, 154, 0.4);
+}
+
+.rltWaitLeave {
+  flex: 1;
+  height: clamp(38px, 5.2vh, 46px);
+  border: 1px solid #6b4e20;
+  border-radius: 10px;
+  background: #1a1409;
+  color: #e6c987;
+  font: 800 clamp(11px, 1.6vh, 13px) Oswald;
+  letter-spacing: 0.8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+/* Insufficient Players 30s Alert Banner */
+.rltInsufficientAlertBanner {
+  width: 100%;
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.25) 0%, rgba(245, 158, 11, 0.25) 100%);
+  border: 1px solid rgba(245, 158, 11, 0.6);
+  border-radius: 8px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+  animation: rltPulseGlow 1.5s infinite alternate;
+  box-sizing: border-box;
+}
+
+@keyframes rltPulseGlow {
+  0% {
+    border-color: rgba(245, 158, 11, 0.4);
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.2);
+  }
+  100% {
+    border-color: rgba(239, 68, 68, 0.9);
+    box-shadow: 0 0 16px rgba(239, 68, 68, 0.4);
+  }
+}
+
+.rltAlertPulseDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 8px #ef4444;
+  animation: rltBlink 0.8s infinite alternate;
+  flex-shrink: 0;
+}
+
+@keyframes rltBlink {
+  0% { opacity: 0.4; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1.2); }
+}
+
+.rltAlertText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+
+.rltAlertTitle {
+  font: 800 clamp(10px, 1.4vh, 12px) Oswald;
+  color: #fbbf24;
+  letter-spacing: 0.5px;
+}
+
+.rltAlertDesc {
+  font: 500 clamp(9px, 1.3vh, 11px) Oswald;
+  color: #e2e8f0;
+}
+
+.rltAlertTimer {
+  color: #f87171;
+  font-size: 1.15em;
+  font-weight: 900;
+  text-decoration: underline;
+}
+
+
+

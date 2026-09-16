@@ -34,6 +34,14 @@ const CONFIG_FIELDS = {
     {key: 'dozenX', label: 'Bội số cược tá (Dozen)', step: 1, min: 1, max: 10, format: v => '×' + v},
     {key: 'evenMoneyX', label: 'Bội số cược ngoài (Red/Black...)', step: 0.1, min: 1, max: 5, format: v => '×' + v}
   ],
+  // Bội số là TỔNG tiền nhận lại (đã gồm vốn): ×2 chính là "1 ăn 1". Ba bậc
+  // oneX/twoX/threeX không được giảm dần, backend từ chối nếu ngược.
+  BAUCUA: [
+    {key: 'oneX', label: 'Bội số trúng 1 mặt', hint: '×2 là luật dân gian "1 ăn 1"', step: 0.1, min: 1, max: 10, format: v => '×' + v},
+    {key: 'twoX', label: 'Bội số trúng 2 mặt', hint: '×3 là "1 ăn 2"', step: 0.1, min: 1, max: 20, format: v => '×' + v},
+    {key: 'threeX', label: 'Bội số trúng 3 mặt', hint: '×4 là "1 ăn 3"', step: 0.1, min: 1, max: 50, format: v => '×' + v},
+    {key: 'tripleX', label: 'Bội số cửa Bão (3 con giống nhau)', hint: '×31 là "1 ăn 30"', step: 1, min: 1, max: 100, format: v => '×' + v}
+  ],
   BLACKJACK: [
     {key: 'bjPayout', label: 'Tỉ lệ Blackjack (3:2 = 1.5)', step: 0.1, min: 1, max: 3, format: v => '×' + v},
     {key: 'dealerStand', label: 'Điểm nhà cái dừng (Dealer Stand)', step: 1, min: 16, max: 18, format: v => v + ' điểm'},
@@ -60,6 +68,7 @@ const GAME_LABEL = {
   FISH: 'Bắn cá',
   POKER: 'Poker Texas',
   ROULETTE: 'Roulette Châu Âu',
+  BAUCUA: 'Bầu Cua VIP',
   BLACKJACK: 'VIP Blackjack',
   TIENLEN: 'Tiến Lên Miền Nam'
 };
@@ -69,6 +78,7 @@ const GAME_ART = {
   FISH: '/assets/home-fish.webp',
   POKER: '/assets/home-poker.webp',
   ROULETTE: '/assets/home-roulette.webp',
+  BAUCUA: '/assets/home-baucua.webp',
   BLACKJACK: '/assets/home-blackjack.webp',
   TIENLEN: '/assets/home-tienlen.webp'
 };
@@ -85,6 +95,9 @@ function previewRtp(key, config) {
   if (key === 'DICE') return value('payoutX') / 2;
   if (key === 'POKER') return 1 - (value('rakeBp') / 10000 || 0.025);
   if (key === 'ROULETTE') return 36 / 37;
+  // 216 tổ hợp ba xúc xắc: một cửa linh vật trúng đúng 1/2/3 mặt ở 75/15/1 tổ hợp,
+  // còn bão bất kỳ ở 6. Lấy cửa có lợi nhất cho người chơi, mirror baucuaRtp.
+  if (key === 'BAUCUA') return Math.max((75 * value('oneX') + 15 * value('twoX') + value('threeX')) / 216, value('tripleX') * 6 / 216);
   if (key === 'BLACKJACK') return (value('bjPayout') || 1.5) * 0.048 + 0.923;
   if (key === 'TIENLEN') return (value('winX') || 1.9) * 0.5;
   return value('rtp') || 0.95;

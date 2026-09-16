@@ -39,7 +39,6 @@ class ErrorBoundary extends Component {
           </p>
           <button
             onClick={() => {
-              localStorage.clear();
               location.hash = '#home';
               location.reload();
             }}
