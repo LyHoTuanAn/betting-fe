@@ -31,9 +31,11 @@ export const FALLBACK_GAMES = [
     sortOrder: 2,
     minBet: 10,
     maxBet: 5000000,
-    theoreticalRtp: 0.985,
-    config: { tripleX: 30 },
-    stats: { rounds: 156, bet: 15600000, payout: 15100000, houseNet: 500000, actualRtp: 0.985 }
+    // 199/216: luật dân gian 1/2/3 mặt ăn 1/2/3 lần vốn đã cho nhà cái ~7,9%,
+    // không phải 98,5% như các game chỉnh được RTP bằng tham số.
+    theoreticalRtp: 0.9213,
+    config: { oneX: 2, twoX: 3, threeX: 4, tripleX: 31 },
+    stats: { rounds: 156, bet: 15600000, payout: 14372000, houseNet: 1228000, actualRtp: 0.9213 }
   },
   {
     key: 'CANGUA',
