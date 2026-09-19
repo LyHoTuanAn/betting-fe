@@ -45,9 +45,11 @@ export const FALLBACK_GAMES = [
     sortOrder: 3,
     minBet: 50,
     maxBet: 50000,
-    theoreticalRtp: 0.985,
-    config: { kickBounty: 200, winMultiplier: 5 },
-    stats: { rounds: 128, bet: 12800000, payout: 12500000, houseNet: 300000, actualRtp: 0.985 }
+    // Bốn nhà góp vé thành một hũ rồi chia lại, nên RTP đúng bằng phần hũ không
+    // bị cắt hoa hồng. Thưởng đá ngựa cũng lấy từ hũ nên không làm đổi con số này.
+    theoreticalRtp: 0.95,
+    config: { rakeBp: 500, kickBountyBp: 300, maxBountyShareBp: 4000 },
+    stats: { rounds: 128, bet: 12800000, payout: 12160000, houseNet: 640000, actualRtp: 0.95 }
   },
   {
     key: 'DICE',

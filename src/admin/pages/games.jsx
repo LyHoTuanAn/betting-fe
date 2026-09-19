@@ -42,6 +42,13 @@ const CONFIG_FIELDS = {
     {key: 'threeX', label: 'Bội số trúng 3 mặt', hint: '×4 là "1 ăn 3"', step: 0.1, min: 1, max: 50, format: v => '×' + v},
     {key: 'tripleX', label: 'Bội số cửa Bão (3 con giống nhau)', hint: '×31 là "1 ăn 30"', step: 1, min: 1, max: 100, format: v => '×' + v}
   ],
+  // Hũ là vé của cả bốn nhà gộp lại; hoa hồng quyết định RTP, còn thưởng đá
+  // ngựa chỉ chia lại trong hũ nên không đụng tới con số đó.
+  CANGUA: [
+    {key: 'rakeBp', label: 'Hoa hồng bàn', hint: 'Phần vạn của hũ — 500 nghĩa là 5%, tức RTP 95%', step: 50, min: 0, max: 2000, format: v => percent(v / 10000, 2)},
+    {key: 'kickBountyBp', label: 'Thưởng mỗi lần đá ngựa', hint: 'Phần vạn của vé — 300 nghĩa là 3% tiền vé', step: 50, min: 0, max: 2000, format: v => percent(v / 10000, 2)},
+    {key: 'maxBountyShareBp', label: 'Trần tổng thưởng đá', hint: 'Phần vạn của hũ — chặn để người về nhất không bị vét sạch', step: 500, min: 0, max: 8000, format: v => percent(v / 10000, 2)}
+  ],
   BLACKJACK: [
     {key: 'bjPayout', label: 'Tỉ lệ Blackjack (3:2 = 1.5)', step: 0.1, min: 1, max: 3, format: v => '×' + v},
     {key: 'dealerStand', label: 'Điểm nhà cái dừng (Dealer Stand)', step: 1, min: 16, max: 18, format: v => v + ' điểm'},
@@ -69,6 +76,7 @@ const GAME_LABEL = {
   POKER: 'Poker Texas',
   ROULETTE: 'Roulette Châu Âu',
   BAUCUA: 'Bầu Cua VIP',
+  CANGUA: 'Cờ Cá Ngựa VIP',
   BLACKJACK: 'VIP Blackjack',
   TIENLEN: 'Tiến Lên Miền Nam'
 };
@@ -79,6 +87,7 @@ const GAME_ART = {
   POKER: '/assets/home-poker.webp',
   ROULETTE: '/assets/home-roulette.webp',
   BAUCUA: '/assets/home-baucua.webp',
+  CANGUA: '/assets/home-cangua.webp',
   BLACKJACK: '/assets/home-blackjack.webp',
   TIENLEN: '/assets/home-tienlen.webp'
 };
@@ -98,6 +107,8 @@ function previewRtp(key, config) {
   // 216 tổ hợp ba xúc xắc: một cửa linh vật trúng đúng 1/2/3 mặt ở 75/15/1 tổ hợp,
   // còn bão bất kỳ ở 6. Lấy cửa có lợi nhất cho người chơi, mirror baucuaRtp.
   if (key === 'BAUCUA') return Math.max((75 * value('oneX') + 15 * value('twoX') + value('threeX')) / 216, value('tripleX') * 6 / 216);
+  // Cá ngựa chia lại đúng hũ bốn nhà góp, nên RTP chỉ phụ thuộc hoa hồng.
+  if (key === 'CANGUA') return 1 - value('rakeBp') / 10000;
   if (key === 'BLACKJACK') return (value('bjPayout') || 1.5) * 0.048 + 0.923;
   if (key === 'TIENLEN') return (value('winX') || 1.9) * 0.5;
   return value('rtp') || 0.95;

@@ -129,7 +129,7 @@ export function App() {
     if (!token) return;
     const syncBalance = () => {
       // Tránh ghi đè số dư giữa chừng khi người chơi đang lắc xúc xắc / quay game
-      const activeGames = ['dice', 'baucua', 'slot', 'roulette', 'fish', 'poker', 'blackjack', 'tienlen'];
+      const activeGames = ['dice', 'baucua', 'cangua', 'slot', 'roulette', 'fish', 'poker', 'blackjack', 'tienlen'];
       if (activeGames.includes(screen)) return;
 
       api('/me', {token})

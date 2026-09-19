@@ -53,35 +53,60 @@ export const PLAYERS = {
 export const TRACK_TOTAL_TILES = 48; // Chuẩn 48 ô chạy chung
 export const HOMERUN_STEPS = 6;       // Chuẩn 6 bậc về đích (1..6)
 
-export function createInitialHorses() {
+/** Ô xuất quân của từng nhà; phải khớp START_TILE bên server. */
+export const START_TILE = { red: 1, green: 13, gold: 25, blue: 37 };
+/** Hết vòng là 47 bước, cộng 6 bậc về đích. */
+export const LAST_TRACK_PROGRESS = TRACK_TOTAL_TILES - 1;
+export const MAX_PROGRESS = LAST_TRACK_PROGRESS + HOMERUN_STEPS;
+
+/**
+ * Quy đổi tiến độ sang vị trí hiển thị, mirror `tileOf`/`homerunStepOf` của
+ * server. Dùng để vẽ từng bước chân khi ngựa chạy, vì server chỉ gửi điểm đầu
+ * và điểm cuối chứ không gửi từng ô.
+ */
+export function horseViewAt(color, progress) {
+  if (progress > LAST_TRACK_PROGRESS) {
+    const step = progress - LAST_TRACK_PROGRESS;
+    return {
+      status: progress >= MAX_PROGRESS ? 'finished' : 'homerun',
+      pos: null,
+      step
+    };
+  }
   return {
-    red: [
-      { id: 'red_0', player: 'red', horseNum: 1, status: 'stable', slot: 0, pos: null, step: 0 },
-      { id: 'red_1', player: 'red', horseNum: 2, status: 'stable', slot: 1, pos: null, step: 0 },
-      { id: 'red_2', player: 'red', horseNum: 3, status: 'track', slot: null, pos: 9, step: 9 },
-      { id: 'red_3', player: 'red', horseNum: 4, status: 'homerun', slot: null, pos: null, step: 4 }
-    ],
-    green: [
-      { id: 'green_0', player: 'green', horseNum: 1, status: 'stable', slot: 0, pos: null, step: 0 },
-      { id: 'green_1', player: 'green', horseNum: 2, status: 'stable', slot: 1, pos: null, step: 0 },
-      { id: 'green_2', player: 'green', horseNum: 3, status: 'stable', slot: 2, pos: null, step: 0 },
-      { id: 'green_3', player: 'green', horseNum: 4, status: 'track', slot: null, pos: 19, step: 7 }
-    ],
-    gold: [
-      { id: 'gold_0', player: 'gold', horseNum: 1, status: 'stable', slot: 0, pos: null, step: 0, isReady: true },
-      { id: 'gold_1', player: 'gold', horseNum: 2, status: 'stable', slot: 1, pos: null, step: 0 },
-      { id: 'gold_2', player: 'gold', horseNum: 3, status: 'track', slot: null, pos: 32, step: 8 },
-      { id: 'gold_3', player: 'gold', horseNum: 4, status: 'homerun', slot: null, pos: null, step: 5 }
-    ],
-    blue: [
-      { id: 'blue_0', player: 'blue', horseNum: 1, status: 'stable', slot: 0, pos: null, step: 0 },
-      { id: 'blue_1', player: 'blue', horseNum: 2, status: 'stable', slot: 1, pos: null, step: 0 },
-      { id: 'blue_2', player: 'blue', horseNum: 3, status: 'finished', slot: 2, pos: null, step: 6 },
-      { id: 'blue_3', player: 'blue', horseNum: 4, status: 'track', slot: null, pos: 43, step: 7 }
-    ]
+    status: 'track',
+    pos: ((START_TILE[color] - 1 + progress) % TRACK_TOTAL_TILES) + 1,
+    step: progress
   };
 }
 
+/** Bàn cờ server gửi xuống, đổi sang đúng hình dạng mà phần vẽ đang dùng. */
+export function boardToHorses(board) {
+  const out = {};
+  for (const color of ['red', 'green', 'gold', 'blue']) {
+    out[color] = (board?.[color] || []).map(h => ({
+      id: h.id,
+      player: h.color,
+      horseNum: h.index + 1,
+      status: h.state,
+      slot: h.index,
+      pos: h.tile,
+      step: h.state === 'track' ? h.progress : h.homerunStep,
+      progress: h.progress
+    }));
+  }
+  return out;
+}
+
+/** Bàn rỗng để vẽ lúc chưa vào phòng. */
+export const emptyHorses = () => boardToHorses(
+  Object.fromEntries(['red', 'green', 'gold', 'blue'].map(color => [
+    color,
+    Array.from({ length: 4 }, (_, index) => ({
+      id: `${color}_${index}`, color, index, state: 'stable', progress: 0, tile: null, homerunStep: null
+    }))
+  ]))
+);
 /**
  * Web Audio FX for Cờ Cá Ngựa VIP
  */
